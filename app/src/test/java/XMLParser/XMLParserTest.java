@@ -3,12 +3,19 @@
  */
 package XMLParser;
 
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class XMLParserTest {
-    @Test public void testAppHasAGreeting() {
-        XMLParser classUnderTest = new XMLParser();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+    private XMLParser parser;
+
+    @Before
+    public void setUp() {parser = new XMLParser();}
+
+    @Test
+    public void testAppHasAGreeting() {
+        assertNotNull("app should have a greeting", parser.getGreeting());
     }
+
 }
