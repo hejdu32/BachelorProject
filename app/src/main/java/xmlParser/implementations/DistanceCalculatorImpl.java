@@ -1,6 +1,6 @@
-package XMLParser.Implementations;
+package xmlParser.implementations;
 
-import XMLParser.XMLParser;
+import xmlParser.XMLParser;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
@@ -9,17 +9,17 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-public class DistanceCalculatorImpl implements XMLParser.Framework.DistanceCalculator {
+public class DistanceCalculatorImpl implements xmlParser.framework.DistanceCalculator{
 
-    private String trgtCoordCode;
-    private String srcCoordCode;
+    private String targetCoordCode;
+    private String sourceCoordCode;
     private MathTransform mathTransform;
 
-    public DistanceCalculatorImpl(String srcCoordCode, String trgtCoordCode) throws FactoryException {
-        this.srcCoordCode = srcCoordCode;
-        this.trgtCoordCode = trgtCoordCode;
-        CoordinateReferenceSystem crsSource = CRS.decode(this.srcCoordCode);
-        CoordinateReferenceSystem crsTarget = CRS.decode(this.trgtCoordCode);
+    public DistanceCalculatorImpl(String sourceCoordCode, String targetCoordCode) throws FactoryException {
+        this.sourceCoordCode = sourceCoordCode;
+        this.targetCoordCode = targetCoordCode;
+        CoordinateReferenceSystem crsSource = CRS.decode(this.sourceCoordCode);
+        CoordinateReferenceSystem crsTarget = CRS.decode(this.targetCoordCode);
         this.mathTransform = CRS.findMathTransform(crsSource, crsTarget);
     }
 
@@ -29,20 +29,20 @@ public class DistanceCalculatorImpl implements XMLParser.Framework.DistanceCalcu
         return Math.sqrt(Math.pow(coord1.x - coord2.x, 2) + Math.pow(coord1.y - coord2.y, 2));
     }
 
-    public String getSrcCoordCode() {
-        return srcCoordCode;
+    public String getSourceCoordCode() {
+        return sourceCoordCode;
     }
 
-    public void setSrcCoordCode(String srcCoordCode) {
-        this.srcCoordCode = srcCoordCode;
+    public void setSourceCoordCode(String sourceCoordCode) {
+        this.sourceCoordCode = sourceCoordCode;
     }
 
-    public String getTrgtCoordCode() {
-        return trgtCoordCode;
+    public String getTargetCoordCode() {
+        return targetCoordCode;
     }
 
-    public void setTrgtCoordCode(String trgtCoordCode) {
-        this.trgtCoordCode = trgtCoordCode;
+    public void setTargetCoordCode(String targetCoordCode) {
+        this.targetCoordCode = targetCoordCode;
     }
 
 

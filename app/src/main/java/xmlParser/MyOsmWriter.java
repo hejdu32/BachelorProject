@@ -1,4 +1,4 @@
-package XMLParser;
+package xmlParser;
 
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 import org.openstreetmap.osmosis.core.task.v0_6.Source;

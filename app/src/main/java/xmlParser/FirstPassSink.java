@@ -1,5 +1,5 @@
-package XMLParser;
-import XMLParser.Implementations.DistanceCalculatorImpl;
+package xmlParser;
+import xmlParser.implementations.DistanceCalculatorImpl;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.operation.TransformException;
@@ -39,6 +39,7 @@ public class FirstPassSink implements Sink{
         if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
             if (way.getId() == 501775256) {
+
                 Coordinate coord1 = new Coordinate(lat1, long1);
                 Coordinate coord2 = new Coordinate(lat2, long2);
                 try {
