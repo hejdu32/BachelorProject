@@ -19,7 +19,7 @@ public class XMLParser {
     }
 
     public void runReader(String path) throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("/home/csdev/proj/BachelorProject/app/mapData/denmark-latest.osm.pbf");
+        InputStream inputStream = new FileInputStream("C:/Users/svend/OneDrive/Uni/6. semester/Bachelor Project/denmark-latest.osm.pbf");
         OsmosisReader reader = new OsmosisReader(inputStream);
         reader.setSink(new MyOsmReader());
         reader.run();
