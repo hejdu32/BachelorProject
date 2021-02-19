@@ -13,8 +13,13 @@ plugins {
 
 repositories {
     // Use JCenter for resolving dependencies.
+    maven {
+        url 'https://repo.osgeo.org/repository/release/'
+    }
     jcenter()
 }
+
+
 
 dependencies {
     // Use JUnit test framework.
@@ -25,6 +30,11 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
+    // https://mvnrepository.com/artifact/org.geotools/geotools
+    compile group: 'org.geotools', name: 'gt-shapefile', version: '24.2'
+    compile group: 'org.geotools', name: 'gt-api', version: '20.4'
+    compile group: 'org.geotools', name: 'gt-epsg-hsql', version: '24.2'
+
 }
 test {
     useJUnitPlatform()

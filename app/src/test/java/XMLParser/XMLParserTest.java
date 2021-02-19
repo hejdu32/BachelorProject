@@ -23,6 +23,7 @@ public class XMLParserTest {
 
     @Test
     public void testReader(){
+        System.out.println("Please");
         try {
             parser.runReader("s");
         } catch (FileNotFoundException e) {
