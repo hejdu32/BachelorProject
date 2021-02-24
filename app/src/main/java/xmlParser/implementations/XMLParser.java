@@ -14,15 +14,16 @@ public class XMLParser {
     private List<MyWay> ways = new ArrayList<>();
     private Set<Long> nodesToSearchFor = new HashSet<>();
     private Map<Long, MyNode> nodes = new HashMap<>();
+    private DistanceCalculatorImpl distanceCalculator;
 
 
     public void runReader(String path) throws FileNotFoundException {
         InputStream inputStream = new FileInputStream("E:/Proj/BachelorProject/mapData/denmark-latest.osm.pbf");
         OsmosisReader reader = new OsmosisReader(inputStream);
         try {
-            DistanceCalculatorImpl distCalc = new DistanceCalculatorImpl("EPSG:4326", "EPSG:25832");
+            this.distanceCalculator = new DistanceCalculatorImpl("EPSG:4326", "EPSG:25832");
             //First pass through data
-            reader.setSink(new FirstPassSink(distCalc, this));
+            reader.setSink(new FirstPassSink(this));
             reader.run();
             //Second pass through data
             InputStream inputStream1 = new FileInputStream("E:/Proj/BachelorProject/mapData/denmark-latest.osm.pbf");
@@ -45,5 +46,10 @@ public class XMLParser {
     public Map<Long, MyNode> getNodes() {
         return nodes;
     }
+
+    public DistanceCalculatorImpl getDistanceCalculator() {
+        return distanceCalculator;
+    }
+
 
 }

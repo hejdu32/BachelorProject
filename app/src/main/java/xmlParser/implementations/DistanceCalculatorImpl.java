@@ -28,6 +28,11 @@ public class DistanceCalculatorImpl implements xmlParser.framework.DistanceCalcu
         return Math.sqrt(Math.pow(coord1.x - coord2.x, 2) + Math.pow(coord1.y - coord2.y, 2));
     }
 
+    public Coordinate coordTransform(Coordinate coord) throws TransformException{
+        JTS.transform(coord, coord, this.mathTransform);
+        return coord;
+    }
+
     public String getSourceCoordCode() {
         return sourceCoordCode;
     }

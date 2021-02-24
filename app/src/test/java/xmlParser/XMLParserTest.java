@@ -5,6 +5,7 @@ package xmlParser;
 
 import org.junit.Before;
 import org.junit.Test;
+import xmlParser.implementations.MyNode;
 import xmlParser.implementations.MyWay;
 import xmlParser.implementations.XMLParser;
 
@@ -13,13 +14,17 @@ import java.io.FileNotFoundException;
 import static org.junit.Assert.*;
 
 public class XMLParserTest {
-    private XMLParser parser;
+    private static final XMLParser parser = new XMLParser();
+    private static boolean setUpIsDone = false;
 
     @Before
     public void setUp() {
-        parser = new XMLParser();
+        if(setUpIsDone){
+            return;
+        }
         try {
             parser.runReader("s");
+            setUpIsDone = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -45,9 +50,18 @@ public class XMLParserTest {
 
     @Test
     public void checkIfNumberOfNodesInDatastructureIsCorrect(){
-        System.out.println(parser.getNodes().size());
-        System.out.println(parser.getNodesToSearchFor().size());
         assertEquals(parser.getNodes().size(), parser.getNodesToSearchFor().size());
+    }
+
+    @Test
+    public void checkSanityOfCoordinateTransform(){
+        MyNode node1 = parser.getNodes().get(4939299713L);
+        MyNode node2 = parser.getNodes().get(8190430016L);
+        assertNotEquals(0, node1.getLatitudeAsXCoord());
+        assertNotEquals(0, node1.getLongtitudeAsYCoord());
+        assertNotEquals(0, node2.getLatitudeAsXCoord());
+        assertNotEquals(0, node2.getLongtitudeAsYCoord());
+
     }
 
 }

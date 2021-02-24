@@ -16,10 +16,8 @@ import java.util.stream.Collectors;
 public class FirstPassSink implements Sink{
 
     private final XMLParser parser;
-    private final DistanceCalculatorImpl distanceCalculator;
 
-    public FirstPassSink(DistanceCalculatorImpl distanceCalculator, XMLParser parser){
-        this.distanceCalculator = distanceCalculator;
+    public FirstPassSink(XMLParser parser){
         this.parser = parser;
 
     }

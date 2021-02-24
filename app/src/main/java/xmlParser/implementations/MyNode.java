@@ -3,24 +3,24 @@ package xmlParser.implementations;
 public class MyNode {
 
     private final long id;
-    private final double longtitude;
-    private final double latitude;
+    private final double longtitudeAsYCoord;
+    private final double latitudeAsXCoord;
 
-    public MyNode(long id, double longtitude, double latitude){
+    public MyNode(long id, double latitudeAsXCoord, double longtitudeAsYCoord){
         this.id = id;
-        this.longtitude = longtitude;
-        this.latitude = latitude;
+        this.longtitudeAsYCoord = longtitudeAsYCoord;
+        this.latitudeAsXCoord = latitudeAsXCoord;
     }
 
     public long getId() {
         return id;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongtitudeAsYCoord() {
+        return longtitudeAsYCoord;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getLatitudeAsXCoord() {
+        return latitudeAsXCoord;
     }
 }

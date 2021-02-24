@@ -1,5 +1,7 @@
 package xmlParser.implementations;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.opengis.referencing.operation.TransformException;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.container.v0_6.NodeContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -17,10 +19,16 @@ public class SecondPassSink implements Sink {
     @Override
     public void process(EntityContainer entityContainer) {
         if(entityContainer instanceof NodeContainer) {
-            Node node1 =((NodeContainer) entityContainer).getEntity();
-            long nodeId = node1.getId();
+            Node node =((NodeContainer) entityContainer).getEntity();
+            long nodeId = node.getId();
             if(parser.getNodesToSearchFor().contains(nodeId)){
-                parser.getNodes().put(nodeId, new MyNode(nodeId, node1.getLongitude(), node1.getLatitude()));
+                Coordinate coord = new Coordinate(node.getLatitude(), node.getLongitude());
+                try {
+                    parser.getDistanceCalculator().coordTransform(coord);
+                } catch (TransformException e) {
+                    e.printStackTrace();
+                }
+                parser.getNodes().put(nodeId, new MyNode(nodeId, coord.x,coord.y));
             }
         }
     }
