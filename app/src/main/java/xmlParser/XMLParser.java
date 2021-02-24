@@ -5,12 +5,16 @@ package xmlParser;
 import xmlParser.implementations.DistanceCalculatorImpl;
 import crosby.binary.osmosis.OsmosisReader;
 import org.opengis.referencing.FactoryException;
+import xmlParser.implementations.MyWay;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XMLParser {
+    private List<MyWay> ways = new ArrayList<>();
 
     public String getGreeting() {
         return "Hello World!";
@@ -25,10 +29,14 @@ public class XMLParser {
         OsmosisReader reader = new OsmosisReader(inputStream);
         try {
             DistanceCalculatorImpl distCalc = new DistanceCalculatorImpl("EPSG:4326", "EPSG:25832");
-            reader.setSink(new FirstPassSink(distCalc));
+            reader.setSink(new FirstPassSink(distCalc, this));
             reader.run();
         } catch (FactoryException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<MyWay> getWays() {
+        return ways;
     }
 }
