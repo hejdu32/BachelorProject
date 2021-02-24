@@ -5,8 +5,8 @@ package xmlParser;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import xmlParser.implementations.MyWay;
+import xmlParser.implementations.XMLParser;
 
 import java.io.FileNotFoundException;
 
@@ -16,16 +16,8 @@ public class XMLParserTest {
     private XMLParser parser;
 
     @Before
-    public void setUp() {parser = new XMLParser();}
-
-    @Test
-    public void testAppHasAGreeting() {
-        assertNotNull("app should have a greeting", parser.getGreeting());
-    }
-
-    @Test
-    public void testReader(){
-        System.out.println("Please");
+    public void setUp() {
+        parser = new XMLParser();
         try {
             parser.runReader("s");
         } catch (FileNotFoundException e) {
@@ -34,9 +26,14 @@ public class XMLParserTest {
     }
 
     @Test
+    public void testAppHasAGreeting() {
+        assertNotNull("app should have a greeting", parser.getGreeting());
+    }
+
+
+
+    @Test
     public void checkForExistanceOfTwoKnownWays(){
-        try {
-            parser.runReader("s");
             long id1 = 0;
             long id2 = 0;
             for(MyWay myWay: parser.getWays()) {
@@ -50,10 +47,13 @@ public class XMLParserTest {
             }
             assertEquals(279060626, id1);
             assertEquals(616476468, id2);
+    }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void checkIfNumberOfNodesInDatastructureIsCorrect(){
+        System.out.println(parser.getNodes().size());
+        System.out.println(parser.getNodesToSearchFor().size());
+        assertEquals(parser.getNodes().size(), parser.getNodesToSearchFor().size());
     }
 
 }

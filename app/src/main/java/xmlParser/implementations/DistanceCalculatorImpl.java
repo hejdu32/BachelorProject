@@ -1,6 +1,5 @@
 package xmlParser.implementations;
 
-import xmlParser.XMLParser;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
