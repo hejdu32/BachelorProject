@@ -25,12 +25,6 @@ public class XMLParserTest {
         }
     }
 
-    @Test
-    public void testAppHasAGreeting() {
-        assertNotNull("app should have a greeting", parser.getGreeting());
-    }
-
-
 
     @Test
     public void checkForExistanceOfTwoKnownWays(){

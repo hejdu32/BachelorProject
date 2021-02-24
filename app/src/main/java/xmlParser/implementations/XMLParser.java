@@ -15,13 +15,6 @@ public class XMLParser {
     private Set<Long> nodesToSearchFor = new HashSet<>();
     private Map<Long, MyNode> nodes = new HashMap<>();
 
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new XMLParser().getGreeting());
-    }
 
     public void runReader(String path) throws FileNotFoundException {
         InputStream inputStream = new FileInputStream("E:/Proj/BachelorProject/mapData/denmark-latest.osm.pbf");
