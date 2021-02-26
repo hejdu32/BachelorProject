@@ -19,4 +19,8 @@ public class Edge {
         return distanceToDestination;
     }
 
+    @Override
+    public String toString() {
+        return "destinationId: " + destinationId + " distance: " + distanceToDestination;
+    }
 }
