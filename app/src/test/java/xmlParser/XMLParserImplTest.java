@@ -19,7 +19,28 @@ import static org.junit.Assert.assertNotEquals;
 public class XMLParserImplTest {
     private static final XMLParserImpl parser = new XMLParserImpl();
     private static boolean setUpIsDone = false;
-    private GraphBuilder graphBuilder;
+    private static GraphBuilder graphBuilder;
+
+    {
+        try {
+            graphBuilder = new GraphBuilder(parser);
+        } catch (FactoryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ;
+    private static HashMap<Long, List<Edge>> adjList;
+
+    {
+        try {
+            adjList = graphBuilder.createAdjencencyList();
+        } catch (TransformException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ;
 
     @Before
     public void setUp() {
@@ -30,11 +51,6 @@ public class XMLParserImplTest {
             parser.parse("s");
             setUpIsDone = true;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            graphBuilder = new GraphBuilder(parser);
-        } catch (FactoryException e) {
             e.printStackTrace();
         }
     }
@@ -75,35 +91,17 @@ public class XMLParserImplTest {
 
     @Test
     public void checkTwoWayNodesAreConnected(){
-        HashMap<Long, List<Edge>> adjList = null;
-        try {
-            adjList = graphBuilder.createAdjencencyList();
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
         assertEquals(1758336175L, adjList.get(1758336171L).get(0).getDestinationId());
         assertEquals(1758336171L, adjList.get(1758336175L).get(0).getDestinationId());
     }
 
     @Test
     public void checkIntersectionForMultipleConnections(){
-        HashMap<Long, List<Edge>> adjList = null;
-        try {
-            adjList = graphBuilder.createAdjencencyList();
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
         assertEquals(3, adjList.get(258379884L).size());
     }
 
     @Test
     public void checkThatAdjListListIsNotEmpty(){
-        HashMap<Long, List<Edge>> adjList = null;
-        try {
-            adjList = graphBuilder.createAdjencencyList();
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
         int size = 0;
         long longid = 0L;
         for (Long edgeListId:adjList.keySet()) {
