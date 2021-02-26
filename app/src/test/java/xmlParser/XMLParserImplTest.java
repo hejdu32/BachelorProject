@@ -5,16 +5,16 @@ package xmlParser;
 
 import org.junit.Before;
 import org.junit.Test;
-import xmlParser.implementations.MyNode;
-import xmlParser.implementations.MyWay;
-import xmlParser.implementations.XMLParser;
+import xmlParser.implementations.CustomNode;
+import xmlParser.implementations.CustomWay;
+import xmlParser.implementations.XMLParserImpl;
 
 import java.io.FileNotFoundException;
 
 import static org.junit.Assert.*;
 
-public class XMLParserTest {
-    private static final XMLParser parser = new XMLParser();
+public class XMLParserImplTest {
+    private static final XMLParserImpl parser = new XMLParserImpl();
     private static boolean setUpIsDone = false;
 
     @Before
@@ -23,7 +23,7 @@ public class XMLParserTest {
             return;
         }
         try {
-            parser.runReader("s");
+            parser.parse("s");
             setUpIsDone = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -35,7 +35,7 @@ public class XMLParserTest {
     public void checkForExistanceOfTwoKnownWays(){
             long id1 = 0;
             long id2 = 0;
-            for(MyWay myWay: parser.getWays()) {
+            for(CustomWay myWay: parser.getWays()) {
                 long id = myWay.getId();
                 if(id == 279060626){
                     id1 = id;
@@ -55,8 +55,8 @@ public class XMLParserTest {
 
     @Test
     public void checkSanityOfCoordinateTransform(){
-        MyNode node1 = parser.getNodes().get(4939299713L);
-        MyNode node2 = parser.getNodes().get(8190430016L);
+        CustomNode node1 = parser.getNodes().get(4939299713L);
+        CustomNode node2 = parser.getNodes().get(8190430016L);
         assertNotEquals(0, node1.getLatitudeAsXCoord());
         assertNotEquals(0, node1.getLongtitudeAsYCoord());
         assertNotEquals(0, node2.getLatitudeAsXCoord());

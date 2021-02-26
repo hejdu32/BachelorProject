@@ -4,20 +4,21 @@
 package xmlParser.implementations;
 import crosby.binary.osmosis.OsmosisReader;
 import org.opengis.referencing.FactoryException;
+import xmlParser.framework.XMLParser;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
-public class XMLParser {
-    private List<MyWay> ways = new ArrayList<>();
+public class XMLParserImpl implements XMLParser {
+    private List<CustomWay> ways = new ArrayList<>();
+    private Map<Long, CustomNode> nodes = new HashMap<>();
     private Set<Long> nodesToSearchFor = new HashSet<>();
-    private Map<Long, MyNode> nodes = new HashMap<>();
     private DistanceCalculatorImpl distanceCalculator;
 
-
-    public void runReader(String path) throws FileNotFoundException {
+    @Override
+    public void parse(String path) throws FileNotFoundException {
         InputStream inputStream = new FileInputStream("E:/Proj/BachelorProject/mapData/denmark-latest.osm.pbf");
         OsmosisReader reader = new OsmosisReader(inputStream);
         try {
@@ -34,19 +35,22 @@ public class XMLParser {
             e.printStackTrace();
         }
     }
-
-    public List<MyWay> getWays() {
+    @Override
+    public List<CustomWay> getWays() {
         return ways;
     }
 
+    @Override
     public Set<Long> getNodesToSearchFor() {
         return nodesToSearchFor;
     }
 
-    public Map<Long, MyNode> getNodes() {
+    @Override
+    public Map<Long, CustomNode> getNodes() {
         return nodes;
     }
 
+    @Override
     public DistanceCalculatorImpl getDistanceCalculator() {
         return distanceCalculator;
     }

@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class SecondPassSink implements Sink {
 
-    private final XMLParser parser;
+    private final XMLParserImpl parser;
 
-    public SecondPassSink(XMLParser parser){
+    public SecondPassSink(XMLParserImpl parser){
         this.parser = parser;
     }
     @Override
@@ -28,7 +28,7 @@ public class SecondPassSink implements Sink {
                 } catch (TransformException e) {
                     e.printStackTrace();
                 }
-                parser.getNodes().put(nodeId, new MyNode(nodeId, coord.x,coord.y));
+                parser.getNodes().put(nodeId, new CustomNode(nodeId, coord.x,coord.y));
             }
         }
     }
@@ -48,7 +48,7 @@ public class SecondPassSink implements Sink {
 
     }
 
-    public XMLParser getParser() {
+    public XMLParserImpl getParser() {
         return parser;
     }
 

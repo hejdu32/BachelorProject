@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 public class FirstPassSink implements Sink{
 
-    private final XMLParser parser;
+    private final XMLParserImpl parser;
 
-    public FirstPassSink(XMLParser parser){
+    public FirstPassSink(XMLParserImpl parser){
         this.parser = parser;
-
     }
+
     @Override
     public void process(EntityContainer entityContainer) {
 
@@ -30,11 +30,11 @@ public class FirstPassSink implements Sink{
             for(Tag tag: tags){
                 if(tag.getKey().equals("highway")){
                     if(checkTag(tag.getValue())){
-                        MyWay myWay = new MyWay(way.getId(),
+                        CustomWay customWay = new CustomWay(way.getId(),
                                                 way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
                                                 tag.getValue());
-                        parser.getNodesToSearchFor().addAll(myWay.getNodeIdList());
-                        parser.getWays().add(myWay);
+                        parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
+                        parser.getWays().add(customWay);
                     }
                 }
             }

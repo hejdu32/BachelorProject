@@ -2,12 +2,12 @@ package xmlParser.implementations;
 
 import java.util.List;
 
-public class MyWay {
+public class CustomWay {
     private Long id;
     private List<Long> nodeIdList;
     private String tagId;
 
-    public MyWay(Long id, List<Long> nodeIdList, String tagId) {
+    public CustomWay(Long id, List<Long> nodeIdList, String tagId) {
         this.id = id;
         this.nodeIdList = nodeIdList;
         this.tagId = tagId;
