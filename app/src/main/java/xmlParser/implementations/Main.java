@@ -1,6 +1,7 @@
 package xmlParser.implementations;
 
 import xmlParser.implementations.parsing.XMLParserImpl;
+import xmlParser.implementations.testImplementation.XMLstumpRealData;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import javax.swing.*;
