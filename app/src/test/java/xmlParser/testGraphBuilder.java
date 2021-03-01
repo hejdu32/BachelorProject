@@ -4,9 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import xmlParser.implementations.Edge;
-import xmlParser.implementations.GraphBuilder;
-import xmlParser.implementations.XMLParserImpl;
+import xmlParser.implementations.parsing.Edge;
+import xmlParser.implementations.parsing.GraphBuilder;
+import xmlParser.implementations.parsing.XMLParserImpl;
+import xmlParser.implementations.testImplementation.XMLParserStump;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class testGraphBuilder {
-    private static final XMLParserImpl parser = new XMLparserstump();
+    private static final XMLParserImpl parser = new XMLParserStump();
     private GraphBuilder graphBuilder;
 
     @Before

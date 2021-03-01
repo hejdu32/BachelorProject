@@ -1,4 +1,4 @@
-package xmlParser.implementations;
+package xmlParser.implementations.parsing;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.operation.TransformException;

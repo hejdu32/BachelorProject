@@ -1,8 +1,8 @@
 package xmlParser.framework;
 
-import xmlParser.implementations.CustomNode;
-import xmlParser.implementations.CustomWay;
-import xmlParser.implementations.DistanceCalculatorImpl;
+import xmlParser.implementations.parsing.CustomNode;
+import xmlParser.implementations.parsing.CustomWay;
+import xmlParser.implementations.util.DistanceCalculatorImpl;
 
 import java.io.FileNotFoundException;
 import java.util.List;

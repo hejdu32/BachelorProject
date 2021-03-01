@@ -1,4 +1,4 @@
-package xmlParser.implementations;
+package xmlParser.implementations.parsing;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.FactoryException;
@@ -6,6 +6,7 @@ import org.opengis.referencing.operation.TransformException;
 import xmlParser.framework.CoordinateCodes;
 import xmlParser.framework.DistanceCalculator;
 import xmlParser.framework.XMLParser;
+import xmlParser.implementations.util.DistanceCalculatorImpl;
 
 import java.util.*;
 

@@ -1,16 +1,16 @@
-package xmlParser;
+package xmlParser.implementations.testImplementation;
 
-import xmlParser.implementations.CustomNode;
-import xmlParser.implementations.CustomWay;
-import xmlParser.implementations.XMLParserImpl;
+import xmlParser.implementations.parsing.CustomNode;
+import xmlParser.implementations.parsing.CustomWay;
+import xmlParser.implementations.parsing.XMLParserImpl;
 
 import java.util.*;
 
-public class XMLparserstump extends XMLParserImpl {
-    private List<CustomWay> ways = new ArrayList<>();
-    private Map<Long, CustomNode> nodes = new HashMap<>();
+public class XMLParserStump extends XMLParserImpl {
+    private List<CustomWay> ways;
+    private Map<Long, CustomNode> nodes;
 
-    public XMLparserstump(){
+    public XMLParserStump(){
         this.nodes = new HashMap<>();
         CustomNode a = new CustomNode(1L, 1.0, 1.0);
         CustomNode b = new CustomNode(2L, 2.0, 1.0);

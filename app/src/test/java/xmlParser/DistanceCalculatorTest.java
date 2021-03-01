@@ -1,7 +1,7 @@
 package xmlParser;
 import xmlParser.framework.CoordinateCodes;
 import xmlParser.framework.DistanceCalculator;
-import xmlParser.implementations.DistanceCalculatorImpl;
+import xmlParser.implementations.util.DistanceCalculatorImpl;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;

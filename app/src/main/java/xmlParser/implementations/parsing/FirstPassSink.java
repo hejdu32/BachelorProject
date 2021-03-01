@@ -1,4 +1,4 @@
-package xmlParser.implementations;
+package xmlParser.implementations.parsing;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import xmlParser.framework.HighwayTag;

@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import xmlParser.implementations.*;
+import xmlParser.implementations.parsing.*;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;

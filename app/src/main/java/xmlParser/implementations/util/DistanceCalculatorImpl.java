@@ -1,4 +1,4 @@
-package xmlParser.implementations;
+package xmlParser.implementations.util;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;

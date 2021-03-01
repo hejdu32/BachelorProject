@@ -1,4 +1,4 @@
-package xmlParser.implementations;
+package xmlParser.implementations.parsing;
 
 import java.util.List;
 
