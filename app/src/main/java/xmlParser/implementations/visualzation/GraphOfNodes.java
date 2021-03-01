@@ -67,7 +67,7 @@ public class GraphOfNodes extends JPanel{
                     //System.out.println(prevX/1000);
                     //System.out.println(prevY/10000);
                     //draw line
-                    Shape l = new Line2D.Double(prevX/1000, prevY/10000, currX/1000, currY/10000);
+                    Shape l = new Line2D.Double((prevX-441800)/380, (prevY-6049800)/380, (currX-441800)/380, (currY-6049800)/380);
                     //System.out.println("shape added");
                     g.draw(l);
                     previousId = currId;

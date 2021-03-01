@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-       XMLParserImpl parser = new XMLParserImpl();
+       XMLParserImpl parser = new XMLstumpRealData();
        parser.parse("S");
 
 
