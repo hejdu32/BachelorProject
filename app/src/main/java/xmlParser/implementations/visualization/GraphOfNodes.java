@@ -1,4 +1,4 @@
-package xmlParser.implementations.visualzation;
+package xmlParser.implementations.visualization;
 
 
 import xmlParser.implementations.parsing.CustomNode;
@@ -7,15 +7,18 @@ import xmlParser.implementations.parsing.XMLParserImpl;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
 
 public class GraphOfNodes extends JPanel{
 
-    private XMLParserImpl parser;
+    private final XMLParserImpl parser;
     private Graphics2D graph2d;
+
 
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
@@ -27,14 +30,21 @@ public class GraphOfNodes extends JPanel{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Image img = drawBackground();
+        drawGraph();
+        img = flipYCoordinate(img);
+        g.drawImage(img,0,0,this);
+    }
 
-        drawGraph(graph2d,parser);
-        g.drawImage(img,10,10,this);
-        System.out.println("image has been dawn");
+    private Image flipYCoordinate(Image img) {
+        AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+        tx.translate(0, -img.getHeight(null));
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        img = op.filter((BufferedImage) img, null);
+        return img;
     }
 
     private Image drawBackground() {
-        BufferedImage bufferedImage = new BufferedImage(1200,1200,BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(1200,950,BufferedImage.TYPE_INT_RGB);
         graph2d = bufferedImage.createGraphics();
         graph2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -44,10 +54,8 @@ public class GraphOfNodes extends JPanel{
         return bufferedImage;
     }
 
-    private void drawGraph(Graphics2D g, XMLParserImpl parser) {
-        this.parser = parser;
-        g.setColor(Color.BLACK);
-        System.out.println("drawGraph has been called");
+    private void drawGraph() {
+        graph2d.setColor(Color.BLACK);
         for (CustomWay way:parser.getWays()) {
             long previousId = 0L;
             Iterator iterator = way.getNodeIdList().iterator();
@@ -64,12 +72,12 @@ public class GraphOfNodes extends JPanel{
                     CustomNode currNode = parser.getNodes().get(currId);
                     double currX = currNode.getLatitudeAsXCoord();
                     double currY = currNode.getLongtitudeAsYCoord();
-                    //System.out.println(prevX/1000);
-                    //System.out.println(prevY/10000);
-                    //draw line
-                    Shape l = new Line2D.Double((prevX-441800)/380, (prevY-6049800)/380, (currX-441800)/380, (currY-6049800)/380);
-                    //System.out.println("shape added");
-                    g.draw(l);
+
+                    int scaleFactor = 380;
+                    int yOffset = 6049800;
+                    int xOffset = 441800;
+                    Shape l = new Line2D.Double((prevX- xOffset)/ scaleFactor, (prevY- yOffset)/ scaleFactor, (currX- xOffset)/ scaleFactor, (currY- yOffset)/ scaleFactor);
+                    graph2d.draw(l);
                     previousId = currId;
                 }
             } while(iterator.hasNext()); }
