@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.*;
 
-public class XMLstumpRealData extends XMLParserImpl {
+public class XMLVisualizationStump extends XMLParserImpl {
         private List<CustomWay> ways;
         private Map<Long, CustomNode> nodes;
 
@@ -20,7 +20,7 @@ public class XMLstumpRealData extends XMLParserImpl {
 
     }
 
-    public XMLstumpRealData(){
+    public XMLVisualizationStump(){
             this.nodes = new HashMap<>();
             CustomNode a = new CustomNode(571329L, 441840, 6049500);
             CustomNode b = new CustomNode(571328L, 892460, 6401000);

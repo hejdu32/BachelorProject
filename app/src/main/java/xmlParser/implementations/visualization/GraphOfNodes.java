@@ -7,6 +7,8 @@ import xmlParser.implementations.parsing.XMLParserImpl;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
@@ -19,29 +21,64 @@ public class GraphOfNodes extends JPanel{
     private final XMLParserImpl parser;
     private Graphics2D graph2d;
     private BufferedImage bufferedImage;
+    private int imageX = 0;
+    private int imageY = 0;
+    private boolean isGraphDrawn = false;
+    private int pressedX;
+    private int pressedY;
 
 
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
         this.bufferedImage = new BufferedImage(1200,950,BufferedImage.TYPE_INT_RGB);
         this.graph2d = bufferedImage.createGraphics();
+        addMouseListener(new MouseAdapter() {
+
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                pressedX = e.getX();
+                pressedY = e.getY();
+            }
+        });
+        addMouseMotionListener(new MouseAdapter() {
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                imageX += e.getX() - pressedX;
+                imageY += e.getY() - pressedY;
+                pressedX = e.getX();
+                pressedY = e.getY();
+                repaint();
+            }
+        });
+
 
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawBackground();
-        drawGraph();
-        flipYCoordinate();
-        g.drawImage(bufferedImage,0,0,this);
+        if(!isGraphDrawn) {
+            drawBackground();
+            drawGraph();
+            flipYCoordinate();
+            isGraphDrawn = true;
+        }
+
+        g.drawImage(bufferedImage,imageX,imageY,this);
     }
 
     private void flipYCoordinate() {
-        AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+        AffineTransform tx = AffineTransform.getScaleInstance(1,-1);
         tx.translate(0, -bufferedImage.getHeight(null));
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        bufferedImage = op.filter((BufferedImage) bufferedImage, null);
+        bufferedImage = op.filter(bufferedImage, null);
     }
 
     private void drawBackground() {
@@ -80,6 +117,24 @@ public class GraphOfNodes extends JPanel{
                 }
             } while(iterator.hasNext()); }
         }
+
+    public int getImageX() {
+        return imageX;
+    }
+
+    public void setImageX(int imageX) {
+        this.imageX = imageX;
+    }
+
+    public int getImageY() {
+        return imageY;
+    }
+
+    public void setImageY(int imageY) {
+        this.imageY = imageY;
+    }
+
+
 }
 
 
