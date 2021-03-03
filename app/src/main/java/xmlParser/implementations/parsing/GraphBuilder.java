@@ -8,6 +8,8 @@ import xmlParser.framework.DistanceCalculator;
 import xmlParser.framework.XMLParser;
 import xmlParser.implementations.util.DistanceCalculatorImpl;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class GraphBuilder {
@@ -68,6 +70,26 @@ public class GraphBuilder {
         edgeList.add(newEdge);
 
         adjencencyList.put(from, edgeList);
+    }
+
+
+    //file convention is: #nodeid;destid,distance
+    // a long relation would be #nodeid;destid,distance;destid,distance;destid,distance;destid,distance
+    public void writeToFile(String s,  HashMap<Long, List<Edge>> adjLst){
+        try {
+            FileWriter writer = new FileWriter(s);
+            for (Long key:adjLst.keySet()) {
+                String line = "#"+key;
+                for (Edge e:adjLst.get(key)) {
+                    line = line+";"+e.getDestinationId()+","+e.getDistanceToDestination();
+                }
+                writer.write(line);
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

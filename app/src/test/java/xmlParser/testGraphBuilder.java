@@ -9,8 +9,11 @@ import xmlParser.implementations.parsing.GraphBuilder;
 import xmlParser.implementations.parsing.XMLParserImpl;
 import xmlParser.implementations.testImplementation.XMLParserStump;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -49,5 +52,37 @@ public class testGraphBuilder {
             e.printStackTrace();
         }
         assertEquals(3, adjList.get(2L).size());
+    }
+
+    @Test
+    public void checkStumpFileCorrectFormat(){
+        try {
+            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+            graphBuilder.writeToFile("adjlist", adjList);
+
+            String fileData = readFile("adjlist");
+            String expectedOut = "#1;2,1.0#2;1,1.0;3,1.0;4,1.0#3;2,1.0#4;2,1.0;5,10.0#5;4,10.0";
+            assertEquals(expectedOut,fileData);
+        } catch (TransformException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private String readFile(String fileToRead){
+        StringBuilder data = new StringBuilder();
+        try {
+            FileReader reader = new FileReader(fileToRead);
+            Scanner myReader = new Scanner(reader);
+
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return data.toString();
     }
 }
