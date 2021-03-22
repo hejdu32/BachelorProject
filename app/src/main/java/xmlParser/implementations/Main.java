@@ -1,6 +1,7 @@
 package xmlParser.implementations;
 
 import xmlParser.implementations.parsing.XMLParserImpl;
+import xmlParser.implementations.testImplementation.XMLParserStump;
 import xmlParser.implementations.testImplementation.XMLVisualizationStump;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
@@ -24,7 +25,7 @@ public class Main {
        frame.getContentPane().add(graphOfNodes);
 
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       frame.setSize(1250,1200);
+       frame.setSize(1300,1300);
        frame.setVisible(true);
 
     }

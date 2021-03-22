@@ -4,15 +4,18 @@ package xmlParser.implementations.visualization;
 import xmlParser.implementations.parsing.CustomNode;
 import xmlParser.implementations.parsing.CustomWay;
 import xmlParser.implementations.parsing.XMLParserImpl;
+import org.imgscalr.Scalr;
 
 import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.util.Iterator;
 
 
@@ -26,11 +29,14 @@ public class GraphOfNodes extends JPanel{
     private boolean isGraphDrawn = false;
     private int pressedX;
     private int pressedY;
+    private double zoomFactor = 1.0;
+    private int zoomOffSetX = 0;
+    private int zoomOffSetY = 0;
 
 
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
-        this.bufferedImage = new BufferedImage(1200,950,BufferedImage.TYPE_INT_RGB);
+        this.bufferedImage = new BufferedImage(1300,1000,BufferedImage.TYPE_INT_RGB);
         this.graph2d = bufferedImage.createGraphics();
         addMouseListener(new MouseAdapter() {
 
@@ -44,6 +50,11 @@ public class GraphOfNodes extends JPanel{
             public void mousePressed(MouseEvent e) {
                 pressedX = e.getX();
                 pressedY = e.getY();
+                isGraphDrawn = true;
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                isGraphDrawn = false;
             }
         });
         addMouseMotionListener(new MouseAdapter() {
@@ -57,7 +68,23 @@ public class GraphOfNodes extends JPanel{
                 repaint();
             }
         });
-
+        addMouseWheelListener(new MouseAdapter() {
+            //Broken zoom stuff
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                zoomOffSetX = (int) (e.getX()*zoomFactor * 1.2);
+                zoomOffSetY = (int) ((e.getComponent().getHeight() - e.getY()) * zoomFactor * 1.2);
+                if(e.getWheelRotation() > 0) {
+                    zoomFactor *= 1.2;
+                    drawGraph();
+                }
+                else if (e.getWheelRotation() < 0) {
+                    zoomFactor *= 0.8;
+                    drawGraph();
+                }
+                repaint();
+            }
+        });
 
     }
 
@@ -68,7 +95,6 @@ public class GraphOfNodes extends JPanel{
             drawBackground();
             drawGraph();
             flipYCoordinate();
-            isGraphDrawn = true;
         }
 
         g.drawImage(bufferedImage,imageX,imageY,this);
@@ -108,10 +134,10 @@ public class GraphOfNodes extends JPanel{
                     double currX = currNode.getLatitudeAsXCoord();
                     double currY = currNode.getLongtitudeAsYCoord();
 
-                    int scaleFactor = 380;
+                    int scaleFactor = (int) (380*zoomFactor);
                     int yOffset = 6049800;
                     int xOffset = 441800;
-                    Shape l = new Line2D.Double((prevX- xOffset)/ scaleFactor, (prevY- yOffset)/ scaleFactor, (currX- xOffset)/ scaleFactor, (currY- yOffset)/ scaleFactor);
+                    Shape l = new Line2D.Double(((prevX-xOffset)/ scaleFactor) - zoomOffSetX, ((prevY-yOffset)/ scaleFactor) - zoomOffSetY, ((currX-xOffset)/ scaleFactor) - zoomOffSetX, ((currY-yOffset)/ scaleFactor) - zoomOffSetY);
                     graph2d.draw(l);
                     previousId = currId;
                 }
