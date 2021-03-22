@@ -117,4 +117,15 @@ public class XMLParserImplTest {
         System.out.println("The long one is: " + longid + " with size: " + size);
     }
 
+    @Test
+    public void makeDenmarkInFile(){
+        try {
+            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+            graphBuilder.writeToFile("denmark", adjList);
+        } catch (TransformException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
