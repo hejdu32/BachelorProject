@@ -6,7 +6,7 @@ import xmlParser.implementations.parsing.CustomWay;
 import xmlParser.implementations.parsing.XMLParserImpl;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,10 +25,8 @@ public class GraphOfNodes extends JPanel{
 
 
     private final XMLParserImpl parser;
-    private Graphics2D graph2d;
+    //private Graphics2D graph2d;
     private BufferedImage bufferedImage;
-    private int imageX = 0;
-    private int imageY = 0;
     private boolean isGraphDrawn = false;
     private int pressedX;
     private int pressedY;
@@ -37,24 +35,21 @@ public class GraphOfNodes extends JPanel{
     private int zoomOffSetY = 0;
     private boolean zoomable;
     private BufferedImage scaledImage;
-    private static int fullResolutionFactor = 4;
+    private static int fullResolutionFactor = 16;
     private static int fullResolutionX = 1300 * fullResolutionFactor;
     private static int fullResolutionY = 1000 * fullResolutionFactor;
     private static int currentResolutionX = fullResolutionX;
     private static int currentResolutionY = fullResolutionY;
+    private int imageX = 1300/2;
+    private int imageY = 1000/2;
 
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
-        this.bufferedImage = new BufferedImage(fullResolutionX,fullResolutionY,BufferedImage.TYPE_BYTE_BINARY);
+        this.bufferedImage = new BufferedImage(fullResolutionX,fullResolutionY,BufferedImage.TYPE_INT_ARGB);
 
-        this.graph2d = bufferedImage.createGraphics();
+        //graph2d = bufferedImage.createGraphics();
         addMouseListener(new MouseAdapter() {
 
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-            }
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -86,19 +81,13 @@ public class GraphOfNodes extends JPanel{
             //Broken zoom stuff
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                zoomOffSetX = (int) (zoomFactor * 1.2);
-                zoomFactor = Math.round(zoomFactor*100.0)/100.0;
-                zoomOffSetY = (int) (zoomFactor * 1.2);
-                zoomFactor = Math.round(zoomFactor*100.0)/100.0;
                 if(e.getWheelRotation() > 0) {
                     zoomFactor *= 1.2;
                     zoomFactor = Math.round(zoomFactor*100.0)/100.0;
-                    drawGraph();
                 }
                 else if (e.getWheelRotation() < 0) {
                     zoomFactor *= 0.8;
                     zoomFactor = Math.round(zoomFactor*100.0)/100.0;
-                    drawGraph();
                 }
                 repaint();
             }
@@ -116,20 +105,18 @@ public class GraphOfNodes extends JPanel{
             scaledImage = bufferedImage;
         }
         if (zoomable) {
-            BufferedImage afterImage = bufferedImage;
-            afterImage = scale2(bufferedImage, zoomFactor);
-            scaledImage = afterImage;
+            //BufferedImage afterImage = bufferedImage;
+            //afterImage = scale2(bufferedImage, zoomFactor);
+            //scaledImage = afterImage;
             zoomFactor = Math.round(zoomFactor*100.0)/100.0;
             System.out.println("Scale : " + zoomFactor);
         }
-        int zoomResolutionX = (int) (1300 / zoomFactor);
-        int zoomResolutionY = (int) (1000 / zoomFactor);
-        BufferedImage subImage = scaledImage.getSubimage(imageX, imageY, 1300, 1000);
 
-        //BufferedImage windowsSizedImage = resizeImage(subImage, 1300, 1000);
 
         System.out.println("imageX: " + imageX + " imageY: " + imageY);
-        g.drawImage(subImage,0,0,this);
+        //g.drawImage(subImage,0,0,this);
+        g.drawImage(bufferedImage,0,0, 1300, 1000,(int) (imageX*zoomFactor)*fullResolutionFactor,(int) (imageY*zoomFactor)*fullResolutionFactor, (int) ((imageX+130)*zoomFactor)*fullResolutionFactor, (int) ((imageY+100)*zoomFactor)*fullResolutionFactor, this);
+
     }
 
     private void flipYCoordinate() {
@@ -152,7 +139,7 @@ public class GraphOfNodes extends JPanel{
 
     private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight){
         Image resultingImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
-        BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_BYTE_BINARY);
+        BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
         outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
         return outputImage;
     }
@@ -179,52 +166,52 @@ public class GraphOfNodes extends JPanel{
     }
 
     private void drawBackground() {
-        graph2d = bufferedImage.createGraphics();
+        Graphics2D graph2d = bufferedImage.createGraphics();
         graph2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_OFF);
         graph2d.setColor(Color.WHITE);
         graph2d.fillRect(0,0,bufferedImage.getWidth(),bufferedImage.getHeight());
+        graph2d.dispose();
     }
 
 
     private void drawGraph() {
+        Graphics2D graph2d = bufferedImage.createGraphics();;
         graph2d.setColor(Color.BLACK);
-        //for (CustomWay way:parser.getWays()) {
-        //    long previousId = 0L;
-        //    Iterator iterator = way.getNodeIdList().iterator();
-        //    do {
-        //        long currId = (long) iterator.next();
-        //        if(previousId == 0L) {
-        //            previousId = currId;
-        //        }
-        //        else {
-        //            CustomNode previousNode = parser.getNodes().get(previousId);
-        //            double prevX = previousNode.getLatitudeAsXCoord();
-        //            double prevY = previousNode.getLongtitudeAsYCoord();
-////
-        //            CustomNode currNode = parser.getNodes().get(currId);
-        //            double currX = currNode.getLatitudeAsXCoord();
-        //            double currY = currNode.getLongtitudeAsYCoord();
-////
-        //            int scaleFactor = (int) (380/ fullResolutionFactor);
-        //            int yOffset = 6049800;
-        //            int xOffset = 441800;
-        //            Shape l = new Line2D.Double(((prevX-xOffset)/ scaleFactor) , ((prevY-yOffset)/ scaleFactor) , ((currX-xOffset)/ scaleFactor) , ((currY-yOffset)/ scaleFactor) );
-        //            graph2d.draw(l);
-        //            previousId = currId;
-        //        }
-        //    } while(iterator.hasNext()); }
+        for (CustomWay way:parser.getWays()) {
+            long previousId = 0L;
+            Iterator iterator = way.getNodeIdList().iterator();
+            do {
+                long currId = (long) iterator.next();
+                if(previousId == 0L) {
+                    previousId = currId;
+                }
+                else {
+                    CustomNode previousNode = parser.getNodes().get(previousId);
+                    double prevX = previousNode.getLatitudeAsXCoord();
+                    double prevY = previousNode.getLongtitudeAsYCoord();
 
-        //graph2d.dispose();
+                    CustomNode currNode = parser.getNodes().get(currId);
+                    double currX = currNode.getLatitudeAsXCoord();
+                    double currY = currNode.getLongtitudeAsYCoord();
 
-        File img = new File("C:/Users/svend/OneDrive/Uni/6. semester/Bachelor Project/thumb-1920-999633.jpg");
-        try {
-            bufferedImage = ImageIO.read(img);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Shape l = new Rectangle2D.Double(100,100,4000,4000);
-        graph2d.draw(l);
+                    int scaleFactor = (int) (380/ fullResolutionFactor);
+                    int yOffset = 6049800;
+                    int xOffset = 441800;
+                    Shape l = new Line2D.Double(((prevX-xOffset)/ scaleFactor) , ((prevY-yOffset)/ scaleFactor) , ((currX-xOffset)/ scaleFactor) , ((currY-yOffset)/ scaleFactor) );
+                    graph2d.draw(l);
+                    previousId = currId;
+                }
+            } while(iterator.hasNext()); }
+
+        //File img = new File("C:/Users/svend/OneDrive/Uni/6. semester/Bachelor Project/999633.jpg");
+        //try {
+        //    bufferedImage = ImageIO.read(img);
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
+
+        graph2d.dispose();
         }
 
 

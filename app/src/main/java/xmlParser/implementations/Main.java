@@ -16,8 +16,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        XMLParserImpl parser = new XMLVisualizationStump();
-        //XMLParserImpl parser = new XMLParserImpl();
+        //XMLParserImpl parser = new XMLVisualizationStump();
+        XMLParserImpl parser = new XMLParserImpl();
        parser.parse("S");
 
 
