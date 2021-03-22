@@ -61,7 +61,12 @@ public class testGraphBuilder {
             graphBuilder.writeToFile("adjlist", adjList);
 
             String fileData = readFile("adjlist");
-            String expectedOut = "#1;2,1.0#2;1,1.0;3,1.0;4,1.0#3;2,1.0#4;2,1.0;5,10.0#5;4,10.0";
+            String expectedOut = "#1 ;2 ,1.0" +
+                    "#2 ;1 ,1.0 ;3 ,1.0 ;4 ,1.0" +
+                    "#3 ;2 ,1.0" +
+                    "#4 ;2 ,1.0 ;5 ,10.0" +
+                    "#5 ;4 ,10.0" +
+                    "!";
             assertEquals(expectedOut,fileData);
         } catch (TransformException e) {
             e.printStackTrace();
