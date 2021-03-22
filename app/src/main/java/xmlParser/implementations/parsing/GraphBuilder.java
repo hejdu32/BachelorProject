@@ -81,11 +81,11 @@ public class GraphBuilder {
             for (Long key:adjLst.keySet()) {
                 String line = "#"+key;
                 for (Edge e:adjLst.get(key)) {
-                    line = line+";"+e.getDestinationId()+","+e.getDistanceToDestination();
+                    line = line+" ;"+e.getDestinationId()+" ,"+e.getDistanceToDestination();
                 }
-                writer.write(line);
+                writer.write(line+"\n");
             }
-
+            writer.write("!");
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
