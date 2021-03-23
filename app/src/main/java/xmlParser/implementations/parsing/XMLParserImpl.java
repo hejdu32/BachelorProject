@@ -20,7 +20,7 @@ public class XMLParserImpl implements XMLParser {
 
     @Override
     public void parse(String path) throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("src/resources/denmark-latest.osm.pbf");
+        InputStream inputStream = new FileInputStream("app/src/resources/denmark-latest.osm.pbf");
         OsmosisReader reader = new OsmosisReader(inputStream);
         try {
             this.distanceCalculator = new DistanceCalculatorImpl("EPSG:4326", "EPSG:25832");
@@ -28,7 +28,7 @@ public class XMLParserImpl implements XMLParser {
             reader.setSink(new FirstPassSink(this));
             reader.run();
             //Second pass through data
-            InputStream inputStream1 = new FileInputStream("src/resources/denmark-latest.osm.pbf");
+            InputStream inputStream1 = new FileInputStream("app/src/resources/denmark-latest.osm.pbf");
             OsmosisReader reader1 = new OsmosisReader(inputStream1);
             reader1.setSink(new SecondPassSink(this));
             reader1.run();
