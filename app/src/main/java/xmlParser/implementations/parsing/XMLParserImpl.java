@@ -35,7 +35,7 @@ public class XMLParserImpl implements XMLParser {
         } catch (FactoryException e) {
             e.printStackTrace();
         }
-
+        System.out.println("Finished parsing");
     }
     @Override
     public List<CustomWay> getWays() {

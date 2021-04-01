@@ -5,10 +5,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import xmlParser.framework.CoordinateCodes;
 import xmlParser.framework.DistanceCalculator;
-import xmlParser.implementations.parsing.CustomNode;
-import xmlParser.implementations.parsing.CustomWay;
-import xmlParser.implementations.parsing.Edge;
-import xmlParser.implementations.parsing.XMLParserImpl;
+import xmlParser.framework.XMLParser;
+import xmlParser.implementations.parsing.*;
 import xmlParser.implementations.testImplementation.XMLParserStump;
 import xmlParser.implementations.testImplementation.XMLVisualizationStump;
 import xmlParser.implementations.util.DistanceCalculatorImpl;
@@ -22,10 +20,10 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, TransformException {
-        XMLParserImpl parser = new XMLParserStump();
-        //XMLParserImpl parser = new XMLParserImpl();
-       //parser.parse("S");
+    public static void main(String[] args) throws IOException, FactoryException, TransformException {
+
+        XMLParserImpl parser = new XMLParserImpl();
+        GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         var pb = new ProcessBuilder();
         pb.command("C:/proj/BachelorCpp/app/build/exe/test/appTest.exe");  // C++ executable
@@ -33,22 +31,37 @@ public class Main {
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
+        parser.parse("S");
         boolean reading = true;
         System.out.println("###########################################################################\n");
         while(reading){
             String input = reader1.readLine();
-            if(input.equalsIgnoreCase("Exit")){
-                process.destroy();
-                reading = false;
-            }
-            else {
-                writer.write(input + "\n");
-                writer.flush();
-                System.out.println(reader.readLine());
-
+            switch(input.toLowerCase()){
+                case "exit":
+                    process.destroy();
+                    reading = false;
+                    break;
+                case "parse":
+                    HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+                    for (Long key:adjList.keySet()) {
+                        String line = "#" + key;
+                        for (Edge e : adjList.get(key)) {
+                            line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
+                        }
+                        writer.write(line + "\n");
+                        writer.flush();
+                    }
+                    writer.write("!" + "\n" );
+                    writer.flush();
+                    System.out.println(reader.readLine());
+                    break;
+                default:
+                    break;
             }
         }
     }
+
+
 //       JFrame frame = new JFrame();
 //       GraphOfNodes graphOfNodes = new GraphOfNodes((parser));
 //       frame.getContentPane().add(graphOfNodes);
