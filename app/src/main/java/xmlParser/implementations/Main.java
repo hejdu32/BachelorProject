@@ -22,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FactoryException, TransformException {
 
-        XMLParserImpl parser = new XMLParserImpl();
+        XMLParserImpl parser = new XMLParserStump();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         var pb = new ProcessBuilder();
@@ -31,9 +31,20 @@ public class Main {
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("S");
+        //parser.parse("S");
         boolean reading = true;
-        System.out.println("###########################################################################\n");
+        System.out.println("###########################################################################");
+//        Thread readerThread = new Thread(() ->
+//        {
+//            while(true){
+//                try {
+//                    System.out.println(reader.readLine());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        readerThread.start();
         while(reading){
             String input = reader1.readLine();
             switch(input.toLowerCase()){
@@ -41,8 +52,10 @@ public class Main {
                     process.destroy();
                     reading = false;
                     break;
-                case "parse":
+                case "makelist":
                     HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+                    writer.write("makeAdjencencyList");
+                    writer.flush();
                     for (Long key:adjList.keySet()) {
                         String line = "#" + key;
                         for (Edge e : adjList.get(key)) {
@@ -55,6 +68,10 @@ public class Main {
                     writer.flush();
                     System.out.println(reader.readLine());
                     break;
+                case "rundijkstra":
+                    writer.write("runDijkstra" + "\n");
+                    writer.flush();
+                    System.out.println(reader.readLine());
                 default:
                     break;
             }
