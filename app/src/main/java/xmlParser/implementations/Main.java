@@ -22,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FactoryException, TransformException {
 
-        XMLParserImpl parser = new XMLParserStump();
+        XMLParserImpl parser = new XMLParserImpl();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         var pb = new ProcessBuilder();
@@ -31,20 +31,9 @@ public class Main {
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        //parser.parse("S");
+        parser.parse("S");
         boolean reading = true;
         System.out.println("###########################################################################");
-//        Thread readerThread = new Thread(() ->
-//        {
-//            while(true){
-//                try {
-//                    System.out.println(reader.readLine());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        readerThread.start();
         while(reading){
             String input = reader1.readLine();
             switch(input.toLowerCase()){
@@ -61,7 +50,6 @@ public class Main {
                         for (Edge e : adjList.get(key)) {
                             line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
                         }
-                        //System.out.println(line);
                         writer.write(line + "\n");
                         writer.flush();
                     }
