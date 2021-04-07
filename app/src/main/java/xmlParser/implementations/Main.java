@@ -54,13 +54,14 @@ public class Main {
                     break;
                 case "makelist":
                     HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
-                    writer.write("makeAdjencencyList");
+                    writer.write("makeAdjencencyList" + "\n");
                     writer.flush();
                     for (Long key:adjList.keySet()) {
                         String line = "#" + key;
                         for (Edge e : adjList.get(key)) {
                             line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
                         }
+                        //System.out.println(line);
                         writer.write(line + "\n");
                         writer.flush();
                     }
@@ -69,9 +70,18 @@ public class Main {
                     System.out.println(reader.readLine());
                     break;
                 case "rundijkstra":
+                    System.out.println("Input from nodeId");
+                    String from = reader1.readLine();
+                    System.out.println("Input to nodeId");
+                    String to = reader1.readLine();
                     writer.write("runDijkstra" + "\n");
                     writer.flush();
+                    writer.write(from + "\n");
+                    writer.flush();
+                    writer.write(to + "\n");
+                    writer.flush();
                     System.out.println(reader.readLine());
+                    break;
                 default:
                     break;
             }
