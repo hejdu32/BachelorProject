@@ -42,7 +42,7 @@ public class Main {
         frame.setVisible(true);
 
         boolean reading = true;
-        System.out.println("###########################################################################\n");
+        System.out.println("###########################################################################");
         while(reading){
             String input = reader1.readLine();
             switch(input.toLowerCase()){
@@ -50,8 +50,10 @@ public class Main {
                     process.destroy();
                     reading = false;
                     break;
-                case "parse":
+                case "makelist":
                     HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+                    writer.write("makeAdjencencyList" + "\n");
+                    writer.flush();
                     for (Long key:adjList.keySet()) {
                         String line = "#" + key;
                         for (Edge e : adjList.get(key)) {
@@ -61,6 +63,19 @@ public class Main {
                         writer.flush();
                     }
                     writer.write("!" + "\n" );
+                    writer.flush();
+                    System.out.println(reader.readLine());
+                    break;
+                case "rundijkstra":
+                    System.out.println("Input from nodeId");
+                    String from = reader1.readLine();
+                    System.out.println("Input to nodeId");
+                    String to = reader1.readLine();
+                    writer.write("runDijkstra" + "\n");
+                    writer.flush();
+                    writer.write(from + "\n");
+                    writer.flush();
+                    writer.write(to + "\n");
                     writer.flush();
                     System.out.println(reader.readLine());
                     break;
