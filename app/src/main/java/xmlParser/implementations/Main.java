@@ -23,15 +23,24 @@ public class Main {
     public static void main(String[] args) throws IOException, FactoryException, TransformException {
 
         XMLParserImpl parser = new XMLParserImpl();
+        //XMLParserImpl parser = new XMLVisualizationStump();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         var pb = new ProcessBuilder();
-        pb.command("C:/proj/BachelorCpp/app/build/exe/test/appTest.exe");  // C++ executable
+        pb.command("C:/Users/svend/CLionProjects/BachelorCpp2/app/build/exe/main/debug/app.exe");  // C++ executable
         var process = pb.start();
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
         parser.parse("S");
+
+        JFrame frame = new JFrame();
+        GraphOfNodes graphOfNodes = new GraphOfNodes((parser));
+        frame.getContentPane().add(graphOfNodes);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1300,1300);
+        frame.setVisible(true);
+
         boolean reading = true;
         System.out.println("###########################################################################\n");
         while(reading){
