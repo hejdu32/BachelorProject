@@ -50,7 +50,7 @@ public class XMLParserImplTest {
             return;
         }
         try {
-            parser.parse("src/resources/denmark-latest.osm.pbf");
+            parser.parse("src/resources/malta-latest.osm.pbf");
             setUpIsDone = true;
             System.out.println("Starting adjlistmaking");
             long startTime = System.currentTimeMillis();
