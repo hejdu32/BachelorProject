@@ -41,19 +41,6 @@ public class ViewLimiterImpl implements ViewLimiter {
             setMargin();
         }
 
-        //test trash to be deleted
-        ////find node close to x,y
-        //NodeFinder nodeFinder1 = new NodeFinderImpl();
-        //long node1 = nodeFinder1.findClosestNodeToPoint((int) sourceX, (int) sourceY, nodes, xOffset, yOffset, scaleFactor);
-        //Point nodepoint1 = nodeFinder1.findClosestPointToNode((int) nodes.get(node1).getLatitudeAsXCoord(), (int) nodes.get(node1).getLongtitudeAsYCoord(), xOffset, yOffset, scaleFactor);
-        //System.out.println("%%%%%%%%%%%%SOURCE" + nodepoint1);
-//
-        ////find node close to x,y
-        //NodeFinder nodeFinder2 = new NodeFinderImpl();
-        //long node2 = nodeFinder2.findClosestNodeToPoint((int) destX, (int) destY, nodes, xOffset, yOffset, scaleFactor);
-        //Point nodepoint2 = nodeFinder2.findClosestPointToNode((int) nodes.get(node2).getLatitudeAsXCoord(), (int) nodes.get(node2).getLongtitudeAsYCoord(), xOffset, yOffset, scaleFactor);
-        //System.out.println("%%%%%%%%%%%%DEST" + nodepoint2);
-
         List<CustomWay> result = new ArrayList<>();
         for (CustomWay way: ways) {
             //get first node to represent way
@@ -105,7 +92,13 @@ public class ViewLimiterImpl implements ViewLimiter {
         this.marginY = marginY;
     }
 
-
+    public double calculateScale(int fullResolution){
+        //use offsets to calculate scale
+        double xOffsetDiff = getHighestX() - getLowestX();
+        double yOffsetDiff = getHighestY() - getLowestY();
+        double diffToUse = Math.max((xOffsetDiff), (yOffsetDiff));
+        return (diffToUse/fullResolution); //makes sure it fits inside the window
+    }
 
     public double getLowestX() {
         return lowestX;

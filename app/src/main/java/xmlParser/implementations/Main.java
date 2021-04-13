@@ -38,7 +38,7 @@ public class Main {
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("S");
+        parser.parse("app/src/resources/malta-latest.osm.pbf");
 
         JFrame frame = new JFrame();
         GraphOfNodes graphOfNodes = new GraphOfNodes((parser));

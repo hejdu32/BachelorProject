@@ -48,7 +48,7 @@ public class XMLParserImplTest {
             return;
         }
         try {
-            parser.parse("s");
+            parser.parse("src/resources/malta-latest.osm.pbf");
             setUpIsDone = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

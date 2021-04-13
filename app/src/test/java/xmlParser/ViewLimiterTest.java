@@ -37,8 +37,8 @@ public class ViewLimiterTest {
     @Test
     public void checkLimitMethod(){
         ViewLimiter viewLimiter = new ViewLimiterImpl(parser.getWays(), parser.getNodes());
-        assertEquals(parser.getWays().size(), 2);
+        assertEquals(2, parser.getWays().size());
         List<CustomWay> testways = viewLimiter.limitToRelevantWays(2, 2, 5, 5, 0, 0, 1);
-        assertEquals(testways.size(), 1);
+        assertEquals(1, testways.size());
     }
 }
