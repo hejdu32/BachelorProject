@@ -10,6 +10,7 @@ import org.opengis.referencing.operation.TransformException;
 import xmlParser.implementations.parsing.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class XMLParserImplTest {
     private static final XMLParserImpl parser = new XMLParserImpl();
     private static boolean setUpIsDone = false;
     private static GraphBuilder graphBuilder;
-
+    private static HashMap<Long, List<Edge>> adjList;
     {
         try {
             graphBuilder = new GraphBuilder(parser);
@@ -29,18 +30,19 @@ public class XMLParserImplTest {
         }
     }
 
-    ;
-    private static HashMap<Long, List<Edge>> adjList;
+    //private static HashMap<Long, List<Edge>> adjList;
+    //{
+    //    try {
+    //        System.out.println("Starting adjlistmaking");
+    //        long startTime = System.currentTimeMillis();
+    //        adjList = graphBuilder.createAdjencencyList();
+    //        long endTime = System.currentTimeMillis();
+    //        System.out.println("time for ajdlist creation: "+ (endTime- startTime)/1000 + "sec");
+    //    } catch (TransformException e) {
+    //        e.printStackTrace();
+    //    }
+    //}
 
-    {
-        try {
-            adjList = graphBuilder.createAdjencencyList();
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
-    }
-
-    ;
 
     @Before
     public void setUp() {
@@ -48,9 +50,14 @@ public class XMLParserImplTest {
             return;
         }
         try {
-            parser.parse("src/resources/malta-latest.osm.pbf");
+            parser.parse("src/resources/denmark-latest.osm.pbf");
             setUpIsDone = true;
-        } catch (FileNotFoundException e) {
+            System.out.println("Starting adjlistmaking");
+            long startTime = System.currentTimeMillis();
+            adjList = graphBuilder.createAdjencencyList();
+            long endTime = System.currentTimeMillis();
+            System.out.println("time for ajdlist creation: "+ (endTime- startTime)/1000 + "sec");
+        } catch (FileNotFoundException | TransformException e) {
             e.printStackTrace();
         }
     }
@@ -86,7 +93,6 @@ public class XMLParserImplTest {
         assertNotEquals(0, node1.getLongtitudeAsYCoord());
         assertNotEquals(0, node2.getLatitudeAsXCoord());
         assertNotEquals(0, node2.getLongtitudeAsYCoord());
-
     }
 
     @Test
@@ -94,6 +100,8 @@ public class XMLParserImplTest {
         assertEquals(1758336175L, adjList.get(1758336171L).get(0).getDestinationId());
         assertEquals(1758336171L, adjList.get(1758336175L).get(0).getDestinationId());
     }
+
+
 
     @Test
     public void checkIntersectionForMultipleConnections(){
@@ -118,14 +126,36 @@ public class XMLParserImplTest {
     }
 
     @Test
+    public void calcKindsofWaysAndAmountOfIntersections() {
+        HashMap<String, Integer> kindofWays = new HashMap<>();
+        for (CustomWay w:parser.getWays()) {
+            if (kindofWays.containsKey(w.getTagId())){
+            kindofWays.put(w.getTagId(),kindofWays.get(w.getTagId())+1);
+            } else {
+                kindofWays.put(w.getTagId(),1);
+            }
+        }
+        kindofWays.forEach((key, value) -> System.out.println(key + ":" + value));
+    }
+
+    @Test
     public void makeDenmarkInFile(){
         try {
-            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
-            graphBuilder.writeToFile("denmark", adjList);
-        } catch (TransformException e) {
+
+            graphBuilder.writeToFile("denmark", parser.getWays(), parser.getNodes(), adjList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void makeMaltaInFile(){
+        try {
+            graphBuilder.writeToFile("malta", parser.getWays(), parser.getNodes(), adjList);
+            System.out.println("done");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-
 }

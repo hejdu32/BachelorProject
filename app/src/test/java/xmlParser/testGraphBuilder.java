@@ -58,7 +58,7 @@ public class testGraphBuilder {
     public void checkStumpFileCorrectFormat(){
         try {
             HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
-            graphBuilder.writeToFile("adjlist", adjList);
+            graphBuilder.writeToFileOLD("adjlist", adjList);
 
             String fileData = readFile("adjlist");
             String expectedOut = "#1 ;2 ,1.0" +
