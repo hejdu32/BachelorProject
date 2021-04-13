@@ -20,14 +20,20 @@ import java.util.List;
 
 public class Main {
 
+
+
+    private static String fromNode;
+    private static String toNode;
+    private static String result;
+
     public static void main(String[] args) throws IOException, FactoryException, TransformException {
 
         XMLParserImpl parser = new XMLParserImpl();
-        //XMLParserImpl parser = new XMLVisualizationStump();
+        //XMLParserImpl parser = new XMLParserStump();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         var pb = new ProcessBuilder();
-        pb.command("C:/Users/svend/CLionProjects/BachelorCpp2/app/build/exe/main/debug/app.exe");  // C++ executable
+        pb.command("C:/Users/svend/CLionProjects/BachelorCpp2/app/build/exe/test/appTest.exe");  // C++ executable
         var process = pb.start();
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
@@ -49,7 +55,8 @@ public class Main {
                 case "exit":
                     process.destroy();
                     reading = false;
-                    break;
+                    System.out.println("Exitting");
+                    System.exit(0);
                 case "makelist":
                     HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
                     writer.write("makeAdjencencyList" + "\n");
@@ -77,15 +84,29 @@ public class Main {
                     writer.flush();
                     writer.write(to + "\n");
                     writer.flush();
-                    System.out.println(reader.readLine());
+                    result = reader.readLine();
+                    graphOfNodes.setRedPart(result);
+                    break;
+                case "testg":
+                    System.out.println("test started");
+                    from = graphOfNodes.getFrom();
+                    System.out.println("From: " + from);
+                    to = graphOfNodes.getTo();
+                    System.out.println("To: " + to);
+                    writer.write("runDijkstra" + "\n");
+                    writer.flush();
+                    writer.write(from + "\n");
+                    writer.flush();
+                    writer.write(to + "\n");
+                    writer.flush();
+                    result = reader.readLine();
+                    graphOfNodes.setRedPart(result);
                     break;
                 default:
                     break;
             }
         }
     }
-
-
 //       JFrame frame = new JFrame();
 //       GraphOfNodes graphOfNodes = new GraphOfNodes((parser));
 //       frame.getContentPane().add(graphOfNodes);
