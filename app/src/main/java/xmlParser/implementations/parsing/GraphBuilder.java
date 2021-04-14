@@ -130,9 +130,14 @@ public class GraphBuilder {
         writer.write("!");
         writer.close();
     }
-    void writeToFileAsJson(String path){
+    public void writeToFileAsJson(String path) throws IOException {
          Gson gson = new Gson();
-         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getNodes().values(), xmlParser.getWays())
+         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays().values(), xmlParser.getNodes().values());
+         String json = gson.toJson(wrapper);
+         FileWriter writer = new FileWriter("C:/proj/testxd.json");
+         writer.write(json);
+         writer.close();
+
     }
 
 }
