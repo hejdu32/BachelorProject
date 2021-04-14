@@ -93,6 +93,7 @@ public class testGraphBuilder {
     }
     @Test
     public void testWriteToFileAsJson() throws IOException {
-        graphBuilder.writeToFileAsJson("");
+        String filePath = "";
+        graphBuilder.writeToFileAsJson(filePath);
     }
 }
