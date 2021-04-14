@@ -6,11 +6,13 @@ public class CustomWay {
     private Long id;
     private List<Long> nodeIdList;
     private String tagId;
+    private String maxSpeed;
 
-    public CustomWay(Long id, List<Long> nodeIdList, String tagId) {
+    public CustomWay(Long id, List<Long> nodeIdList, String tagId, String maxSpeed) {
         this.id = id;
         this.nodeIdList = nodeIdList;
         this.tagId = tagId;
+        this.maxSpeed = maxSpeed;
     }
 
     public Long getId() {
@@ -37,4 +39,11 @@ public class CustomWay {
         this.tagId = tagId;
     }
 
+    public String getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(String maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
 }

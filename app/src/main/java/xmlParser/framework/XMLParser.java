@@ -13,7 +13,7 @@ public interface XMLParser {
 
     void parse(String path) throws FileNotFoundException;
 
-    List<CustomWay> getWays();
+    Map<Long, CustomWay> getWays();
 
     Set<Long> getNodesToSearchFor();
 
