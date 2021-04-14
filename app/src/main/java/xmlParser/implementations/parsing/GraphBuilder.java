@@ -109,14 +109,7 @@ public class GraphBuilder {
             line = new StringBuilder("#" + node + " " + nodes.get(node).getLatitudeAsXCoord() + " " + nodes.get(node).getLongtitudeAsYCoord() + "\n");
             writer.write(line.toString());
         }
-        //ways
-        //for(long key:adjLst.keySet()){
-        //    line = "#"+key;
-        //    for(Edge e:adjLst.get(key)){
-        //        line = line + " ;"+e.getDestinationId();
-        //    }
-        //    writer.write(line +"\n");
-        //}
+
         for (CustomWay w:ways){
             line = new StringBuilder(";" + w.getMaxSpeed());
             for (Long nodeid:w.getNodeIdList()){

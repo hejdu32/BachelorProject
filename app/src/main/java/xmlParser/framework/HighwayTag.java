@@ -9,7 +9,7 @@ public enum HighwayTag {
 
     private final String name;
 
-    private HighwayTag(String s){
+    HighwayTag(String s){
         this.name = s;
     }
     @Override

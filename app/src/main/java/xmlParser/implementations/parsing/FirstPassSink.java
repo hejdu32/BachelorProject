@@ -23,29 +23,44 @@ public class FirstPassSink implements Sink{
 
     @Override
     public void process(EntityContainer entityContainer) {
-
         if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
             Collection<Tag> tags = way.getTags();
             for(Tag tag: tags){
-                System.out.println(tag.toString());
                 if(tag.getKey().equals("highway")){
                     if(checkTag(tag.getValue())){
                         CustomWay customWay = new CustomWay(way.getId(),
                                                 way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
-                                                tag.getValue(),"none");
+                                                tag.getValue(),typeToDefaultSpeed(tag.getValue()));
                         parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
                         parser.getWays().put(way.getId(), customWay);
-                    }if (tag.getKey().equals("maxspeed")){
-                        parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());
                     }
 
+                }
+                if (tag.getKey().equals("maxspeed")){
+                    boolean tagIsIntVal = isInValue(tag.getValue());
+                    if (!tagIsIntVal) {
+                        System.out.println("Way: " + way.getId() + "maxspeed: " + tag.getValue());
+                    }
+                    if (parser.getWays().containsKey(way.getId())&& tagIsIntVal){
+                        //Integer.parseInt(tag.getValue())
+                    parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());}
                 }
             }
 
 
         }
 
+    }
+
+    private boolean isInValue(String value) {
+        try{
+            Integer.parseInt(value);
+            return true;
+        }
+        catch (NumberFormatException ex){
+            return false;
+        }
     }
 
     @Override
@@ -72,4 +87,30 @@ public class FirstPassSink implements Sink{
         }
         return false;
     }
+    public String typeToDefaultSpeed(String tag){
+        HighwayTag enumtag = HighwayTag.valueOf(tag.toUpperCase());
+        switch (enumtag){
+            case MOTORWAY :
+                return "130";
+            case TRUNK :
+            case PRIMARY :
+            case SECONDARY :
+            case TERTIARY :
+            case MOTORWAY_LINK :
+            case TRUNK_LINK :
+            case PRIMARY_LINK :
+            case SECONDARY_LINK :
+            case TERTIARY_LINK :
+                return "80";
+            case UNCLASSIFIED :
+            case RESIDENTIAL :
+            case TRACK :
+            case ROAD :
+                return "50";
+            default:
+                return "20";
+        }
+    }
 }
+
+
