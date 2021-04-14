@@ -24,7 +24,7 @@ public class GraphBuilder {
 
     public HashMap<Long, List<Edge>> createAdjacencyList() throws TransformException {
         HashMap<Long, List<Edge>> adjencencyList = new HashMap<>();
-        for(CustomWay way: xmlParser.getWays()){
+        for(CustomWay way: xmlParser.getWays().values()){
             long previousId = 0L;
             Iterator iterator = way.getNodeIdList().iterator();
 
@@ -118,7 +118,7 @@ public class GraphBuilder {
         //    writer.write(line +"\n");
         //}
         for (CustomWay w:ways){
-            line = new StringBuilder(";" + w.getTagId());
+            line = new StringBuilder(";" + w.getMaxSpeed());
             for (Long nodeid:w.getNodeIdList()){
                 line.append(" ").append(nodeid);
             }

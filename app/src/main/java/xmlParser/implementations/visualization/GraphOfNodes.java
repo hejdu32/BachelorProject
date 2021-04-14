@@ -61,9 +61,9 @@ public class GraphOfNodes extends JPanel{
     * */
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
-        ways = parser.getWays();
+        ways = new ArrayList<>(parser.getWays().values());
         this.bufferedImage = new BufferedImage(fullResolutionX,fullResolutionY,BufferedImage.TYPE_INT_ARGB);
-        viewLimiter = new ViewLimiterImpl(parser.getWays(), parser.getNodes());
+        viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
         nodeFinder = new NodeFinderImpl();
 
         viewLimiter.setMargin(); //finds lowestXY and highest XY

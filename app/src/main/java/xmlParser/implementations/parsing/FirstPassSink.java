@@ -28,14 +28,18 @@ public class FirstPassSink implements Sink{
             Way way = ((WayContainer) entityContainer).getEntity();
             Collection<Tag> tags = way.getTags();
             for(Tag tag: tags){
+                System.out.println(tag.toString());
                 if(tag.getKey().equals("highway")){
                     if(checkTag(tag.getValue())){
                         CustomWay customWay = new CustomWay(way.getId(),
                                                 way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
-                                                tag.getValue());
+                                                tag.getValue(),"none");
                         parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
-                        parser.getWays().add(customWay);
+                        parser.getWays().put(way.getId(), customWay);
+                    }if (tag.getKey().equals("maxspeed")){
+                        parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());
                     }
+
                 }
             }
 

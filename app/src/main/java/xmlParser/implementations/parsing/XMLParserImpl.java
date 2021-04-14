@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class XMLParserImpl implements XMLParser {
-    private List<CustomWay> ways = new ArrayList<>();
+    private Map<Long, CustomWay> ways = new HashMap<>();
     private Map<Long, CustomNode> nodes = new HashMap<>();
     private Set<Long> nodesToSearchFor = new HashSet<>();
     private DistanceCalculatorImpl distanceCalculator;
@@ -38,7 +38,7 @@ public class XMLParserImpl implements XMLParser {
 
     }
     @Override
-    public List<CustomWay> getWays() {
+    public Map<Long, CustomWay> getWays() {
         return ways;
     }
 

@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.*;
 
 public class XMLVisualizationStump extends XMLParserImpl {
-        private List<CustomWay> ways;
+        private Map<Long, CustomWay> ways;
         private Map<Long, CustomNode> nodes;
 
     @Override
@@ -27,13 +27,13 @@ public class XMLVisualizationStump extends XMLParserImpl {
             CustomNode c = new CustomNode(571327L, 441840, 6401000);
             CustomNode d = new CustomNode(545676L, 892460, 6049500);
             nodes.put(571329L, a); nodes.put(571328L, b); nodes.put(571327L, c); nodes.put(545676L, d);
-            this.ways = new ArrayList<>();
-            CustomWay abcd = new CustomWay(2080L, new ArrayList<Long>(Arrays.asList(571329L, 571328L, 571327L, 545676L)), "");
-            this.ways.add(abcd);
+            this.ways = new HashMap<>();
+            CustomWay abcd = new CustomWay(2080L, new ArrayList<Long>(Arrays.asList(571329L, 571328L, 571327L, 545676L)), "","");
+            this.ways.put(2080L,abcd);
         }
 
         @Override
-        public List<CustomWay> getWays() {
+        public Map<Long, CustomWay> getWays() {
             return ways;
         }
         @Override

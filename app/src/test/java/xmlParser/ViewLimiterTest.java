@@ -15,6 +15,7 @@ import xmlParser.implementations.util.NodeFinderImpl;
 import xmlParser.implementations.util.ViewLimiterImpl;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ViewLimiterTest {
 
     @Test
     public void checkLimitMethod(){
-        ViewLimiter viewLimiter = new ViewLimiterImpl(parser.getWays(), parser.getNodes());
+        ViewLimiter viewLimiter = new ViewLimiterImpl(new ArrayList<>(parser.getWays().values()), parser.getNodes());
         assertEquals(2, parser.getWays().size());
         List<CustomWay> testways = viewLimiter.limitToRelevantWays(2, 2, 5, 5, 0, 0, 1);
         assertEquals(1, testways.size());

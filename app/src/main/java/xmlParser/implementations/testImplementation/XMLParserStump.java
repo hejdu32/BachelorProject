@@ -7,7 +7,7 @@ import xmlParser.implementations.parsing.XMLParserImpl;
 import java.util.*;
 
 public class XMLParserStump extends XMLParserImpl {
-    private List<CustomWay> ways;
+    private Map<Long, CustomWay> ways;
     private Map<Long, CustomNode> nodes;
 
     public XMLParserStump(){
@@ -18,14 +18,14 @@ public class XMLParserStump extends XMLParserImpl {
         CustomNode d = new CustomNode(4L, 2.0, 2.0);
         CustomNode e = new CustomNode(5L, 2.0, 12.0);
         nodes.put(1L, a); nodes.put(2L, b); nodes.put(3L, c); nodes.put(4L, d); nodes.put(5L, e);
-        this.ways = new ArrayList<>();
-        CustomWay abc = new CustomWay(6L, new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)), "");
-        CustomWay bde = new CustomWay(7L, new ArrayList<Long>(Arrays.asList(2L, 4L, 5L)), "");
-        this.ways.add(abc); ways.add(bde);
+        this.ways = new HashMap<>();
+        CustomWay abc = new CustomWay(6L, new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)), "","");
+        CustomWay bde = new CustomWay(7L, new ArrayList<Long>(Arrays.asList(2L, 4L, 5L)), "","");
+        this.ways.put(6L,abc); ways.put(7L,bde);
     }
 
     @Override
-    public List<CustomWay> getWays() {
+    public Map<Long, CustomWay> getWays() {
         return ways;
     }
     @Override

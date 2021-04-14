@@ -11,6 +11,7 @@ import xmlParser.implementations.parsing.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class XMLParserImplTest {
     public void checkForExistanceOfTwoKnownWays(){
             long id1 = 0;
             long id2 = 0;
-            for(CustomWay myWay: parser.getWays()) {
+            for(CustomWay myWay: parser.getWays().values()) {
                 long id = myWay.getId();
                 if(id == 279060626){
                     id1 = id;
@@ -128,7 +129,7 @@ public class XMLParserImplTest {
     @Test
     public void calcKindsofWaysAndAmountOfIntersections() {
         HashMap<String, Integer> kindofWays = new HashMap<>();
-        for (CustomWay w:parser.getWays()) {
+        for (CustomWay w:parser.getWays().values()) {
             if (kindofWays.containsKey(w.getTagId())){
             kindofWays.put(w.getTagId(),kindofWays.get(w.getTagId())+1);
             } else {
@@ -141,7 +142,7 @@ public class XMLParserImplTest {
     @Test
     public void makeDenmarkInFile(){
         try {
-            graphBuilder.writeToFile("denmark", parser.getWays(), parser.getNodes(), adjList);
+            graphBuilder.writeToFile("denmark", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -150,7 +151,7 @@ public class XMLParserImplTest {
     @Test
     public void makeMaltaInFile(){
         try {
-            graphBuilder.writeToFile("malta", parser.getWays(), parser.getNodes(), adjList);
+            graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
             System.out.println("done");
         } catch (IOException e) {
             e.printStackTrace();
