@@ -11,6 +11,7 @@ import xmlParser.implementations.testImplementation.XMLParserStump;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -89,5 +90,10 @@ public class testGraphBuilder {
             e.printStackTrace();
         }
         return data.toString();
+    }
+    @Test
+    public void testWriteToFileAsJson() throws IOException {
+        String filePath = "";
+        graphBuilder.writeToFileAsJson(filePath);
     }
 }
