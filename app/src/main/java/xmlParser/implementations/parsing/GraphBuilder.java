@@ -1,5 +1,6 @@
 package xmlParser.implementations.parsing;
 
+import com.google.gson.Gson;
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -7,6 +8,7 @@ import xmlParser.framework.CoordinateCodes;
 import xmlParser.framework.DistanceCalculator;
 import xmlParser.framework.XMLParser;
 import xmlParser.implementations.util.DistanceCalculatorImpl;
+
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -128,7 +130,10 @@ public class GraphBuilder {
         writer.write("!");
         writer.close();
     }
-
+    void writeToFileAsJson(String path){
+         Gson gson = new Gson();
+         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getNodes().values(), xmlParser.getWays())
+    }
 
 }
 

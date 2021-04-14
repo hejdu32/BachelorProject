@@ -25,6 +25,9 @@ dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13'
 
+    //Gson for json parsing
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     // https://mvnrepository.com/artifact/org.openstreetmap.osmosis/osmosis-pbf
     implementation group: 'org.openstreetmap.osmosis', name: 'osmosis-pbf', version: '0.43-RELEASE'
 
