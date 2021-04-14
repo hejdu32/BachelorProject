@@ -125,7 +125,7 @@ public class GraphBuilder {
     }
     public void writeToFileAsJson(String filePath) throws IOException {
          Gson gson = new Gson();
-         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays().values(), xmlParser.getNodes().values());
+         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays(), xmlParser.getNodes());
          String json = gson.toJson(wrapper);
          FileWriter writer = new FileWriter(filePath);
          writer.write(json);
