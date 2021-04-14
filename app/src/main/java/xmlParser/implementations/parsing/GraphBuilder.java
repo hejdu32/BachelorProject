@@ -22,7 +22,7 @@ public class GraphBuilder {
         distanceCalculator = new DistanceCalculatorImpl(CoordinateCodes.STANDARD, CoordinateCodes.DENMARK);
     }
 
-    public HashMap<Long, List<Edge>> createAdjencencyList() throws TransformException {
+    public HashMap<Long, List<Edge>> createAdjacencyList() throws TransformException {
         HashMap<Long, List<Edge>> adjencencyList = new HashMap<>();
         for(CustomWay way: xmlParser.getWays()){
             long previousId = 0L;

@@ -34,7 +34,7 @@ public class testGraphBuilder {
     @Test
     public void checkDistNonZero() {
         try {
-            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
             assertEquals(2L,adjList.get(1L).get(0).getDestinationId());
             assertNotEquals(adjList.get(1L).get(0).getDistanceToDestination(), 0.0);
             assertEquals(adjList.get(5L).get(0).getDistanceToDestination(), 10.0, 0.001);
@@ -47,7 +47,7 @@ public class testGraphBuilder {
     public void checkForIntersection() {
         HashMap<Long, List<Edge>> adjList = null;
         try {
-            adjList = graphBuilder.createAdjencencyList();
+            adjList = graphBuilder.createAdjacencyList();
         } catch (TransformException e) {
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class testGraphBuilder {
     @Test
     public void checkStumpFileCorrectFormat(){
         try {
-            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
+            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
             graphBuilder.writeToFileOLD("adjlist", adjList);
 
             String fileData = readFile("adjlist");

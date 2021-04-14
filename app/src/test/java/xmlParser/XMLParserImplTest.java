@@ -54,7 +54,7 @@ public class XMLParserImplTest {
             setUpIsDone = true;
             System.out.println("Starting adjlistmaking");
             long startTime = System.currentTimeMillis();
-            adjList = graphBuilder.createAdjencencyList();
+            adjList = graphBuilder.createAdjacencyList();
             long endTime = System.currentTimeMillis();
             System.out.println("time for ajdlist creation: "+ (endTime- startTime)/1000 + "sec");
         } catch (FileNotFoundException | TransformException e) {

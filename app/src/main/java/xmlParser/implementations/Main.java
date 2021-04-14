@@ -1,21 +1,13 @@
 package xmlParser.implementations;
 
-import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import xmlParser.framework.CoordinateCodes;
-import xmlParser.framework.DistanceCalculator;
-import xmlParser.framework.XMLParser;
 import xmlParser.implementations.parsing.*;
-import xmlParser.implementations.testImplementation.XMLParserStump;
-import xmlParser.implementations.testImplementation.XMLVisualizationStump;
-import xmlParser.implementations.util.DistanceCalculatorImpl;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import javax.swing.*;
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -58,8 +50,8 @@ public class Main {
                     System.out.println("Exitting");
                     System.exit(0);
                 case "makelist":
-                    HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjencencyList();
-                    writer.write("makeAdjencencyList" + "\n");
+                    HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+                    writer.write("makeAdjacencyList" + "\n");
                     writer.flush();
                     for (Long key:adjList.keySet()) {
                         String line = "#" + key;
