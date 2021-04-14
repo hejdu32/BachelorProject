@@ -141,7 +141,6 @@ public class XMLParserImplTest {
     @Test
     public void makeDenmarkInFile(){
         try {
-
             graphBuilder.writeToFile("denmark", parser.getWays(), parser.getNodes(), adjList);
         } catch (IOException e) {
             e.printStackTrace();

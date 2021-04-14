@@ -106,7 +106,7 @@ public class GraphBuilder {
         writer.write(line.toString());
         //choords
         for (long node:nodes.keySet()) {
-            line = new StringBuilder("#" + node + " ^" + nodes.get(node).getLatitudeAsXCoord() + " ," + nodes.get(node).getLongtitudeAsYCoord() + "\n");
+            line = new StringBuilder("#" + node + " " + nodes.get(node).getLatitudeAsXCoord() + " " + nodes.get(node).getLongtitudeAsYCoord() + "\n");
             writer.write(line.toString());
         }
         //ways
