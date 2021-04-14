@@ -42,7 +42,8 @@ public class FirstPassSink implements Sink{
                     //if (!tagIsIntVal) {
                     //    System.out.println("Way: " + way.getId() + " maxspeed: " + tag.getValue());
                     //}
-                    if (parser.getWays().containsKey(way.getId())&& tagIsIntVal){
+                    boolean isfirstCharInCustomMaxSpeedNotZero = !(tag.getValue().charAt(0) == '0');
+                    if (parser.getWays().containsKey(way.getId())&& tagIsIntVal && isfirstCharInCustomMaxSpeedNotZero){
                         //Integer.parseInt(tag.getValue())
                     parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());}
                 }
