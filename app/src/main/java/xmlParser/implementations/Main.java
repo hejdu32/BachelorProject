@@ -23,14 +23,18 @@ public class Main {
         XMLParserImpl parser = new XMLParserImpl();
         //XMLParserImpl parser = new XMLParserStump();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
-
+        String filePath = "C:/proj/BachelorCppCmake/resources/malta.json";
+        File jsonFile = new File(filePath);
+        if(!jsonFile.exists()){
+            parser.parse("C:/proj/BachelorProject/resources/malta-latest.osm.pbf");
+            graphBuilder.writeToFileAsJson(filePath);
+        }
         var pb = new ProcessBuilder();
-        pb.command("C:/Users/svend/CLionProjects/BachelorCpp2/app/build/exe/test/appTest.exe");  // C++ executable
+        pb.command("C:/proj/BachelorCppCmake/cmake-build-debug/src/BachelorCppCmake.exe");  // C++ executable
         var process = pb.start();
         var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/malta-latest.osm.pbf");
 
         JFrame frame = new JFrame();
         GraphOfNodes graphOfNodes = new GraphOfNodes((parser));
@@ -53,16 +57,16 @@ public class Main {
                     HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
                     writer.write("makeAdjacencyList" + "\n");
                     writer.flush();
-                    for (Long key:adjList.keySet()) {
-                        String line = "#" + key;
-                        for (Edge e : adjList.get(key)) {
-                            line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
-                        }
-                        writer.write(line + "\n");
-                        writer.flush();
-                    }
-                    writer.write("!" + "\n" );
-                    writer.flush();
+//                    for (Long key:adjList.keySet()) {
+//                        String line = "#" + key;
+//                        for (Edge e : adjList.get(key)) {
+//                            line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
+//                        }
+//                        writer.write(line + "\n");
+//                        writer.flush();
+//                    }
+//                    writer.write("!" + "\n" );
+//                    writer.flush();
                     System.out.println(reader.readLine());
                     break;
                 case "rundijkstra":
