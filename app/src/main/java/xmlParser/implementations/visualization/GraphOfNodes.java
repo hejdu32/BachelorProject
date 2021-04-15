@@ -11,10 +11,8 @@ import xmlParser.implementations.util.ViewLimiterImpl;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +33,7 @@ public class GraphOfNodes extends JPanel{
     private double zoomFactor = 1.0;
     private boolean zoomable = true;
     private int fullResolutionFactor = 8;
-    private int fullResolution = 1300;
+    private int viewResolution = 1300;
     private int fullResolutionX = 1300 * fullResolutionFactor;
     private int fullResolutionY = 1300 * fullResolutionFactor;
     private int imageX = 0;
@@ -54,6 +52,7 @@ public class GraphOfNodes extends JPanel{
     private int blueDrawX;
     private int blueDrawY;
     private List<Long> redPart = new ArrayList<>();
+    private Color myColor = Color.red;
 
     /*
     * Contructor
@@ -69,7 +68,7 @@ public class GraphOfNodes extends JPanel{
         viewLimiter.setMargin(); //finds lowestXY and highest XY
         yOffset = (int) viewLimiter.getLowestY();
         xOffset = (int) viewLimiter.getLowestX();
-        windowScale = viewLimiter.calculateScale(fullResolution);
+        windowScale = viewLimiter.calculateScale(viewResolution);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -78,6 +77,17 @@ public class GraphOfNodes extends JPanel{
                 pressedX = e.getX();
                 pressedY = e.getY();
                 if(e.getButton() == java.awt.event.MouseEvent.BUTTON2){
+                    //####TEST OF VIEWLIMITER#####
+                    System.out.println("################testing viewLimiter################");
+                    System.out.println("Before: " + ways.size());
+                    viewLimiter.setMargin(0,0);
+                    ways = viewLimiter.limitToRelevantWays(scaleValueX(redDrawX), scaleValueY(redDrawY), scaleValueX(blueDrawX), scaleValueY(blueDrawY), xOffset, yOffset, windowScale / fullResolutionFactor);
+                    System.out.println("After: " + ways.size());
+                    isGraphDrawn = false;
+                    clicked = true;
+                    repaint();
+                }
+                if(e.getButton() == java.awt.event.MouseEvent.BUTTON3){
                     if (firstClick) {
                         clicked = true;
                         drawX = e.getX()*fullResolutionFactor;
@@ -94,17 +104,6 @@ public class GraphOfNodes extends JPanel{
                         repaint();
                     }
                 }
-                if(e.getButton() == java.awt.event.MouseEvent.BUTTON3){
-                    //####TEST OF VIEWLIMITER#####
-                    System.out.println("################testing viewLimiter################");
-                    System.out.println("Before: " + ways.size());
-                    viewLimiter.setMargin(0,0);
-                    ways = viewLimiter.limitToRelevantWays(scaleValueX(redDrawX), scaleValueY(redDrawY), scaleValueX(blueDrawX), scaleValueY(blueDrawY), xOffset, yOffset, windowScale / fullResolutionFactor);
-                    System.out.println("After: " + ways.size());
-                    isGraphDrawn = false;
-                    clicked = true;
-                    repaint();
-                }
             }
             @Override
             public void mouseReleased(MouseEvent e){
@@ -119,8 +118,10 @@ public class GraphOfNodes extends JPanel{
                                        //boolean notOutsideY = imageY + e.getY() - pressedY + 1000 <= currentResolutionY;// & imageY + e.getY() - pressedY >= 0;
                                        //if (notOutsideX)
                                        //if (notOutsideY)
-                                       imageX += pressedX - e.getX();
-                                       imageY += pressedY - e.getY();
+                                       //if(e.getButton() == java.awt.event.MouseEvent.BUTTON1){
+                                            imageX += pressedX - e.getX();
+                                            imageY += pressedY - e.getY();
+                                       //}
                                        pressedX = e.getX();
                                        pressedY = e.getY();
                                        repaint();
@@ -131,11 +132,13 @@ public class GraphOfNodes extends JPanel{
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if(e.getWheelRotation() > 0) {
-                    zoomFactor = 0.8 * zoomFactor;
+                    zoomFactor = 0.95 * zoomFactor;
+                    //zoomFactor = Math.pow(zoomFactor, 0.80)-0.05;
                     zoomFactor = Math.round(zoomFactor*1000.0)/1000.0;
                 }
                 else if (e.getWheelRotation() < 0) {
-                    zoomFactor = 1.2 * zoomFactor +0.01;
+                    zoomFactor = 1.05 * zoomFactor +0.01;
+                    //zoomFactor = Math.pow(zoomFactor, 1.20)+0.05;
                     zoomFactor = Math.round(zoomFactor*1000.0)/1000.0;
                 }
                 repaint();
@@ -144,8 +147,8 @@ public class GraphOfNodes extends JPanel{
 
     }
 
-    public void setRedPart(String redPart) {
-        System.out.println("beep"+ redPart);
+    public void setRouteToDraw(String redPart, Color color) {
+        System.out.println("Received List: "+ redPart);
         List<String> nodeIds = Arrays.asList(redPart.split("\\s+"));
         List<String> nodeIdsNOSPACE = nodeIds.subList(1, nodeIds.size()); //remove head of list as it is an identifier
         List<Long> nodeIdLongs = new ArrayList<>();
@@ -158,17 +161,17 @@ public class GraphOfNodes extends JPanel{
         //    nodeIdLongs.add(node.getId());
         //}
 
-        paintRedWay(nodeIdLongs);
+        drawRoute(nodeIdLongs, color);
 
         repaint();
     }
 
     private double scaleValueX(double x){
-        return ((x)+imageX*fullResolutionFactor)/zoomFactor;
+        return (((x)+imageX*fullResolutionFactor)/zoomFactor)+zoomCalculation(zoomFactor);
     }
 
     private double scaleValueY(double y){
-        return ((y )+imageY*fullResolutionFactor)/zoomFactor;
+        return (((y )+imageY*fullResolutionFactor)/zoomFactor)+zoomCalculation(zoomFactor);
     }
 
     @Override
@@ -177,11 +180,11 @@ public class GraphOfNodes extends JPanel{
         if(!isGraphDrawn) {
             //setScopeOfImage();
             drawBackground();
-            paintRedWay(redPart);
+            drawRoute(redPart, myColor);
             drawGraph();
             bufferedImage = DrawingUtil.flipYCoordinate(bufferedImage);
         }
-        if(!isGraphDrawn|| clicked) {
+        if( clicked) {
             drawRedAndBlue();
             clicked = false;
         }
@@ -190,22 +193,24 @@ public class GraphOfNodes extends JPanel{
             zoomFactor = Math.round(zoomFactor*1000.0)/1000.0;
         }
 
+        System.out.println(zoomFactor);
         System.out.println("ImageX and Y: " + imageX + "," + imageY);
         g.drawImage(bufferedImage, 0, 0, 1300, 1300,
-                (int) ((imageX*fullResolutionFactor ) / zoomFactor),
-                (int) ((imageY*fullResolutionFactor ) / zoomFactor),
-                (int) (((imageX*fullResolutionFactor + 1300*fullResolutionFactor) )/ zoomFactor ),
-                (int) (((imageY*fullResolutionFactor + 1300*fullResolutionFactor) )/ zoomFactor ),
+                (int) ((imageX    * fullResolutionFactor + zoomCalculation(zoomFactor))),
+                (int) ((imageY    * fullResolutionFactor + zoomCalculation(zoomFactor))),
+                (int) (((imageX   * fullResolutionFactor + viewResolution*fullResolutionFactor/ (zoomFactor)) ) ),
+                (int) (((imageY   * fullResolutionFactor + viewResolution*fullResolutionFactor/ (zoomFactor)) ) ),
                 this);
 
     }
 
+    //draws the red and blue circles to draw routes
     private void drawRedAndBlue() {
         Graphics2D graph2d = bufferedImage.createGraphics();
         graph2d.setColor(Color.RED);
         if (!firstClick) {
             redDrawX = drawX; redDrawY = drawY;
-            System.out.println("Red: " + redDrawX + "," + (redDrawY));
+            System.out.println("Red: " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
         }
         Shape red = new Ellipse2D.Double(scaleValueX(redDrawX-25), scaleValueY(redDrawY-25), 50, 50);
         graph2d.fill(red);
@@ -214,33 +219,20 @@ public class GraphOfNodes extends JPanel{
         graph2d.setColor(Color.BLUE);
         if (firstClick) {
             blueDrawX = drawX; blueDrawY = drawY;
-            System.out.println("Blue: " + (blueDrawX) + "," + (blueDrawY));
+            System.out.println("Blue: " + scaleValueX(blueDrawX) + "," + scaleValueY(blueDrawY));
         }
         Shape blue = new Ellipse2D.Double(scaleValueX(blueDrawX-25), scaleValueY(blueDrawY-25), 50, 50);
         graph2d.fill(blue);
         graph2d.draw(blue);
 
         graph2d.dispose();
+        firePropertyChange("SecoundClick", false, true);
     }
 
-    private void zoomCalculation(double zoomFactor) {
-        int x1 =        (int) ((imageX));
-        int y1 =        (int) ((imageY));
-        int x2 =        (int) (((imageX + 130)));
-        int y2 =        (int) (((imageY + 130)));
-        int deltaX =    (int) ((x2 - x1));
-        int deltaY =    (int) ((y2 - y1));
-        double zoomDelta = oldzoom-zoomFactor;
-        if (zoomDelta < 0){
-            imageX = (int) ((x1 + 0.40 * deltaX));
-            imageY = (int) ((y1 + 0.40 * deltaY));
-            oldzoom = zoomFactor;
-        }
-        else if (zoomDelta > 0){
-            imageX = (int) ((x1 - 0.40 * deltaX));
-            imageY = (int) ((y1 - 0.40 * deltaY));
-            oldzoom = zoomFactor;
-        }
+    private double zoomCalculation(double zoomFactor) {
+        double res = viewResolution * fullResolutionFactor / zoomFactor;
+        double diffRes = viewResolution * fullResolutionFactor - res;
+        return diffRes;
     }
 
 
@@ -254,11 +246,11 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
-    private void paintRedWay(List<Long> route) {
+    private void drawRoute(List<Long> route, Color color) {
         Graphics2D graph2d = bufferedImage.createGraphics();
         graph2d.setStroke(new BasicStroke(15));
-        int alpha = 127; // 50% transparent
-        Color myColour = new Color(255, 0, 0, alpha);
+        int alpha = 80; // 50% transparent
+        Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
         if(route.size()>0) {
             long previousId = 0L;
@@ -346,10 +338,10 @@ public class GraphOfNodes extends JPanel{
 
 
     public String getFrom() {
-        return String.valueOf(nodeFinder.findClosestNodeToPoint((redDrawX), (redDrawY), parser.getNodes(), xOffset, yOffset, windowScale /fullResolutionFactor));
+        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale /fullResolutionFactor));
     }
     public String getTo() {
-        return String.valueOf(nodeFinder.findClosestNodeToPoint((blueDrawX), (blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /fullResolutionFactor));
+        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /fullResolutionFactor));
     }
 }
 
