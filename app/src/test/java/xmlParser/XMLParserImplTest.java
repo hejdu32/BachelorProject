@@ -51,7 +51,7 @@ public class XMLParserImplTest {
             return;
         }
         try {
-            parser.parse("src/resources/malta-latest.osm.pbf");
+            parser.parse("src/resources/denmark-latest.osm.pbf");
             setUpIsDone = true;
             System.out.println("Starting adjlistmaking");
             long startTime = System.currentTimeMillis();
@@ -142,7 +142,11 @@ public class XMLParserImplTest {
     @Test
     public void makeDenmarkInFile(){
         try {
-            graphBuilder.writeToFile("denmark", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
+            long startTime = System.currentTimeMillis();
+            //graphBuilder.writeToFile("denmark", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
+            graphBuilder.writeWAdjList("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            long endTime = System.currentTimeMillis();
+            System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -151,11 +155,27 @@ public class XMLParserImplTest {
     @Test
     public void makeMaltaInFile(){
         try {
-            graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
-            System.out.println("done");
+            long startTime = System.currentTimeMillis();
+            //graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
+            graphBuilder.writeWAdjList("malta", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            long endTime = System.currentTimeMillis();
+            System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void randomTest(){
+        String xd = "030";
+        int val = Integer.parseInt(xd);
+        System.out.println(val);
+        try {
+            val = Integer.parseInt("0a");
+        }catch (NumberFormatException ex)
+        {
+            System.out.println("cannot convert " +"0a" + " into string");
+        }
     }
 }

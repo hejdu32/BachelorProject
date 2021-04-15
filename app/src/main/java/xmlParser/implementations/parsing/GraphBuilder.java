@@ -123,6 +123,31 @@ public class GraphBuilder {
         writer.write("!");
         writer.close();
     }
+
+    public void writeWAdjList(String s, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
+        int amountOfNodes = nodes.size();
+        int amountOfWays = ways.size();
+        StringBuilder line = new StringBuilder(amountOfNodes + "\n" + amountOfWays + "\n");
+        FileWriter writer = new FileWriter(s);
+        writer.write(line.toString());
+        //choords
+        for (long node:nodes.keySet()) {
+            line = new StringBuilder(node + "\n" + nodes.get(node).getLatitudeAsXCoord() + "\n" + nodes.get(node).getLongtitudeAsYCoord() + "\n");
+            writer.write(line.toString());
+        }
+
+        for (CustomWay w:ways){
+            line = new StringBuilder(w.getMaxSpeed());
+            for (Long nodeid:w.getNodeIdList()){
+                line.append(" ").append(nodeid);
+            }
+            line.append("\n");
+            writer.write(line.toString());
+        }
+        writer.write("!");
+        writer.close();
+
+    }
     public void writeToFileAsJson(String filePath) throws IOException {
          Gson gson = new Gson();
          NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays(), xmlParser.getNodes());
