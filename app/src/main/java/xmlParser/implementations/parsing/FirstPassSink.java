@@ -110,7 +110,9 @@ public class FirstPassSink implements Sink{
             case RESIDENTIAL :
             case TRACK :
             case ROAD :
+            case SERVICE :
                 return "50";
+            case LIVING_STREET :
             default:
                 return "20";
         }
