@@ -57,4 +57,47 @@ public class XMLParserImpl implements XMLParser {
         return distanceCalculator;
     }
 
+    public void filterFerryWays(){
+        List<CustomWay> waysToRemove = new ArrayList<>();
+        List<Long> nodesToRemove = new ArrayList<>();
+        List<CustomNode> nodesToSave = new ArrayList<>();
+        for(CustomWay wayOuter: ways.values()){
+            if(wayOuter.getTagId().equals("ferry")) {
+                List<Long> nodeIds = wayOuter.getNodeIdList();
+                long firstId = nodeIds.get(0);
+                long lastId = nodeIds.get(nodeIds.size()-1);
+                int firstCount = 0;
+                int lastCount = 0;
+                for(CustomWay wayInner: ways.values()){
+                    List<Long> idsToMatch = wayInner.getNodeIdList();
+                    if(idsToMatch.contains(firstId)){
+                        firstCount++;
+                    }
+                    if(idsToMatch.contains(lastId)){
+                        lastCount++;
+                    }
+                }
+                if(firstCount <= 1 || lastCount <= 1) {
+                    if(firstCount > 1){
+                        nodesToSave.add(nodes.get(firstId));
+                    }
+                    if(lastCount > 1){
+                        nodesToSave.add(nodes.get(lastId));
+                    }
+                    nodesToRemove.addAll(wayOuter.getNodeIdList());
+                    waysToRemove.add(wayOuter);
+                }
+            }
+        }
+        for(CustomWay way: waysToRemove){
+            ways.remove(way.getId());
+        }
+        for(Long id: nodesToRemove){
+            nodes.remove(id);
+        }
+        for(CustomNode node: nodesToSave){
+            nodes.put(node.getId(), node);
+        }
+    }
 }
+

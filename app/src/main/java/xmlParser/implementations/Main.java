@@ -44,6 +44,7 @@ public class Main implements PropertyChangeListener {
         parser.parse("app/src/resources/malta-latest.osm.pbf");
 
         JFrame frame = new JFrame();
+
         graphOfNodes = new GraphOfNodes((parser));
         graphOfNodes.addPropertyChangeListener(listener);
         frame.getContentPane().add(graphOfNodes);

@@ -18,6 +18,8 @@ public class FileWriter {
             GraphBuilder graphBuilder = new GraphBuilder(parser);
             System.out.println("Parsing "+country);
             parser.parse("src/resources/"+country+"-latest.osm.pbf");
+            System.out.println("Filtering ferry ways");
+            parser.filterFerryWays();
             System.out.println("Creating AdjacencyList");
             long startTime = System.currentTimeMillis();
             HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
