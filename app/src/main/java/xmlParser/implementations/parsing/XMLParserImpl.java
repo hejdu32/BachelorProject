@@ -70,18 +70,18 @@ public class XMLParserImpl implements XMLParser {
                 int lastCount = 0;
                 for(CustomWay wayInner: ways.values()){
                     List<Long> idsToMatch = wayInner.getNodeIdList();
-                    if(idsToMatch.contains(firstId)){
+                    if(idsToMatch.contains(firstId) && !wayInner.getTagId().equals("ferry")){
                         firstCount++;
                     }
-                    if(idsToMatch.contains(lastId)){
+                    if(idsToMatch.contains(lastId) && !wayInner.getTagId().equals("ferry")){
                         lastCount++;
                     }
                 }
-                if(firstCount <= 1 || lastCount <= 1) {
-                    if(firstCount > 1){
+                if(firstCount <= 0 || lastCount <= 0) {
+                    if(firstCount > 0){
                         nodesToSave.add(nodes.get(firstId));
                     }
-                    if(lastCount > 1){
+                    if(lastCount > 0){
                         nodesToSave.add(nodes.get(lastId));
                     }
                     nodesToRemove.addAll(wayOuter.getNodeIdList());

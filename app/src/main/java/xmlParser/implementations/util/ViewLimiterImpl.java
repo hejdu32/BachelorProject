@@ -6,6 +6,7 @@ import xmlParser.implementations.parsing.CustomNode;
 import xmlParser.implementations.parsing.CustomWay;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,30 +44,37 @@ public class ViewLimiterImpl implements ViewLimiter {
 
         List<CustomWay> result = new ArrayList<>();
         for (CustomWay way: ways) {
-            //get first node to represent way
-            Long node = way.getNodeIdList().get(0);
-
-            //get way x and y for inclusion calculation
-            double latitudeAsXCoord = nodes.get(node).getLatitudeAsXCoord();
-            double longtitudeAsYCoord = nodes.get(node).getLongtitudeAsYCoord();
-
-            //find node close to x,y
             NodeFinder nodeFinder = new NodeFinderImpl();
-            Point wayPoint = nodeFinder.convertCoordsXYToImageXY( (int)latitudeAsXCoord, (int)longtitudeAsYCoord,xOffset,yOffset,scaleFactor);
+            boolean first = getNodeBound(sourceX, sourceY, destX, destY, xOffset, yOffset, scaleFactor, way, nodeFinder, 0);
 
-            int wayX = wayPoint.x;
-            int wayY = wayPoint.y; //1300 -> 0,  650 -> 650,  0 -> 1300
-            int flippedY = Math.abs(wayY-1300*8); //magic constant for now
+            //get last node to represent way
+            boolean last = getNodeBound(sourceX, sourceY, destX, destY, xOffset, yOffset, scaleFactor, way, nodeFinder, way.getNodeIdList().size() - 1);
 
-            boolean insideX = wayX - marginX <= Math.max(sourceX, destX) & wayX + marginX >= Math.min(sourceX, destX);
-            //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
-
-            boolean insideY = flippedY - marginY <= Math.max(sourceY, destY) & flippedY + marginY >= Math.min(sourceY, destY);
-            //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
-            if (insideX & insideY) result.add(way);
+            if (first || last) result.add(way);
 
         }
         return result;
+    }
+
+    private boolean getNodeBound(double sourceX, double sourceY, double destX, double destY, int xOffset, int yOffset, double scaleFactor, CustomWay way, NodeFinder nodeFinder, int i) {
+        //get first node to represent way
+        Long node = way.getNodeIdList().get(i);
+        //get way x and y for inclusion calculation
+        double latitudeAsXCoord = nodes.get(node).getLatitudeAsXCoord();
+        double longtitudeAsYCoord = nodes.get(node).getLongtitudeAsYCoord();
+        //find node close to x,y
+        Point2D.Double wayPoint = nodeFinder.convertCoordsXYToImageXY((int) latitudeAsXCoord, (int) longtitudeAsYCoord, xOffset, yOffset, scaleFactor);
+        //getting x and y
+        double wayX = wayPoint.x;
+        double wayY = wayPoint.y; //1300 -> 0,  650 -> 650,  0 -> 1300
+        double flippedY = Math.abs(wayY - 1300); //magic constant for now
+
+        boolean insideX = wayX - marginX <= Math.max(sourceX, destX) & wayX + marginX >= Math.min(sourceX, destX);
+        //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
+
+        boolean insideY = flippedY - marginY <= Math.max(sourceY, destY) & flippedY + marginY >= Math.min(sourceY, destY);
+        //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
+        return insideX & insideY;
     }
 
     @Override
@@ -74,6 +82,11 @@ public class ViewLimiterImpl implements ViewLimiter {
         for (CustomWay way: ways) {
             for (Long node : way.getNodeIdList()) {
                 //get way x and y for total x y difference
+                if(nodes.get(node)==null){
+                    System.out.println(way.getId());
+                    System.out.println(way.getNodeIdList());
+                    System.out.println("THE NODE: " + node);
+                }
                 double wayX = nodes.get(node).getLatitudeAsXCoord();
                 double wayY = nodes.get(node).getLongtitudeAsYCoord();
 

@@ -4,6 +4,7 @@ import xmlParser.framework.NodeFinder;
 import xmlParser.implementations.parsing.CustomNode;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.Map;
 
 public class NodeFinderImpl implements NodeFinder {
@@ -30,11 +31,11 @@ public class NodeFinderImpl implements NodeFinder {
         return resultNode;
     }
 
-    public Point convertCoordsXYToImageXY(double x, double y, int xOffset, int yOffset, double scaleFactor) {
-        int imageX=0;
-        int imageY=0;
-        imageX = (int) ((x-xOffset)/scaleFactor);
-        imageY = (int) ((y-yOffset)/scaleFactor);
-        return new Point(imageX,imageY);
+    public Point2D.Double convertCoordsXYToImageXY(double x, double y, int xOffset, int yOffset, double scaleFactor) {
+        double imageX=0;
+        double imageY=0;
+        imageX = ((x-xOffset)/scaleFactor);
+        imageY = ((y-yOffset)/scaleFactor);
+        return new Point2D.Double(imageX,imageY);
     }
 }

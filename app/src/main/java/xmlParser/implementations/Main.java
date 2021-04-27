@@ -41,13 +41,15 @@ public class Main implements PropertyChangeListener {
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/malta-latest.osm.pbf");
+        parser.parse("app/src/resources/denmark-latest.osm.pbf");
+        parser.filterFerryWays();
 
         JFrame frame = new JFrame();
 
         graphOfNodes = new GraphOfNodes((parser));
         graphOfNodes.addPropertyChangeListener(listener);
         frame.getContentPane().add(graphOfNodes);
+        frame.getContentPane().setBackground(Color.WHITE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1300,1300);
         frame.setVisible(true);
