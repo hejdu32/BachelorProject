@@ -5,7 +5,6 @@ import org.opengis.referencing.operation.TransformException;
 import xmlParser.implementations.parsing.Edge;
 import xmlParser.implementations.parsing.GraphBuilder;
 import xmlParser.implementations.parsing.XMLParserImpl;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class FileWriter {
             System.out.println("Time for adjlist creation: "+ (endTime- startTime)/1000 + "sec");
             long fileStart = System.currentTimeMillis();
             //graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
-            graphBuilder.writeWAdjList("malta", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            graphBuilder.writeWAdjList(country, parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long fileEnd = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (fileEnd- fileStart)/1000 + "sec");
         } catch (TransformException |IOException | FactoryException e) {

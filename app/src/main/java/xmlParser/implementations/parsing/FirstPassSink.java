@@ -37,6 +37,17 @@ public class FirstPassSink implements Sink{
                     }
 
                 }
+                //if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
+                //    System.out.println("way: "+way.getId()+" tag: "+tag.getKey()+" val: "+tag.getValue());
+                //}
+                if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
+                    CustomWay customWay = new CustomWay(way.getId(),
+                                            way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
+                                            tag.getValue(),
+                                            typeToDefaultSpeed(tag.getValue()));
+                    parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
+                    parser.getWays().put(way.getId(),customWay);
+                }
                 if (tag.getKey().equals("maxspeed")){
                     boolean tagIsIntVal = isInValue(tag.getValue());
                     //if (!tagIsIntVal) {
@@ -113,6 +124,7 @@ public class FirstPassSink implements Sink{
             case SERVICE :
                 return "50";
             case LIVING_STREET :
+            case FERRY:
             default:
                 return "20";
         }
