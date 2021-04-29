@@ -60,7 +60,7 @@ public class XMLParserImpl implements XMLParser {
     public void filterFerryWays(){
         List<CustomWay> waysToRemove = new ArrayList<>();
         List<Long> nodesToRemove = new ArrayList<>();
-        List<CustomNode> nodesToSave = new ArrayList<>();
+        List<Long> nodesToSave = new ArrayList<>();
         for(CustomWay wayOuter: ways.values()){
             if(wayOuter.getTagId().equals("ferry")) {
                 List<Long> nodeIds = wayOuter.getNodeIdList();
@@ -71,18 +71,21 @@ public class XMLParserImpl implements XMLParser {
                 for(CustomWay wayInner: ways.values()){
                     List<Long> idsToMatch = wayInner.getNodeIdList();
                     if(idsToMatch.contains(firstId) && !wayInner.getTagId().equals("ferry")){
+                        //Increment the counter for every road connected to the node that is not a ferry road
                         firstCount++;
                     }
                     if(idsToMatch.contains(lastId) && !wayInner.getTagId().equals("ferry")){
+                        //Increment the counter for every road connected to the node that is not a ferry road
                         lastCount++;
                     }
                 }
-                if(firstCount <= 0 || lastCount <= 0) {
+                boolean nodeIsNotPartOfOtherHighways = firstCount <= 0 || lastCount <= 0;
+                if(nodeIsNotPartOfOtherHighways) {
                     if(firstCount > 0){
-                        nodesToSave.add(nodes.get(firstId));
+                        nodesToSave.add(firstId);
                     }
                     if(lastCount > 0){
-                        nodesToSave.add(nodes.get(lastId));
+                        nodesToSave.add(lastId);
                     }
                     nodesToRemove.addAll(wayOuter.getNodeIdList());
                     waysToRemove.add(wayOuter);
@@ -92,11 +95,9 @@ public class XMLParserImpl implements XMLParser {
         for(CustomWay way: waysToRemove){
             ways.remove(way.getId());
         }
+        nodesToRemove.removeAll(nodesToSave);
         for(Long id: nodesToRemove){
             nodes.remove(id);
-        }
-        for(CustomNode node: nodesToSave){
-            nodes.put(node.getId(), node);
         }
     }
 }
