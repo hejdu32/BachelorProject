@@ -138,6 +138,7 @@ public class GraphBuilder {
 
         for (CustomWay w:ways){
             line = new StringBuilder(w.getMaxSpeed());
+            line.append(" ").append(w.isOneWay());
             for (Long nodeid:w.getNodeIdList()){
                 line.append(" ").append(nodeid);
             }

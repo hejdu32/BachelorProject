@@ -1,4 +1,6 @@
 package xmlParser.implementations.parsing;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import xmlParser.framework.HighwayTag;
@@ -10,6 +12,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,23 +31,41 @@ public class FirstPassSink implements Sink{
             Collection<Tag> tags = way.getTags();
             for(Tag tag: tags){
                 if(tag.getKey().equals("highway")){
+
                     if(checkTag(tag.getValue())){
                         CustomWay customWay = new CustomWay(way.getId(),
-                                                way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
-                                                tag.getValue(),typeToDefaultSpeed(tag.getValue()));
+                                way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
+                                tag.getValue(),typeToDefaultSpeed(tag.getValue()));
                         parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
                         parser.getWays().put(way.getId(), customWay);
-                    }
+                        for(Tag oneWayTag: tags){
+                            if (oneWayTag.getKey().equals("oneway")) {
+                                String value = oneWayTag.getValue();
+                                if(value.equals("yes")) {
+                                    parser.getWays().get(way.getId()).setOneWay(true);
+                                }
+                                else if (value.equals("-1")) {
+                                    //Reverse the list as it is oneway in the opposite direction
+                                    Collections.reverse(parser.getWays().get(way.getId()).getNodeIdList());
+                                    parser.getWays().get(way.getId()).setOneWay(true);
+                                }
+                                else {
+                                    parser.getWays().get(way.getId()).setOneWay(false);
+                                }
+                            }
+                        }
 
+                    }
                 }
+
                 //if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
                 //    System.out.println("way: "+way.getId()+" tag: "+tag.getKey()+" val: "+tag.getValue());
                 //}
                 if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
                     CustomWay customWay = new CustomWay(way.getId(),
-                                            way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
-                                            tag.getValue(),
-                                            typeToDefaultSpeed(tag.getValue()));
+                            way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
+                            tag.getValue(),
+                            typeToDefaultSpeed(tag.getValue()));
                     parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
                     parser.getWays().put(way.getId(),customWay);
                 }
@@ -59,7 +80,7 @@ public class FirstPassSink implements Sink{
                     //}
                     if (parser.getWays().containsKey(way.getId())&& tagIsIntVal && isfirstCharInCustomMaxSpeedNotZero){
                         //Integer.parseInt(tag.getValue())
-                    parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());}
+                        parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());}
                 }
             }
 
@@ -97,7 +118,7 @@ public class FirstPassSink implements Sink{
         HighwayTag[] highwayTags = HighwayTag.values();
         for(HighwayTag hTag: highwayTags) {
             if (hTag.toString().equals(tag)) {
-               return true;
+                return true;
             }
         }
         return false;
