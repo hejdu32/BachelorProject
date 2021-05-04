@@ -42,19 +42,19 @@ public class FirstPassSink implements Sink{
                             if (oneWayTag.getKey().equals("oneway")) {
                                 String value = oneWayTag.getValue();
                                 if(value.equals("yes")) {
-                                    parser.getWays().get(way.getId()).setOneWay(true);
+                                    parser.getWays().get(way.getId()).setOneWay("1");
                                 }
                                 else if (value.equals("-1")) {
                                     //Reverse the list as it is oneway in the opposite direction
                                     Collections.reverse(parser.getWays().get(way.getId()).getNodeIdList());
-                                    parser.getWays().get(way.getId()).setOneWay(true);
+                                    parser.getWays().get(way.getId()).setOneWay("1");
                                 }
                                 else {
-                                    parser.getWays().get(way.getId()).setOneWay(false);
+                                    parser.getWays().get(way.getId()).setOneWay("0");
                                 }
                             }
                             else {
-                                parser.getWays().get(way.getId()).setOneWay(false);
+                                parser.getWays().get(way.getId()).setOneWay("0");
                             }
                         }
 

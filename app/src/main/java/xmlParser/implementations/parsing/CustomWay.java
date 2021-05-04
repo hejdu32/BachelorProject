@@ -7,7 +7,7 @@ public class CustomWay {
     private List<Long> nodeIdList;
     private String tagId;
     private String maxSpeed;
-    private boolean oneWay;
+    private String oneWay;
 
     public CustomWay(Long id, List<Long> nodeIdList, String tagId, String maxSpeed) {
         this.id = id;
@@ -48,8 +48,8 @@ public class CustomWay {
         this.maxSpeed = maxSpeed;
     }
 
-    public boolean isOneWay() { return oneWay; }
+    public String isOneWay() { return oneWay; }
 
-    public void setOneWay(boolean oneWay) { this.oneWay = oneWay; }
+    public void setOneWay(String oneWay) { this.oneWay = oneWay; }
 
 }
