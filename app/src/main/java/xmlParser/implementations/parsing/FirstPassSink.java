@@ -71,6 +71,7 @@ public class FirstPassSink implements Sink{
                             typeToDefaultSpeed(tag.getValue()));
                     parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
                     parser.getWays().put(way.getId(),customWay);
+                    parser.getWays().get(way.getId()).setOneWay("0");
                 }
                 if (tag.getKey().equals("maxspeed")){
                     boolean tagIsIntVal = isInValue(tag.getValue());
