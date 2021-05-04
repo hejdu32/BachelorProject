@@ -2,6 +2,7 @@ package xmlParser.implementations.util;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.ProjectionException;
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -29,7 +30,12 @@ public class DistanceCalculatorImpl implements xmlParser.framework.DistanceCalcu
     }
 
     public Coordinate coordTransform(Coordinate coord) throws TransformException{
+        try{
         JTS.transform(coord, coord, this.mathTransform);
+        } catch (ProjectionException e){
+            //to prevent printing of nodes in finland
+            //System.out.println("node in africa: x:" + coord.x+" y:"+coord.y);
+        }
         return coord;
     }
 
