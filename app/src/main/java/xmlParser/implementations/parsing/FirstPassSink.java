@@ -53,6 +53,9 @@ public class FirstPassSink implements Sink{
                                     parser.getWays().get(way.getId()).setOneWay(false);
                                 }
                             }
+                            else {
+                                parser.getWays().get(way.getId()).setOneWay(false);
+                            }
                         }
 
                     }
