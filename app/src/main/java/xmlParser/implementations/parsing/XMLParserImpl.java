@@ -61,6 +61,7 @@ public class XMLParserImpl implements XMLParser {
         List<CustomWay> waysToRemove = new ArrayList<>();
         List<Long> nodesToRemove = new ArrayList<>();
         List<Long> nodesToSave = new ArrayList<>();
+        List<CustomWay> ferryWays = new ArrayList<>();
         for(CustomWay wayOuter: ways.values()){
             if(wayOuter.getTagId().equals("ferry")) {
                 List<Long> nodeIds = wayOuter.getNodeIdList();
@@ -79,7 +80,8 @@ public class XMLParserImpl implements XMLParser {
                         lastCount++;
                     }
                 }
-                boolean nodeIsNotPartOfOtherHighways = firstCount <= 0 || lastCount <= 0;
+
+                boolean nodeIsNotPartOfOtherHighways = firstCount == 0 || lastCount == 0;
                 if(nodeIsNotPartOfOtherHighways) {
                     if(firstCount > 0){
                         nodesToSave.add(firstId);
@@ -89,6 +91,8 @@ public class XMLParserImpl implements XMLParser {
                     }
                     nodesToRemove.addAll(wayOuter.getNodeIdList());
                     waysToRemove.add(wayOuter);
+                } else {
+                    ferryWays.add(wayOuter);
                 }
             }
         }
@@ -96,8 +100,13 @@ public class XMLParserImpl implements XMLParser {
             ways.remove(way.getId());
         }
         nodesToRemove.removeAll(nodesToSave);
+
         for(Long id: nodesToRemove){
-            nodes.remove(id);
+            for (CustomWay way: ferryWays){
+                    if(!way.getNodeIdList().contains(id)){
+                        nodes.remove(id);
+                    }
+            }
         }
     }
 }
