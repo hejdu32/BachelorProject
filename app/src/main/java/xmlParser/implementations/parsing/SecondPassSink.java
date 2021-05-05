@@ -21,7 +21,7 @@ public class SecondPassSink implements Sink {
         if(entityContainer instanceof NodeContainer) {
             Node node =((NodeContainer) entityContainer).getEntity();
             long nodeId = node.getId();
-            if(parser.getNodesToSearchFor().contains(nodeId)){
+            if(parser.getNodesToSearchFor().containsKey(nodeId)){
                 Coordinate coord = new Coordinate(node.getLatitude(), node.getLongitude());
                 try {
                     parser.getDistanceCalculator().coordTransform(coord);

@@ -15,7 +15,7 @@ public interface XMLParser {
 
     Map<Long, CustomWay> getWays();
 
-    Set<Long> getNodesToSearchFor();
+    Map<Long, List<Long>> getNodesToSearchFor();
 
     Map<Long, CustomNode> getNodes();
 

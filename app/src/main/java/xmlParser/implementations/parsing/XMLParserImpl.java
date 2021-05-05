@@ -15,7 +15,7 @@ import java.util.*;
 public class XMLParserImpl implements XMLParser {
     private Map<Long, CustomWay> ways = new HashMap<>();
     private Map<Long, CustomNode> nodes = new HashMap<>();
-    private Set<Long> nodesToSearchFor = new HashSet<>();
+    private Map<Long, List<Long>> nodesToSearchFor = new HashMap();
     private DistanceCalculatorImpl distanceCalculator;
 
     @Override
@@ -43,7 +43,7 @@ public class XMLParserImpl implements XMLParser {
     }
 
     @Override
-    public Set<Long> getNodesToSearchFor() {
+    public Map<Long, List<Long>> getNodesToSearchFor() {
         return nodesToSearchFor;
     }
 
@@ -109,5 +109,6 @@ public class XMLParserImpl implements XMLParser {
             }
         }
     }
+
 }
 

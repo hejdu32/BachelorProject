@@ -23,6 +23,7 @@ public class FileWriter {
             System.out.println("Creating AdjacencyList");
             long startTime = System.currentTimeMillis();
             HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+            HashMap<Long, List<Edge>> reducedAdjList = graphBuilder.reduceAdjacencyList(adjList);
             long endTime = System.currentTimeMillis();
             System.out.println("Time for adjlist creation: "+ (endTime- startTime)/1000 + "sec");
             long fileStart = System.currentTimeMillis();

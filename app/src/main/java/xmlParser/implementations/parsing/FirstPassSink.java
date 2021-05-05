@@ -11,9 +11,7 @@ import org.openstreetmap.osmosis.core.container.v0_6.WayContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FirstPassSink implements Sink{
@@ -36,7 +34,12 @@ public class FirstPassSink implements Sink{
                         CustomWay customWay = new CustomWay(way.getId(),
                                 way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
                                 tag.getValue(),typeToDefaultSpeed(tag.getValue()));
-                        parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
+                        for(Long id: customWay.getNodeIdList()){
+                            if (!parser.getNodesToSearchFor().containsKey(id)) {
+                                parser.getNodesToSearchFor().put(id, new ArrayList<Long>());
+                            }
+                            parser.getNodesToSearchFor().get(id).add(way.getId());
+                        }
                         parser.getWays().put(way.getId(), customWay);
                         for(Tag oneWayTag: tags){
                             if (oneWayTag.getKey().equals("oneway")) {
@@ -69,7 +72,12 @@ public class FirstPassSink implements Sink{
                             way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
                             tag.getValue(),
                             typeToDefaultSpeed(tag.getValue()));
-                    parser.getNodesToSearchFor().addAll(customWay.getNodeIdList());
+                    for(Long id: customWay.getNodeIdList()){
+                        if (!parser.getNodesToSearchFor().containsKey(id)) {
+                            parser.getNodesToSearchFor().put(id, new ArrayList<Long>());
+                        }
+                        parser.getNodesToSearchFor().get(id).add(way.getId());
+                    }
                     parser.getWays().put(way.getId(),customWay);
                     parser.getWays().get(way.getId()).setOneWay("0");
                 }

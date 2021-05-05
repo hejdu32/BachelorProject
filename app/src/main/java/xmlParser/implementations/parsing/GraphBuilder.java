@@ -49,11 +49,13 @@ public class GraphBuilder {
                     Coordinate prevCoord = new Coordinate(prevX, prevY);
                     Coordinate currCoord = new Coordinate(currX, currY);
 
-                    double dist = distanceCalculator.calculateDistance(prevCoord, currCoord);
+                    double dist = distanceCalculator.calculateDistanceWithSpeed(prevCoord, currCoord, Integer.parseInt(way.getMaxSpeed()));
 
                     addEdgeToList(adjencencyList, previousId, currId, dist);
 
-                    addEdgeToList(adjencencyList, currId, previousId, dist);
+                    if(!way.isOneWay().equals("1")) {
+                        addEdgeToList(adjencencyList, currId, previousId, dist);
+                    }
 
                     previousId = currId;
                 }
@@ -159,6 +161,15 @@ public class GraphBuilder {
 
     }
 
+    public HashMap<Long, List<Edge>> reduceAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
+        Map<Long, List<Long>> nodesToSearhFor = xmlParser.getNodesToSearchFor();
+        for(Long id: nodesToSearhFor.keySet()){
+            if(nodesToSearhFor.get(id).size() > 1) {
+                // REMOVE EXCESS NODES FROM ADJACENCYLIST
+            }
+        }
+        return null;
+    }
 }
 
 
