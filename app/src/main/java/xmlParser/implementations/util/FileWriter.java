@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileWriter {
-    private static final XMLParserImpl parser = new XMLParserImpl();
+    private final XMLParserImpl parser = new XMLParserImpl();
 
-    public static void parseCountryToFile(String country){
+    public void parseCountryToFile(String country){
         try {
             GraphBuilder graphBuilder = new GraphBuilder(parser);
             System.out.println("Parsing "+country);

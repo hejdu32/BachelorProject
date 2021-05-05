@@ -7,19 +7,20 @@ import xmlParser.implementations.util.FileWriter;
 import java.io.FileNotFoundException;
 
 public class utilTest {
+    FileWriter fw;
 
     @Before
     public void setUp() {
-
+        fw = new FileWriter();
     }
 
     @Test
     public void maltaFile(){
-        FileWriter.parseCountryToFile("malta");
+        fw.parseCountryToFile("malta");
     }
 
     @Test
     public void denmarkFile(){
-        FileWriter.parseCountryToFile("denmark");
+        fw.parseCountryToFile("denmark");
     }
 }
