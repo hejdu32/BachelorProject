@@ -157,9 +157,10 @@ public class FirstPassSink implements Sink{
             case SERVICE :
                 return "50";
             case LIVING_STREET :
-            case FERRY:
-            default:
                 return "20";
+            case FERRY :
+            default :
+                return "2000";
         }
     }
 }
