@@ -160,7 +160,7 @@ public class FirstPassSink implements Sink{
                 return "20";
             case FERRY :
             default :
-                return "2000";
+                return "68";
         }
     }
 }
