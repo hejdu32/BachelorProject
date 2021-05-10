@@ -62,6 +62,7 @@ public class GraphOfNodes extends JPanel{
     private Map<Point, Boolean> drawTiles = new HashMap<>();
     private Map<Point, List<CustomWay>> tileWays = new HashMap<>();
     private Map<Point, List<Shape>> tileShapes = new HashMap<>();
+    private int routeFactor = 4;
 
 
     /*
@@ -71,7 +72,7 @@ public class GraphOfNodes extends JPanel{
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
         ways = new ArrayList<>(parser.getWays().values());
-        this.bufferedImage = new BufferedImage(fullResolutionX,fullResolutionY,BufferedImage.TYPE_INT_ARGB);
+        this.bufferedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         this.prerenderedImage = new BufferedImage(fullResolutionX*8,fullResolutionY*8,BufferedImage.TYPE_INT_ARGB);
         viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
         nodeFinder = new NodeFinderImpl();
@@ -191,6 +192,9 @@ public class GraphOfNodes extends JPanel{
         //}
 
         drawRoute(nodeIdLongs, color);
+        //myColor = color;
+        //this.redPart = nodeIdLongs;
+        //bufferedImage = DrawingUtil.flipYCoordinate(bufferedImage);
 
         repaint();
     }
@@ -341,12 +345,16 @@ public class GraphOfNodes extends JPanel{
             }
         }
         System.out.println("Tiles drawn= " + tilesDrawn);
-        //g.drawImage(bufferedImage, 0, 0, 1300, 1300,
-        //        (int) ((imageX    * fullResolutionFactor + zoomCalculation(zoomFactor))),
-        //        (int) ((imageY    * fullResolutionFactor + zoomCalculation(zoomFactor))),
-        //        (int) (((imageX   * fullResolutionFactor + viewResolution*fullResolutionFactor/ (zoomFactor)) ) ),
-        //        (int) (((imageY   * fullResolutionFactor + viewResolution*fullResolutionFactor/ (zoomFactor)) ) ),
-        //        this);
+        g.drawImage(bufferedImage,
+                0,
+                0,
+                1300,
+                1300,
+                (int) ((imageX * fullResolutionFactor   *routeFactor)),
+                (int) ((imageY * fullResolutionFactor   *routeFactor)),
+                (int) (((imageX * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+                (int) (((imageY * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+                this);
 
     }
 
@@ -543,8 +551,9 @@ public class GraphOfNodes extends JPanel{
     }
 
     private void drawRoute(List<Long> route, Color color) {
+        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(15));
+        graph2d.setStroke(new BasicStroke(4));
         int alpha = 80; // 50% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
@@ -569,14 +578,86 @@ public class GraphOfNodes extends JPanel{
                     int yOffset = this.yOffset;
                     int xOffset = this.xOffset;
                     Shape l = new Line2D.Double(((prevX-xOffset)/ scaleFactor),
-                            Math.abs(((prevY-yOffset)/ scaleFactor)-fullResolutionY),
+                            Math.abs(((prevY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor),
+                            //(((prevY-yOffset)/ scaleFactor)-fullResolutionY),
                             ((currX-xOffset)/ scaleFactor),
-                            Math.abs(((currY-yOffset)/ scaleFactor)-fullResolutionY) );
+                            Math.abs(((currY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor) );
+                            //(((currY-yOffset)/ scaleFactor)-fullResolutionY));
                     graph2d.draw(l);
                     previousId = currId;
                 }
             } while(iterator.hasNext()); }
         graph2d.dispose();
+        repaint();
+    }
+
+    private void drawSeenWays(List<CustomWay> ways, List<Long> nodes, Color color) {
+        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
+        Graphics2D graph2d = bufferedImage.createGraphics();
+        graph2d.setStroke(new BasicStroke(2));
+        int alpha = 40; // 50% transparent
+        Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+        graph2d.setColor(myColour);
+        if(ways.size()>0) {
+            long previousId = 0L;
+            Iterator iterator = ways.iterator();
+            do {
+                long currId = (long) iterator.next();
+                if(previousId == 0L) {
+                    previousId = currId;
+                }
+                else {
+                    if(nodes.contains(currId)) {
+                        CustomNode previousNode = parser.getNodes().get(previousId);
+                        double prevX = previousNode.getLatitudeAsXCoord();
+                        double prevY = previousNode.getLongtitudeAsYCoord();
+
+                        CustomNode currNode = parser.getNodes().get(currId);
+                        double currX = currNode.getLatitudeAsXCoord();
+                        double currY = currNode.getLongtitudeAsYCoord();
+
+                        double scaleFactor = (windowScale / fullResolutionFactor);
+                        int yOffset = this.yOffset;
+                        int xOffset = this.xOffset;
+                        Shape l = new Line2D.Double(((prevX - xOffset) / scaleFactor),
+                                Math.abs(((prevY - yOffset) / scaleFactor) - fullResolutionY * routeFactor),
+                                //(((prevY-yOffset)/ scaleFactor)-fullResolutionY),
+                                ((currX - xOffset) / scaleFactor),
+                                Math.abs(((currY - yOffset) / scaleFactor) - fullResolutionY * routeFactor));
+                        //(((currY-yOffset)/ scaleFactor)-fullResolutionY));
+                        graph2d.draw(l);
+                        previousId = currId;
+                    }
+                }
+            } while(iterator.hasNext()); }
+        graph2d.dispose();
+        repaint();
+    }
+
+    private void drawSeenNodes(List<Long> nodes, Color color) {
+        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
+        Graphics2D graph2d = bufferedImage.createGraphics();
+        graph2d.setStroke(new BasicStroke(2));
+        int alpha = 40; // 50% transparent
+        Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+        graph2d.setColor(myColour);
+        for (Long id : nodes){
+            CustomNode node = parser.getNodes().get(id);
+            double nodeX = node.getLatitudeAsXCoord();
+            double nodeY = node.getLongtitudeAsYCoord();
+
+            double scaleFactor =  (windowScale / fullResolutionFactor);
+
+            int yOffset = (int) viewLimiter.getLowestY();
+            int xOffset = (int) viewLimiter.getLowestX();
+
+            Point2D.Double nodePoint = nodeFinder.convertCoordsXYToImageXY(nodeX, nodeY, xOffset, yOffset, scaleFactor);
+
+            Shape mark = new Ellipse2D.Double(nodePoint.x, nodePoint.y, 1, 1);
+            graph2d.draw(mark);
+        }
+        graph2d.dispose();
+        repaint();
     }
 
     private void drawGraph(List<CustomWay> ways, BufferedImage bufferedImage) {

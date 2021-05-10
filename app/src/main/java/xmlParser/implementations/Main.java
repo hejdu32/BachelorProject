@@ -36,12 +36,12 @@ public class Main implements PropertyChangeListener {
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
-        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-debug/src/BachelorCppCmake.exe");  // C++ executable
+        pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/denmark-latest.osm.pbf");
+        parser.parse("app/src/resources/malta-latest.osm.pbf");
         parser.filterFerryWays();
 
         JFrame frame = new JFrame();
@@ -82,9 +82,9 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "rundijkstra":
                     //System.out.println("Input from nodeId");
-                    from = "3593516725";//reader1.readLine();
+                    from = "5303967212"; //"3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "5037683804";//reader1.readLine();
+                    to = "147877253";//"5037683804";//reader1.readLine();
                     writer.write("runDijkstra" + "\n");
                     writer.flush();
                     writer.write(from + "\n");
@@ -95,9 +95,9 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "runastar":
                     //System.out.println("Input from nodeId");
-                    from = "3593516725";//reader1.readLine();
+                    from = "5303967212";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "5037683804";//reader1.readLine();
+                    to = "147877253";//reader1.readLine();
                     writer.write("runAstar" + "\n");
                     writer.flush();
                     writer.write(from + "\n");
@@ -105,6 +105,19 @@ public class Main implements PropertyChangeListener {
                     writer.write(to + "\n");
                     writer.flush();
                     graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
+                    break;
+                case "runalt":
+                    //System.out.println("Input from nodeId");
+                    from = "5303967212";//reader1.readLine();
+                    //System.out.println("Input to nodeId");
+                    to = "147877253";//reader1.readLine();
+                    writer.write("runALT" + "\n");
+                    writer.flush();
+                    writer.write(from + "\n");
+                    writer.flush();
+                    writer.write(to + "\n");
+                    writer.flush();
+                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.blue); //also draws route
                     break;
                 case "testd":
                     System.out.println("test started rundijkstra");
