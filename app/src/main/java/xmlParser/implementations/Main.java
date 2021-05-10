@@ -28,7 +28,7 @@ public class Main implements PropertyChangeListener {
     private static BufferedReader reader;
     private static BufferedWriter writer;
 
-    public static void main(String[] args) throws IOException, FactoryException, TransformException  {
+    public static void main(String[] args) throws IOException, FactoryException  {//TransformException
 
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
@@ -40,7 +40,7 @@ public class Main implements PropertyChangeListener {
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
         parser.parse("app/src/resources/malta-latest.osm.pbf");
         parser.filterFerryWays();
 
@@ -57,7 +57,8 @@ public class Main implements PropertyChangeListener {
         boolean reading = true;
         System.out.println("###########################################################################");
         while(reading){
-            String input = reader1.readLine();
+            String input = inputReader.readLine();
+            String lineToSend;
             switch(input.toLowerCase()){
                 case "exit":
                     process.destroy();
@@ -65,7 +66,7 @@ public class Main implements PropertyChangeListener {
                     System.out.println("Exitting");
                     System.exit(0);
                 case "makelist":
-                    HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+                    //HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
                     writer.write("makeAdjacencyList" + "\n");
                     writer.flush();
                     //for (Long key:adjList.keySet()) {
@@ -82,42 +83,35 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "rundijkstra":
                     //System.out.println("Input from nodeId");
-                    from = "5303967212"; //"3593516725";//reader1.readLine();
+                    from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "147877253";//"5037683804";//reader1.readLine();
-                    writer.write("runDijkstra" + "\n");
+                    to = "5037683804";//reader1.readLine();
+                    lineToSend = "runDijkstra"+" " + from + " "+  to + " "+ "\n";
+                    System.out.println(lineToSend);
+                    writer.write(lineToSend);
                     writer.flush();
-                    writer.write(from + "\n");
-                    writer.flush();
-                    writer.write(to + "\n");
-                    writer.flush();
+
                     graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
                     break;
                 case "runastar":
                     //System.out.println("Input from nodeId");
-                    from = "5303967212";//reader1.readLine();
+                    from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "147877253";//reader1.readLine();
-                    writer.write("runAstar" + "\n");
-                    writer.flush();
-                    writer.write(from + "\n");
-                    writer.flush();
-                    writer.write(to + "\n");
+                    to = "5037683804";//reader1.readLine();
+                    lineToSend = "runAstar"+" " + from + " "+  to + " "+ "\n";
+                    writer.write(lineToSend);
                     writer.flush();
                     graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "runalt":
                     //System.out.println("Input from nodeId");
-                    from = "5303967212";//reader1.readLine();
+                    from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "147877253";//reader1.readLine();
-                    writer.write("runALT" + "\n");
+                    to = "5037683804";//reader1.readLine();
+                    lineToSend = "runALT"+" " + from + " "+  to + " "+ "\n";
+                    writer.write(lineToSend);
                     writer.flush();
-                    writer.write(from + "\n");
-                    writer.flush();
-                    writer.write(to + "\n");
-                    writer.flush();
-                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.blue); //also draws route
+                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "testd":
                     System.out.println("test started rundijkstra");
@@ -155,6 +149,7 @@ public class Main implements PropertyChangeListener {
                     graphOfNodes.repaint();
                     break;
                 default:
+                    System.out.println("something went wrong");
                     break;
             }
         }
