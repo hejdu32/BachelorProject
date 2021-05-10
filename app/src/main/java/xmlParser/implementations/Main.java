@@ -10,13 +10,13 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main implements PropertyChangeListener {
-
-
-
     private static String fromNode;
     private static String toNode;
     private static String result;
@@ -32,16 +32,16 @@ public class Main implements PropertyChangeListener {
 
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
-        //XMLParserImpl parser = new XMLParserStump();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
         pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/malta-latest.osm.pbf");
+        parser.parse("app/src/resources/denmark-latest.osm.pbf");
         parser.filterFerryWays();
 
         JFrame frame = new JFrame();
@@ -53,6 +53,11 @@ public class Main implements PropertyChangeListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1300,1300);
         frame.setVisible(true);
+
+        readerThread rd = new readerThread(reader,graphOfNodes);
+        rd.start();
+        //rd.run(reader,graphOfNodes);
+
 
         boolean reading = true;
         System.out.println("###########################################################################");
@@ -79,7 +84,7 @@ public class Main implements PropertyChangeListener {
                     //}
                     //writer.write("!" + "\n" );
                     //writer.flush();
-                    System.out.println(reader.readLine());
+                    //System.out.println(reader.readLine());
                     break;
                 case "rundijkstra":
                     //System.out.println("Input from nodeId");
@@ -91,7 +96,7 @@ public class Main implements PropertyChangeListener {
                     writer.write(lineToSend);
                     writer.flush();
 
-                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
+                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
                     break;
                 case "runastar":
                     //System.out.println("Input from nodeId");
@@ -101,7 +106,7 @@ public class Main implements PropertyChangeListener {
                     lineToSend = "runAstar"+" " + from + " "+  to + " "+ "\n";
                     writer.write(lineToSend);
                     writer.flush();
-                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
+                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "runalt":
                     //System.out.println("Input from nodeId");
@@ -111,7 +116,7 @@ public class Main implements PropertyChangeListener {
                     lineToSend = "runALT"+" " + from + " "+  to + " "+ "\n";
                     writer.write(lineToSend);
                     writer.flush();
-                    graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
+                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "testd":
                     System.out.println("test started rundijkstra");
@@ -126,7 +131,7 @@ public class Main implements PropertyChangeListener {
                     writer.write(to + "\n");
                     writer.flush();
                     result = reader.readLine();
-                    graphOfNodes.setRouteToDraw(result, Color.red); //also draws route
+                    //graphOfNodes.setRouteToDraw(result, Color.red); //also draws route
                     break;
                 case "testa":
                     System.out.println("test started runAstar");
@@ -141,7 +146,7 @@ public class Main implements PropertyChangeListener {
                     writer.write(to + "\n");
                     writer.flush();
                     result = reader.readLine();
-                    graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
+                    //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
                 case "reset":
                     graphOfNodes.setImageX(0);
@@ -170,11 +175,11 @@ public class Main implements PropertyChangeListener {
                 writer.flush();
                 writer.write(to + "\n");
                 writer.flush();
-                result = reader.readLine();
+                //result = reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
+            //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
         }
     }
 //       JFrame frame = new JFrame();
@@ -187,3 +192,45 @@ public class Main implements PropertyChangeListener {
 
 }
 
+class readerThread extends Thread {
+    BufferedReader reader;
+    GraphOfNodes graph;
+    public readerThread(BufferedReader reader,GraphOfNodes graph){
+        this.reader = reader;
+        this.graph = graph;
+    }
+    public void run() {
+        try {
+        String reply;
+        System.out.println("starting to read");
+        while (true){
+            reply = reader.readLine();
+            String[] replyAsArr = reply.split(" ");
+            System.out.println("got response: "+ reply);
+            switch (replyAsArr[0]){
+                case "Finished":
+                    System.out.println("adjlist in c++ done");
+                    break;
+                case "path":
+                    //the magical remove the first 3 the elements and cast the array to longs then to the wrapper Long and finally put it into an arrayList
+                    List<Long> nodeIdLongs = Arrays.stream(Arrays.copyOfRange(replyAsArr, 3, replyAsArr.length)).mapToLong(Long::parseLong).boxed().collect(Collectors.toList());
+                    switch (replyAsArr[1]){
+                        case "dijkstra":
+                            graph.setRouteToDraw(nodeIdLongs, Color.red);
+                            break;
+                        case "astar":
+                            graph.setRouteToDraw(nodeIdLongs, Color.green);
+                            break;
+                        case "landmarks":
+                            graph.setRouteToDraw(nodeIdLongs, Color.blue);
+                            break;
+                    }
+                    break;
+            }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
