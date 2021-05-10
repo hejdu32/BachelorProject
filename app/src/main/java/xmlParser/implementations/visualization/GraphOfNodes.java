@@ -176,21 +176,22 @@ public class GraphOfNodes extends JPanel{
 
     }
 
-    public void setRouteToDraw(String redPart, Color color) {
-        System.out.println("Received List: "+ redPart);
-        List<String> nodeIds = Arrays.asList(redPart.split("\\s+"));
-        List<String> nodeIdsNOSPACE = nodeIds.subList(1, nodeIds.size()); //remove head of list as it is an identifier
-        List<Long> nodeIdLongs = new ArrayList<>();
+    public void setRouteToDraw(List<Long> path, Color color) {
+        //System.out.println("Received List: "+ redPart);
+        //List<String> nodeIds = Arrays.asList(redPart.split("\\s+"));
+        //List<String> nodeIdsNOSPACE = nodeIds.subList(1, nodeIds.size()); //remove head of list as it is an identifier
 
-        for(String id : nodeIdsNOSPACE) {
-            nodeIdLongs.add(Long.parseLong(id));
-        }
+        //Collections.addAll(path,nodeIdLongs);
+
+        //for(String id : nodeIdsNOSPACE) {
+        //    nodeIdLongs.add(Long.parseLong(id));
+        //}
 
         //for (CustomNode node :                parser.getNodes().values()) {
         //    nodeIdLongs.add(node.getId());
         //}
 
-        drawRoute(nodeIdLongs, color);
+        drawRoute(path, color);
 
         repaint();
     }
