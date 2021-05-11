@@ -26,7 +26,7 @@ class ReaderThread extends Thread {
             while (true){
                 reply = reader.readLine();
                 String[] replyAsArr = reply.split(" ");
-                System.out.println("got response: "+ reply);
+                //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
                     case "Finished":
                         System.out.println("adjlist in c++ done");
@@ -50,18 +50,18 @@ class ReaderThread extends Thread {
                         }
                         break;
                     case "nodesConsidered" :
-                        if(replyAsArr[2] == "end"){
+                        if(replyAsArr[1].equals("end")){
                             graph.drawSeenWays(nodesConsidered, Color.yellow);
                             nodesConsidered = new ArrayList<>();
-                            break;
+                            System.out.println("got full response");
                         }else{
                             List<Long> templst = Arrays.stream(Arrays.copyOfRange(replyAsArr, 1, replyAsArr.length))
                                     .mapToLong(Long::parseLong)
                                     .boxed()
                                     .collect(Collectors.toList());
                             nodesConsidered.addAll(templst);
-                            break;
                         }
+                        break;
                     default:
                         System.out.println("Malformed input from cpp: " + reply);
                 }

@@ -35,7 +35,7 @@ public class Main implements PropertyChangeListener {
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
-        pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
+        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
