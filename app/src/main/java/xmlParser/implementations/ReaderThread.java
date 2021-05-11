@@ -1,6 +1,5 @@
 package xmlParser.implementations;
 
-import org.hsqldb.persist.Log;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import java.awt.*;
@@ -21,7 +20,7 @@ class ReaderThread extends Thread {
     public void run() {
         try {
             String reply;
-            System.out.println("starting to read");
+            System.out.println("Reader thread ready");
             List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
@@ -29,7 +28,7 @@ class ReaderThread extends Thread {
                 //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
                     case "Finished":
-                        System.out.println("adjlist in c++ done");
+                        System.out.println("adjacency list loaded into c++ beep boop");
                         break;
                     case "path":
                         //the magical remove the first 3 the elements and cast the array to longs then to the wrapper Long and finally put it into an arrayList
@@ -53,7 +52,7 @@ class ReaderThread extends Thread {
                         double distance = Double.parseDouble(replyAsArr[1]);
                         int nodesEvaluated = Integer.parseInt(replyAsArr[2]);
                         if (replyAsArr.length ==4){
-                            Long chosenLandmark = Long.parseLong(replyAsArr[3]);
+                            long chosenLandmark = Long.parseLong(replyAsArr[3]);
                             System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated + " landmark "+ chosenLandmark);
                         }else{
                         System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated);
@@ -65,11 +64,11 @@ class ReaderThread extends Thread {
                             nodesConsidered = new ArrayList<>();
                             System.out.println("got full response");
                         }else{
-                            List<Long> templst = Arrays.stream(Arrays.copyOfRange(replyAsArr, 1, replyAsArr.length))
+                            List<Long> temporaryList = Arrays.stream(Arrays.copyOfRange(replyAsArr, 1, replyAsArr.length))
                                     .mapToLong(Long::parseLong)
                                     .boxed()
                                     .collect(Collectors.toList());
-                            nodesConsidered.addAll(templst);
+                            nodesConsidered.addAll(temporaryList);
                         }
                         break;
                     default:
