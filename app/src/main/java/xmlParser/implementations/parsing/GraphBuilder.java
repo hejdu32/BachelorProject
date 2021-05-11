@@ -164,11 +164,28 @@ public class GraphBuilder {
     public HashMap<Long, List<Edge>> reduceAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
         Map<Long, List<Long>> nodesToSearhFor = xmlParser.getNodesToSearchFor();
         for(Long id: nodesToSearhFor.keySet()){
-            if(nodesToSearhFor.get(id).size() > 1) {
-                // REMOVE EXCESS NODES FROM ADJACENCYLIST
+            int nodeDegree = adjacencyList.get(id).size();
+            if(nodeDegree < 3){
+                if(nodeDegree == 1) {
+                    Edge edgeToNextNode = adjacencyList.get(id).get(0);
+                    Long idOfNextNode = edgeToNextNode.getDestinationId();
+
+                    if(adjacencyList.get(idOfNextNode).size() == 1) {
+                        Edge edgeToNextOfNextNode = adjacencyList.get(idOfNextNode).get(0);
+                        double newDistance = edgeToNextNode.getDistanceToDestination() + edgeToNextOfNextNode.getDistanceToDestination();
+                        adjacencyList.put(id, Collections.singletonList(new Edge(edgeToNextOfNextNode.getDestinationId(), newDistance)));
+                        adjacencyList.put(idOfNextNode, Collections.emptyList());
+                    }
+                }
+                else if(nodeDegree == 2) {
+                    //Do other stuff
+                }
+                else {
+
+                }
             }
         }
-        return null;
+        return adjacencyList;
     }
 }
 

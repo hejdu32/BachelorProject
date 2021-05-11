@@ -1,9 +1,11 @@
 package xmlParser;
 
+import com.google.common.graph.Graph;
 import org.junit.Before;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import xmlParser.framework.XMLParser;
 import xmlParser.implementations.parsing.Edge;
 import xmlParser.implementations.parsing.GraphBuilder;
 import xmlParser.implementations.parsing.XMLParserImpl;
@@ -16,8 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class testGraphBuilder {
     private static final XMLParserImpl parser = new XMLParserStump();
@@ -95,5 +96,30 @@ public class testGraphBuilder {
     public void testWriteToFileAsJson() throws IOException {
         String filePath = "";
         graphBuilder.writeToFileAsJson(filePath);
+    }
+
+    @Test
+    public void testReductionOfAdjacencyListReducedNumberOfEdges() throws TransformException, FileNotFoundException, FactoryException {
+        XMLParser xmlParserImpl = new XMLParserImpl();
+        xmlParserImpl.parse("src/resources/malta-latest.osm.pbf");
+        GraphBuilder newGraphBuilder = new GraphBuilder(xmlParserImpl);
+        HashMap<Long, List<Edge>> adjacencyList = newGraphBuilder.createAdjacencyList();
+        int adjCounter = 0, reducedAdjCounter = 0;
+        for(Long id: adjacencyList.keySet()) {
+            if (adjacencyList.get(id).size() == 0) {
+                adjCounter++;
+            }
+        }
+        HashMap<Long, List<Edge>> reducedAdjacencyList = newGraphBuilder.reduceAdjacencyList(adjacencyList);
+        for(Long id: reducedAdjacencyList.keySet()){
+            if(reducedAdjacencyList.get(id).size() == 0) {
+                reducedAdjCounter++;
+            }
+        }
+        System.out.println("Nodes with no edges should be 0 and is: " + adjCounter);
+        System.out.println("Nodes with no edges is: " + reducedAdjCounter);
+        assertEquals(adjCounter, 0);
+        assertSame(reducedAdjacencyList, adjacencyList);
+
     }
 }
