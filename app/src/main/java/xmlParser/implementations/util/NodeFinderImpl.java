@@ -27,7 +27,7 @@ public class NodeFinderImpl implements NodeFinder {
                 resultNode = node.getId();
             }
         }
-        System.out.println(resultNode + " @ " + nodes.get(resultNode).getLatitudeAsXCoord() + ", " + nodes.get(resultNode).getLongtitudeAsYCoord()); //convertCoordsXYToImageXY(, , xOffset, yOffset, scaleFactor));
+        //System.out.println(resultNode + " @ " + nodes.get(resultNode).getLatitudeAsXCoord() + ", " + nodes.get(resultNode).getLongtitudeAsYCoord()); //convertCoordsXYToImageXY(, , xOffset, yOffset, scaleFactor));
         return resultNode;
     }
 

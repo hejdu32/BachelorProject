@@ -51,7 +51,7 @@ class ReaderThread extends Thread {
                         break;
                     case "nodesConsidered" :
                         if(replyAsArr[2] == "end"){
-                            //graph.drawMeLikeOneOfYourFrenchGirls(listOfNodes);
+                            graph.drawSeenWays(nodesConsidered, Color.yellow);
                             nodesConsidered = new ArrayList<>();
                             break;
                         }else{
