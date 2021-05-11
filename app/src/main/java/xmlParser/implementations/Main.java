@@ -41,7 +41,7 @@ public class Main implements PropertyChangeListener {
 
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/denmark-latest.osm.pbf");
+        parser.parse("app/src/resources/malta-latest.osm.pbf");
         parser.filterFerryWays();
 
         JFrame frame = new JFrame();

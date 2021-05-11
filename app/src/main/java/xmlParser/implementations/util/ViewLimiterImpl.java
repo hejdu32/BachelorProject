@@ -67,7 +67,7 @@ public class ViewLimiterImpl implements ViewLimiter {
         //getting x and y
         double wayX = wayPoint.x;
         double wayY = wayPoint.y; //1300 -> 0,  650 -> 650,  0 -> 1300
-        double flippedY = Math.abs(wayY - 1300); //magic constant for now
+        double flippedY = Math.abs(wayY - 1300*8); //magic constant for now
 
         boolean insideX = wayX - marginX <= Math.max(sourceX, destX) & wayX + marginX >= Math.min(sourceX, destX);
         //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
@@ -96,8 +96,8 @@ public class ViewLimiterImpl implements ViewLimiter {
                 if (wayY > highestY) highestY = wayY;
             }
         }
-        marginX = (highestX - lowestX) / 10;
-        marginY = (highestY - lowestY) / 10;
+        marginX = (highestX - lowestX) / 1;
+        marginY = (highestY - lowestY) / 1;
     }
 
     public void setMargin(double marginX, double marginY) {

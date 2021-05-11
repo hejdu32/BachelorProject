@@ -48,9 +48,10 @@ class ReaderThread extends Thread {
                                 graph.setRouteToDraw(nodeIdLongs, Color.blue);
                                 break;
                         }
+                        break;
                     case "nodesConsidered" :
                         if(replyAsArr[2] == "end"){
-                            //graph.drawMeLikeOneOfYourFrenchGirls(listOfNodes);
+                            graph.drawSeenWays(nodesConsidered, Color.yellow);
                             nodesConsidered = new ArrayList<>();
                             break;
                         }else{
