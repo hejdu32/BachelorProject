@@ -28,20 +28,20 @@ public class Main implements PropertyChangeListener {
     private static BufferedReader reader;
     private static BufferedWriter writer;
 
-    public static void main(String[] args) throws IOException, FactoryException  {//TransformException
+    public static void main(String[] args) throws IOException, FactoryException {//TransformException
 
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
-        pb.command("/home/a/CLionProjects/BachelorCppRestructured/cmake-build-debug/src/BachelorCppCmake");  // C++ executable
+        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/denmark-latest.osm.pbf");
+        parser.parse("app/src/resources/malta-latest.osm.pbf");
         parser.filterFerryWays();
 
         JFrame frame = new JFrame();
@@ -69,33 +69,22 @@ public class Main implements PropertyChangeListener {
                     process.destroy();
                     reading = false;
                     System.out.println("Exitting");
+                    rd.interrupt();
                     System.exit(0);
                 case "makelist":
                     //HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
                     writer.write("makeAdjacencyList" + "\n");
                     writer.flush();
-                    //for (Long key:adjList.keySet()) {
-                    //    String line = "#" + key;
-                    //    for (Edge e : adjList.get(key)) {
-                    //        line = line + " ;" + e.getDestinationId() + " ," + e.getDistanceToDestination();
-                    //    }
-                    //    writer.write(line + "\n");
-                    //    writer.flush();
-                    //}
-                    //writer.write("!" + "\n" );
-                    //writer.flush();
-                    //System.out.println(reader.readLine());
                     break;
                 case "rundijkstra":
                     //System.out.println("Input from nodeId");
                     from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
-                    lineToSend = "runDijkstra"+" " + from + " "+  to + " "+ "\n";
-                    System.out.println(lineToSend);
+                    lineToSend = "runDijkstra"+" " + from + " "+  to +  "\n";
+                    //System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
-
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
                     break;
                 case "runastar":
@@ -103,7 +92,7 @@ public class Main implements PropertyChangeListener {
                     from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
-                    lineToSend = "runAstar"+" " + from + " "+  to + " "+ "\n";
+                    lineToSend = "runAstar"+" " + from + " "+  to +  "\n";
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
@@ -113,7 +102,7 @@ public class Main implements PropertyChangeListener {
                     from = "3593516725";//reader1.readLine();
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
-                    lineToSend = "runALT"+" " + from + " "+  to + " "+ "\n";
+                    lineToSend = "runALT"+" " + from + " "+  to + "\n";
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
@@ -124,13 +113,9 @@ public class Main implements PropertyChangeListener {
                     System.out.println("From: " + from);
                     to = graphOfNodes.getTo();
                     System.out.println("To: " + to);
-                    writer.write("runDijkstra" + "\n");
+                    lineToSend = "runDijkstra"+" " + from + " "+  to + "\n";
+                    writer.write(lineToSend);
                     writer.flush();
-                    writer.write(from + "\n");
-                    writer.flush();
-                    writer.write(to + "\n");
-                    writer.flush();
-                    result = reader.readLine();
                     //graphOfNodes.setRouteToDraw(result, Color.red); //also draws route
                     break;
                 case "testa":
@@ -139,13 +124,9 @@ public class Main implements PropertyChangeListener {
                     System.out.println("From: " + from);
                     to = graphOfNodes.getTo();
                     System.out.println("To: " + to);
-                    writer.write("runAstar" + "\n");
+                    lineToSend = "runAstar"+" " + from + " "+  to + "\n";
+                    writer.write(lineToSend);
                     writer.flush();
-                    writer.write(from + "\n");
-                    writer.flush();
-                    writer.write(to + "\n");
-                    writer.flush();
-                    result = reader.readLine();
                     //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
                 case "reset":
@@ -154,7 +135,7 @@ public class Main implements PropertyChangeListener {
                     graphOfNodes.repaint();
                     break;
                 default:
-                    System.out.println("something went wrong");
+                    System.out.println("malformed input: " +input);
                     break;
             }
         }
@@ -169,11 +150,8 @@ public class Main implements PropertyChangeListener {
             to = graphOfNodes.getTo();
             System.out.println("To: " + to);
             try {
-                writer.write("runAstar" + "\n");
-                writer.flush();
-                writer.write(from + "\n");
-                writer.flush();
-                writer.write(to + "\n");
+                String lineToSend = "runAstar"+" " + from + " "+  to + "\n";
+                writer.write(lineToSend);
                 writer.flush();
                 //result = reader.readLine();
             } catch (IOException e) {

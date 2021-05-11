@@ -1,10 +1,12 @@
 package xmlParser.implementations;
 
+import org.hsqldb.persist.Log;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +22,11 @@ class ReaderThread extends Thread {
         try {
             String reply;
             System.out.println("starting to read");
+            List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
                 String[] replyAsArr = reply.split(" ");
-                System.out.println("got response: "+ reply);
+                //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
                     case "Finished":
                         System.out.println("adjlist in c++ done");
@@ -46,6 +49,31 @@ class ReaderThread extends Thread {
                                 break;
                         }
                         break;
+                    case "info" :
+                        double distance = Double.parseDouble(replyAsArr[1]);
+                        int nodesEvaluated = Integer.parseInt(replyAsArr[2]);
+                        if (replyAsArr.length ==4){
+                            Long chosenLandmark = Long.parseLong(replyAsArr[3]);
+                            System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated + " landmark "+ chosenLandmark);
+                        }else{
+                        System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated);
+                        }
+                        break;
+                    case "nodesConsidered" :
+                        if(replyAsArr[1].equals("end")){
+                            graph.drawSeenWays(nodesConsidered, Color.yellow);
+                            nodesConsidered = new ArrayList<>();
+                            System.out.println("got full response");
+                        }else{
+                            List<Long> templst = Arrays.stream(Arrays.copyOfRange(replyAsArr, 1, replyAsArr.length))
+                                    .mapToLong(Long::parseLong)
+                                    .boxed()
+                                    .collect(Collectors.toList());
+                            nodesConsidered.addAll(templst);
+                        }
+                        break;
+                    default:
+                        System.out.println("Malformed input from cpp: " + reply);
                 }
 
             }
