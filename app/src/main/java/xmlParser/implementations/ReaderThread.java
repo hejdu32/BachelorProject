@@ -49,6 +49,16 @@ class ReaderThread extends Thread {
                                 break;
                         }
                         break;
+                    case "info" :
+                        double distance = Double.parseDouble(replyAsArr[1]);
+                        int nodesEvaluated = Integer.parseInt(replyAsArr[2]);
+                        if (replyAsArr.length ==4){
+                            Long chosenLandmark = Long.parseLong(replyAsArr[3]);
+                            System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated + " landmark "+ chosenLandmark);
+                        }else{
+                        System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated);
+                        }
+                        break;
                     case "nodesConsidered" :
                         if(replyAsArr[1].equals("end")){
                             graph.drawSeenWays(nodesConsidered, Color.yellow);

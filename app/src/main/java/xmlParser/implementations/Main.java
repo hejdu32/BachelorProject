@@ -69,6 +69,7 @@ public class Main implements PropertyChangeListener {
                     process.destroy();
                     reading = false;
                     System.out.println("Exitting");
+                    rd.interrupt();
                     System.exit(0);
                 case "makelist":
                     //HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
@@ -81,7 +82,7 @@ public class Main implements PropertyChangeListener {
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
                     lineToSend = "runDijkstra"+" " + from + " "+  to +  "\n";
-                    System.out.println(lineToSend);
+                    //System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
@@ -134,7 +135,7 @@ public class Main implements PropertyChangeListener {
                     graphOfNodes.repaint();
                     break;
                 default:
-                    System.out.println("something went wrong");
+                    System.out.println("malformed input: " +input);
                     break;
             }
         }
