@@ -28,20 +28,20 @@ public class Main implements PropertyChangeListener {
     private static BufferedReader reader;
     private static BufferedWriter writer;
 
-    public static void main(String[] args) throws IOException, FactoryException  {//TransformException
+    public static void main(String[] args) throws IOException, FactoryException {//TransformException
 
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
-        pb.command("/home/a/CLionProjects/BachelorCppRestructured/cmake-build-debug/src/BachelorCppCmake");  // C++ executable
+        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-debug/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
-        parser.parse("app/src/resources/denmark-latest.osm.pbf");
+        parser.parse("app/src/resources/malta-latest.osm.pbf");
         parser.filterFerryWays();
 
         JFrame frame = new JFrame();
