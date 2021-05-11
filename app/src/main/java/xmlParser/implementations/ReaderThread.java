@@ -1,10 +1,12 @@
 package xmlParser.implementations;
 
+import org.hsqldb.persist.Log;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ class ReaderThread extends Thread {
         try {
             String reply;
             System.out.println("starting to read");
+            List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
                 String[] replyAsArr = reply.split(" ");
@@ -45,7 +48,21 @@ class ReaderThread extends Thread {
                                 graph.setRouteToDraw(nodeIdLongs, Color.blue);
                                 break;
                         }
-                        break;
+                    case "nodesConsidered" :
+                        if(replyAsArr[2] == "end"){
+                            //graph.drawMeLikeOneOfYourFrenchGirls(listOfNodes);
+                            nodesConsidered = new ArrayList<>();
+                            break;
+                        }else{
+                            List<Long> templst = Arrays.stream(Arrays.copyOfRange(replyAsArr, 1, replyAsArr.length))
+                                    .mapToLong(Long::parseLong)
+                                    .boxed()
+                                    .collect(Collectors.toList());
+                            nodesConsidered.addAll(templst);
+                            break;
+                        }
+                    default:
+                        System.out.println("malformed input from cpp: " + reply);
                 }
 
             }
