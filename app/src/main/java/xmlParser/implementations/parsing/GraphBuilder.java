@@ -126,11 +126,11 @@ public class GraphBuilder {
         writer.close();
     }
 
-    public void writeWAdjList(String s, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
+    public void writeWAdjList(String name, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
         int amountOfNodes = nodes.size();
         int amountOfWays = ways.size();
         StringBuilder line = new StringBuilder(amountOfNodes + "\n" + amountOfWays + "\n");
-        FileWriter writer = new FileWriter(s);
+        FileWriter writer = new FileWriter(name);
         writer.write(line.toString());
         //choords
         for (long node:nodes.keySet()) {

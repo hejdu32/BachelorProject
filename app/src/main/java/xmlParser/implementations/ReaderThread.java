@@ -24,6 +24,7 @@ class ReaderThread extends Thread {
             List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
+                //System.out.println("rply: " +reply);
                 String[] replyAsArr = reply.split(" ");
                 //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){

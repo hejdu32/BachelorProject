@@ -5,7 +5,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import xmlParser.framework.HighwayTag;
 
-
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.container.v0_6.WayContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
@@ -159,6 +158,7 @@ public class FirstPassSink implements Sink{
             case SERVICE :
                 return "50";
             case LIVING_STREET :
+            case TURNING_CIRCLE :
                 return "20";
             case FERRY :
             default :
