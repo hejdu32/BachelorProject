@@ -171,10 +171,7 @@ public class GraphBuilder {
                     Long idOfNextNode = edgeToNextNode.getDestinationId();
 
                     if(adjacencyList.get(idOfNextNode).size() == 1) {
-                        Edge edgeToNextOfNextNode = adjacencyList.get(idOfNextNode).get(0);
-                        double newDistance = edgeToNextNode.getDistanceToDestination() + edgeToNextOfNextNode.getDistanceToDestination();
-                        adjacencyList.put(id, Collections.singletonList(new Edge(edgeToNextOfNextNode.getDestinationId(), newDistance)));
-                        adjacencyList.put(idOfNextNode, Collections.emptyList());
+                        reduceAdjacencyListOneway(id, idOfNextNode, edgeToNextNode.getDistanceToDestination(), adjacencyList);
                     }
                 }
                 else if(nodeDegree == 2) {
@@ -186,6 +183,19 @@ public class GraphBuilder {
             }
         }
         return adjacencyList;
+    }
+    private void reduceAdjacencyListOneway(Long firstId, Long currentId, double accDistance, HashMap<Long, List<Edge>> adjacencyList){
+        Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
+        Long idOfNextNode = edgeToNextNode.getDestinationId();
+        double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
+        if(adjacencyList.get(idOfNextNode).size() == 1) {
+            adjacencyList.put(currentId, Collections.emptyList());
+            reduceAdjacencyListOneway(firstId, idOfNextNode, newAccDist, adjacencyList);
+        }
+        else {
+            adjacencyList.put(currentId, Collections.emptyList());
+            adjacencyList.put(firstId, Collections.singletonList(new Edge(edgeToNextNode.getDestinationId(), newAccDist)));
+        }
     }
 }
 
