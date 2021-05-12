@@ -24,6 +24,7 @@ class ReaderThread extends Thread {
             List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
+                //System.out.println("rply: " +reply);
                 String[] replyAsArr = reply.split(" ");
                 //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
@@ -60,7 +61,8 @@ class ReaderThread extends Thread {
                         break;
                     case "nodesConsidered" :
                         if(replyAsArr[1].equals("end")){
-                            graph.drawSeenWays(nodesConsidered, Color.yellow);
+                            graph.setWaysToDraw(nodesConsidered, Color.cyan);
+                            graph.repaint();
                             nodesConsidered = new ArrayList<>();
                             System.out.println("got full response");
                         }else{
