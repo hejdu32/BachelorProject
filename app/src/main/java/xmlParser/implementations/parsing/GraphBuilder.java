@@ -167,6 +167,7 @@ public class GraphBuilder {
             int nodeDegree = adjacencyList.get(id).size();
             if(nodeDegree < 3){
                 if(nodeDegree == 1) {
+
                     Edge edgeToNextNode = adjacencyList.get(id).get(0);
                     Long idOfNextNode = edgeToNextNode.getDestinationId();
 
@@ -175,7 +176,7 @@ public class GraphBuilder {
                     }
                 }
                 else if(nodeDegree == 2) {
-                    //Do other stuff
+
                 }
                 else {
 
@@ -188,7 +189,7 @@ public class GraphBuilder {
         Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
         Long idOfNextNode = edgeToNextNode.getDestinationId();
         double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
-        if(adjacencyList.get(idOfNextNode).size() == 1) {
+        if(adjacencyList.get(idOfNextNode) != null && adjacencyList.get(idOfNextNode).size() == 1) {
             adjacencyList.put(currentId, Collections.emptyList());
             reduceAdjacencyListOneway(firstId, idOfNextNode, newAccDist, adjacencyList);
         }
