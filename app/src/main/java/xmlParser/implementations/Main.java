@@ -35,7 +35,7 @@ public class Main implements PropertyChangeListener {
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
         pb = new ProcessBuilder();
-        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
+        pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
@@ -132,6 +132,14 @@ public class Main implements PropertyChangeListener {
                 case "reset":
                     graphOfNodes.setImageX(0);
                     graphOfNodes.setImageY(0);
+                    try {
+                        HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+                        //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
+                        System.out.println("adjList size: " + adjList.keySet().size());
+                        graphOfNodes.setAdjacencyList(graphBuilder.reduceAdjacencyList(adjList));
+                    } catch (TransformException e) {
+                        e.printStackTrace();
+                    }
                     graphOfNodes.repaint();
                     break;
                 default:

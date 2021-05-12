@@ -3,6 +3,7 @@ package xmlParser.implementations.visualization;
 
 import xmlParser.implementations.parsing.CustomNode;
 import xmlParser.implementations.parsing.CustomWay;
+import xmlParser.implementations.parsing.Edge;
 import xmlParser.implementations.parsing.XMLParserImpl;
 import xmlParser.implementations.util.DrawingUtil;
 import xmlParser.implementations.util.NodeFinderImpl;
@@ -55,6 +56,7 @@ public class GraphOfNodes extends JPanel{
     private int blueDrawY;
     private List<Long> redPart = new ArrayList<>();
     private Color myColor = Color.red;
+    private Color seenColor = Color.orange;
     private List<Point> tilePoints = new ArrayList<>();
     private Map<Point, BufferedImage> tiles = new HashMap<>();
     private Map<Point, Double> tileZoom = new HashMap<>();
@@ -74,6 +76,13 @@ public class GraphOfNodes extends JPanel{
     private int blueDrawAtPointX;
     private int blueDrawAtPointY;
 
+    public HashMap<Long, List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    private HashMap<Long, List<Edge>> adjacencyList;
+    private HashSet<Long> seenWaysToDraw = new HashSet<>(testListMalta);
+
 
     /*
     * Contructor
@@ -83,7 +92,8 @@ public class GraphOfNodes extends JPanel{
         this.parser = parser;
         ways = new ArrayList<>(parser.getWays().values());
         this.bufferedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
-        this.ballImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
+        this.ballImage = new BufferedImage(fullResolutionX*(routeFactor/2),fullResolutionY*(routeFactor/2),BufferedImage.TYPE_INT_ARGB);
+        //this.consideredImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         this.prerenderedImage = new BufferedImage(fullResolutionX*8,fullResolutionY*8,BufferedImage.TYPE_INT_ARGB);
         viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
         nodeFinder = new NodeFinderImpl();
@@ -204,7 +214,22 @@ public class GraphOfNodes extends JPanel{
 
         this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
-        drawRoute(path, color);
+        //drawRoute(path, color);
+
+        redPart = path;
+        myColor = color;
+        isGraphDrawn = false;
+    }
+
+    public void setWaysToDraw(List<Long> nodes, Color color) {
+
+        seenWaysToDraw = new HashSet<Long>(nodes);
+        seenColor = color;
+        System.out.println("size of nodes" +
+                nodes.size());
+        //HashSet<Long> seenSet = new HashSet<Long>(nodes);
+        //drawSeenWays(seenSet, color);
+        isGraphDrawn = false;
 
         repaint();
     }
@@ -228,7 +253,6 @@ public class GraphOfNodes extends JPanel{
     @Override            //#############################################################################################################
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
 
         zoomFactor = Math.round(zoomFactor*1000.0)/1000.0;
         if(zoomFactor <=1 & zoomLevel!=1){
@@ -255,6 +279,7 @@ public class GraphOfNodes extends JPanel{
         }
 
         if(!isGraphDrawn) {
+            this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
             if(zoomFactor<=1) {
                 System.out.println("Changed: 100");
@@ -288,22 +313,24 @@ public class GraphOfNodes extends JPanel{
             System.out.println("ZoomLevel: " + zoomLevel);
             //setScopeOfImage();
             //drawTilesBackgrounds();
-            drawRoute(redPart, myColor);
-            System.out.println("Drawing testlist with color: " + myColor);
-            drawSeenWays(testListMalta,myColor);
+            System.out.println("Drawing nodes considered with color: " + seenColor);
+            if(seenWaysToDraw!=null) drawSeenWays(seenWaysToDraw,seenColor);
+            if(adjacencyList!=null) drawAdjList(adjacencyList, Color.red);
+            if(redPart!=null) drawRoute(redPart, myColor);
             //drawSeenNodes(testList,myColor);
             //drawGraph(ways, bufferedImage);
             //drawTiles(ways);
             //flipTiles(tiles);
+            isGraphDrawn = true;
+            System.out.println("Flipping images");
             bufferedImage = DrawingUtil.flipYCoordinate(bufferedImage);
             ballImage = DrawingUtil.flipYCoordinate(ballImage);
+            //consideredImage = DrawingUtil.flipYCoordinate(consideredImage);
         }
         if( clicked) {
             drawRedAndBlue();
             clicked = false;
         }
-
-
 
         //System.out.println("Zoom: " + zoomFactor);
         //System.out.println("ImageX and Y: " + imageX + "," + imageY);
@@ -362,6 +389,17 @@ public class GraphOfNodes extends JPanel{
             }
         }
         //System.out.println("Tiles drawn= " + tilesDrawn);
+        //g.drawImage(consideredImage,
+        //        0,
+        //        0,
+        //        1300,
+        //        1300,
+        //        (int) ((imageX * fullResolutionFactor   *routeFactor)),
+        //        (int) ((imageY * fullResolutionFactor   *routeFactor)),
+        //        (int) (((imageX * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+        //        (int) (((imageY * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+        //        this);
+
         g.drawImage(bufferedImage,
                 0,
                 0,
@@ -500,6 +538,7 @@ public class GraphOfNodes extends JPanel{
     //draws the red and blue circles to draw routes
     private void drawRedAndBlue() {
         Graphics2D graph2d = ballImage.createGraphics();
+        routeFactor = this.routeFactor/2;
         graph2d.setColor(Color.RED);
         if (!firstClick) {
             //drawBackground(ballImage);
@@ -637,24 +676,24 @@ public class GraphOfNodes extends JPanel{
                     int yOffset = this.yOffset;
                     int xOffset = this.xOffset;
                     Shape l = new Line2D.Double(((prevX-xOffset)/ scaleFactor),
-                            Math.abs(((prevY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor),
-                            //(((prevY-yOffset)/ scaleFactor)-fullResolutionY),
+                            //Math.abs(((prevY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor),
+                            (((prevY-yOffset)/ scaleFactor)),
                             ((currX-xOffset)/ scaleFactor),
-                            Math.abs(((currY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor) );
-                            //(((currY-yOffset)/ scaleFactor)-fullResolutionY));
+                            //Math.abs(((currY-yOffset)/ scaleFactor)-fullResolutionY*routeFactor) );
+                            (((currY-yOffset)/ scaleFactor)));
                     graph2d.draw(l);
                     previousId = currId;
                 }
             } while(iterator.hasNext()); }
         graph2d.dispose();
-        repaint();
     }
 
-    public void drawSeenWays(List<Long> nodes, Color color) {
+    private void drawSeenWays(HashSet<Long> nodes, Color color) {
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
+        //this.consideredImage = new BufferedImage(consideredImage.getWidth(),consideredImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
         Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(1*fullResolutionFactor));
-        int alpha = 40; // 50% transparent
+        graph2d.setStroke(new BasicStroke(4));
+        int alpha = 200; // 50% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
         for (CustomWay way: ways) {
@@ -662,38 +701,83 @@ public class GraphOfNodes extends JPanel{
             Iterator iterator = way.getNodeIdList().iterator();
             do {
                 long currId = (long) iterator.next();
-                if(previousId == 0L) {
-                    previousId = currId;
-                }
-                else {
-                    if(nodes.contains(currId) || nodes.contains(previousId)) {
-                        CustomNode previousNode = parser.getNodes().get(previousId);
-                        double prevX = previousNode.getLatitudeAsXCoord();
-                        double prevY = previousNode.getLongtitudeAsYCoord();
-
-                        CustomNode currNode = parser.getNodes().get(currId);
-                        double currX = currNode.getLatitudeAsXCoord();
-                        double currY = currNode.getLongtitudeAsYCoord();
-
-                        double scaleFactor =  (windowScale / fullResolutionFactor);
-
-                        int yOffset = (int) viewLimiter.getLowestY();
-                        int xOffset = (int) viewLimiter.getLowestX();
-
-                        Point2D.Double prevPoint = nodeFinder.convertCoordsXYToImageXY(prevX, prevY, xOffset, yOffset, scaleFactor);
-                        Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
-
-                        Shape l = new Line2D.Double(prevPoint.x,
-                                prevPoint.y,
-                                currPoint.x,
-                                currPoint.y);
-                        graph2d.draw(l);
+                //if(adjacencyList != null && nodes.contains(currId) &&  adjacencyList.get(currId) != null && adjacencyList.get(currId).size()!=0) {
+                    if (previousId == 0L) {
                         previousId = currId;
-                    }
+                    } else {
+                        if (nodes.contains(currId) || nodes.contains(previousId)) {
+                            CustomNode previousNode = parser.getNodes().get(previousId);
+                            double prevX = previousNode.getLatitudeAsXCoord();
+                            double prevY = previousNode.getLongtitudeAsYCoord();
+
+                            CustomNode currNode = parser.getNodes().get(currId);
+                            double currX = currNode.getLatitudeAsXCoord();
+                            double currY = currNode.getLongtitudeAsYCoord();
+
+                            double scaleFactor = (windowScale / fullResolutionFactor);
+
+                            int yOffset = (int) viewLimiter.getLowestY();
+                            int xOffset = (int) viewLimiter.getLowestX();
+
+                            Point2D.Double prevPoint = nodeFinder.convertCoordsXYToImageXY(prevX, prevY, xOffset, yOffset, scaleFactor);
+                            Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
+
+                            Shape l = new Line2D.Double(prevPoint.x,
+                                    prevPoint.y,
+                                    currPoint.x,
+                                    currPoint.y);
+                            graph2d.draw(l);
+                            previousId = currId;
+                        }
+                    //}
                 }
             } while(iterator.hasNext()); }
+
+        System.out.println("Done with drawing");
         graph2d.dispose();
-        repaint();
+    }
+
+    public void drawAdjList(HashMap<Long, List<Edge>> adjacencyList, Color color) {
+        System.out.println("Drawing adjList");
+        //this.bufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
+        Graphics2D graph2d = bufferedImage.createGraphics();
+
+        graph2d.setStroke(new BasicStroke(1));
+        int alpha = 140; // 50% transparent
+        Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+        graph2d.setColor(myColour);
+
+        for (Long id : adjacencyList.keySet()) {
+            for (Edge edge : adjacencyList.get(id)) {
+                Long start = id;
+                long dest = edge.getDestinationId();
+
+                CustomNode previousNode = parser.getNodes().get(start);
+                double prevX = previousNode.getLatitudeAsXCoord();
+                double prevY = previousNode.getLongtitudeAsYCoord();
+
+                CustomNode currNode = parser.getNodes().get(dest);
+                double currX = currNode.getLatitudeAsXCoord();
+                double currY = currNode.getLongtitudeAsYCoord();
+
+                double scaleFactor = (windowScale / fullResolutionFactor);
+
+                int yOffset = (int) viewLimiter.getLowestY();
+                int xOffset = (int) viewLimiter.getLowestX();
+
+                Point2D.Double prevPoint = nodeFinder.convertCoordsXYToImageXY(prevX, prevY, xOffset, yOffset, scaleFactor);
+                Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
+
+                Shape l = new Line2D.Double(prevPoint.x,
+                        prevPoint.y,
+                        currPoint.x,
+                        currPoint.y);
+                graph2d.draw(l);
+            }
+
+        }
+        graph2d.dispose();
     }
 
     private void drawSeenNodes(List<Long> nodes, Color color) {
@@ -782,6 +866,11 @@ public class GraphOfNodes extends JPanel{
         this.imageY = imageY;
     }
 
+    public void drawReducedGraph() {
+        //drawSeenWays(new ArrayList<>(adjencencyList.keySet()), Color.red);
+        repaint();
+    }
+
 
     public String getFrom() {
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor)));
@@ -790,7 +879,12 @@ public class GraphOfNodes extends JPanel{
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor)));
     }
 
+    public void setAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
+        System.out.println("AdjList set!");
+        this.adjacencyList = adjacencyList;
+        isGraphDrawn = false;
     }
+}
 
 
 

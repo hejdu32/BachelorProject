@@ -163,14 +163,14 @@ public class GraphBuilder {
 
     public HashMap<Long, List<Edge>> reduceAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
         Map<Long, List<Long>> nodesToSearhFor = xmlParser.getNodesToSearchFor();
-        for(Long id: nodesToSearhFor.keySet()){
+        Set<Long> allNodes = adjacencyList.keySet();
+        for(Long id: allNodes){
             int nodeDegree = adjacencyList.get(id).size();
             if(nodeDegree < 3){
-                if(nodeDegree == 1) {
+                if(nodeDegree == 1) { //Do this recursively please and thank you
                     Edge edgeToNextNode = adjacencyList.get(id).get(0);
                     Long idOfNextNode = edgeToNextNode.getDestinationId();
-
-                    if(adjacencyList.get(idOfNextNode).size() == 1) {
+                    if(adjacencyList.get(idOfNextNode)!=null && adjacencyList.get(idOfNextNode).size() == 1) {
                         reduceAdjacencyListOneway(id, idOfNextNode, edgeToNextNode.getDistanceToDestination(), adjacencyList);
                     }
                 }
@@ -188,7 +188,7 @@ public class GraphBuilder {
         Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
         Long idOfNextNode = edgeToNextNode.getDestinationId();
         double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
-        if(adjacencyList.get(idOfNextNode).size() == 1) {
+        if(adjacencyList.get(idOfNextNode)!= null && adjacencyList.get(idOfNextNode).size() == 1) {
             adjacencyList.put(currentId, Collections.emptyList());
             reduceAdjacencyListOneway(firstId, idOfNextNode, newAccDist, adjacencyList);
         }

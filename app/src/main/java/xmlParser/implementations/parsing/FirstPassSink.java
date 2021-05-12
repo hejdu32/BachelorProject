@@ -41,8 +41,10 @@ public class FirstPassSink implements Sink{
                             parser.getNodesToSearchFor().get(id).add(way.getId());
                         }
                         parser.getWays().put(way.getId(), customWay);
+                        boolean hasOneWayTag = false;
                         for(Tag oneWayTag: tags){
                             if (oneWayTag.getKey().equals("oneway")) {
+                                hasOneWayTag = true;
                                 String value = oneWayTag.getValue();
                                 if(value.equals("yes")) {
                                     parser.getWays().get(way.getId()).setOneWay("1");
@@ -56,7 +58,7 @@ public class FirstPassSink implements Sink{
                                     parser.getWays().get(way.getId()).setOneWay("0");
                                 }
                             }
-                            else {
+                            if (!hasOneWayTag){
                                 parser.getWays().get(way.getId()).setOneWay("0");
                             }
                         }

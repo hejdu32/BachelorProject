@@ -60,7 +60,8 @@ class ReaderThread extends Thread {
                         break;
                     case "nodesConsidered" :
                         if(replyAsArr[1].equals("end")){
-                            graph.drawSeenWays(nodesConsidered, Color.yellow);
+                            graph.setWaysToDraw(nodesConsidered, Color.cyan);
+                            graph.repaint();
                             nodesConsidered = new ArrayList<>();
                             System.out.println("got full response");
                         }else{
