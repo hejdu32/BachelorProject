@@ -92,7 +92,7 @@ public class GraphOfNodes extends JPanel{
         this.parser = parser;
         ways = new ArrayList<>(parser.getWays().values());
         this.bufferedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
-        this.ballImage = new BufferedImage(fullResolutionX*(routeFactor/2),fullResolutionY*(routeFactor/2),BufferedImage.TYPE_INT_ARGB);
+        this.ballImage = new BufferedImage(fullResolutionX*(routeFactor),fullResolutionY*(routeFactor),BufferedImage.TYPE_INT_ARGB);
         //this.consideredImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         this.prerenderedImage = new BufferedImage(fullResolutionX*8,fullResolutionY*8,BufferedImage.TYPE_INT_ARGB);
         viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
@@ -225,8 +225,7 @@ public class GraphOfNodes extends JPanel{
 
         seenWaysToDraw = new HashSet<Long>(nodes);
         seenColor = color;
-        System.out.println("size of nodes" +
-                nodes.size());
+        //System.out.println("size of nodes" +nodes.size());
         //HashSet<Long> seenSet = new HashSet<Long>(nodes);
         //drawSeenWays(seenSet, color);
         isGraphDrawn = false;
@@ -302,18 +301,17 @@ public class GraphOfNodes extends JPanel{
                 isGraphDrawn = true;
             }
             else if(zoomFactor>=16) {
-                System.out.println("Changed: real");
+                //System.out.println("Changed: real");
                 Instant start = Instant.now();
                 changeTilesResolution( zoomLevel);
                 Instant end = Instant.now();
                 Duration timeElapsed = Duration.between(start, end);
-                System.out.println("Time taken: "+ timeElapsed.toSeconds() +"." + timeElapsed.toMillisPart() + " seconds" );
+                //System.out.println("Time taken: "+ timeElapsed.toSeconds() +"." + timeElapsed.toMillisPart() + " seconds" );
                 isGraphDrawn = true;
             }
-            System.out.println("ZoomLevel: " + zoomLevel);
+            //System.out.println("ZoomLevel: " + zoomLevel);
             //setScopeOfImage();
             //drawTilesBackgrounds();
-            System.out.println("Drawing nodes considered with color: " + seenColor);
             if(seenWaysToDraw!=null) drawSeenWays(seenWaysToDraw,seenColor);
             if(adjacencyList!=null) drawAdjList(adjacencyList, Color.red);
             if(redPart!=null) drawRoute(redPart, myColor);
@@ -322,44 +320,43 @@ public class GraphOfNodes extends JPanel{
             //drawTiles(ways);
             //flipTiles(tiles);
             isGraphDrawn = true;
-            System.out.println("Flipping images");
             bufferedImage = DrawingUtil.flipYCoordinate(bufferedImage);
-            ballImage = DrawingUtil.flipYCoordinate(ballImage);
             //consideredImage = DrawingUtil.flipYCoordinate(consideredImage);
         }
         if( clicked) {
             drawRedAndBlue();
+            //ballImage = DrawingUtil.flipYCoordinate(ballImage);
             clicked = false;
         }
 
         //System.out.println("Zoom: " + zoomFactor);
         //System.out.println("ImageX and Y: " + imageX + "," + imageY);
-        if(mouseReleased) {
-            for (Point p : tiles.keySet()) {
-                boolean viewResMinus100 = p.x >= imageX  & p.y >= imageY  && p.x <= imageX + (1200) / zoomFactor & p.y <= imageY + (1200) / zoomFactor;
-                boolean viewRes = p.x >= imageX - tileRes & p.y >= imageY - tileRes && p.x <= imageX + (viewResolution) / zoomFactor & p.y <= imageY + (viewResolution) / zoomFactor;
-                boolean viewResPlus500 = p.x >= imageX - tileRes*5 & p.y >= imageY - tileRes*5 && p.x <= imageX + (viewResolution+tileRes*5) / zoomFactor & p.y <= imageY + (viewResolution+tileRes*5) / zoomFactor;
-                if (viewRes) {
-                    if(zoomLevel!= 1 && zoomLevel!= 2 && zoomLevel!= 3 && zoomLevel!= 4 && tileZoom.get(p)!=zoomLevel ){
-                        if(drawTiles.containsValue(p) && !drawTiles.get(p)) {
-                            drawTiles.put(p, true);
-                            System.out.println("I am taking so long");
-                        }
-                        //changeTileResolution(zoomLevel,p);
-                    }
-                }           else     if (viewResPlus500 ) {
-                    //if(zoomLevel!= 1 && zoomLevel!= 2 && zoomLevel!= 3 &&tileZoom.get(p)!=zoomLevel){
-                    //    drawTiles.put(p, false);
-                    //    System.out.println("I am taking too long");
-                    //    //changeTileResolution(zoomLevel,p);
-                    //}
-                }
-                mouseReleased = false;
-            }
-        }
+        //if(mouseReleased) {
+        //    for (Point p : tiles.keySet()) {
+        //        boolean viewResMinus100 = p.x >= imageX  & p.y >= imageY  && p.x <= imageX + (1200) / zoomFactor & p.y <= imageY + (1200) / zoomFactor;
+        //        boolean viewRes = p.x >= imageX - tileRes & p.y >= imageY - tileRes && p.x <= imageX + (viewResolution) / zoomFactor & p.y <= imageY + (viewResolution) / zoomFactor;
+        //        boolean viewResPlus500 = p.x >= imageX - tileRes*5 & p.y >= imageY - tileRes*5 && p.x <= imageX + (viewResolution+tileRes*5) / zoomFactor & p.y <= imageY + (viewResolution+tileRes*5) / zoomFactor;
+        //        if (viewRes) {
+        //            if(zoomLevel!= 1 && zoomLevel!= 2 && zoomLevel!= 3 && zoomLevel!= 4 && tileZoom.get(p)!=zoomLevel ){
+        //                if(drawTiles.containsValue(p) && !drawTiles.get(p)) {
+        //                    drawTiles.put(p, true);
+        //                    System.out.println("I am taking so long");
+        //                }
+        //                //changeTileResolution(zoomLevel,p);
+        //            }
+        //        }           else     if (viewResPlus500 ) {
+        //            //if(zoomLevel!= 1 && zoomLevel!= 2 && zoomLevel!= 3 &&tileZoom.get(p)!=zoomLevel){
+        //            //    drawTiles.put(p, false);
+        //            //    System.out.println("I am taking too long");
+        //            //    //changeTileResolution(zoomLevel,p);
+        //            //}
+        //        }
+        //        mouseReleased = false;
+        //    }
+        //}
         int tilesDrawn = 0;
 
-        if(zoomLevel == 1 || zoomLevel == 2 || zoomLevel == 3|| zoomLevel == 4) {
+        //if(zoomLevel == 1 || zoomLevel == 2 || zoomLevel == 3|| zoomLevel == 4) {
             g.drawImage(prerenderedImage,
                     0,
                     0,
@@ -370,24 +367,24 @@ public class GraphOfNodes extends JPanel{
                     (int) (((imageX * fullResolutionFactor*8 + viewResolution * fullResolutionFactor*8 / (zoomFactor)))),
                     (int) (((imageY * fullResolutionFactor*8 + viewResolution * fullResolutionFactor*8 / (zoomFactor)))),
                     this);
-        } else {
-            for (Point p : drawTiles.keySet()) {
-                if(drawTiles.get(p)){
-                    tilesDrawn++;
-                    BufferedImage tile = tiles.get(p);
-                    g.drawImage(tile,
-                            (int)((p.x-imageX*fullResolutionFactor)*zoomFactor),
-                            (int)((p.y-imageY*fullResolutionFactor)*zoomFactor),
-                            (int)((p.x+tileRes-imageX*fullResolutionFactor)*zoomFactor),
-                            (int)((p.y+tileRes-imageY*fullResolutionFactor)*zoomFactor),
-                            0,
-                            0,
-                            tile.getWidth(),
-                            tile.getHeight(),
-                            this);
-                }
-            }
-        }
+        //} else {
+        //    for (Point p : drawTiles.keySet()) {
+        //        if(drawTiles.get(p)){
+        //            tilesDrawn++;
+        //            BufferedImage tile = tiles.get(p);
+        //            g.drawImage(tile,
+        //                    (int)((p.x-imageX*fullResolutionFactor)*zoomFactor),
+        //                    (int)((p.y-imageY*fullResolutionFactor)*zoomFactor),
+        //                    (int)((p.x+tileRes-imageX*fullResolutionFactor)*zoomFactor),
+        //                    (int)((p.y+tileRes-imageY*fullResolutionFactor)*zoomFactor),
+        //                    0,
+        //                    0,
+        //                    tile.getWidth(),
+        //                    tile.getHeight(),
+        //                    this);
+        //        }
+        //    }
+        //}
         //System.out.println("Tiles drawn= " + tilesDrawn);
         //g.drawImage(consideredImage,
         //        0,
@@ -425,7 +422,6 @@ public class GraphOfNodes extends JPanel{
     }
 
     private void changeTilesResolution(double zoomLevel) {
-        System.out.println("changeTilesResolution");
         for (Point p : tilePoints) {
             if (p.x >= imageX - tileRes & p.y >= imageY - tileRes && p.x <= imageX + (viewResolution) / zoomFactor & p.y <= imageY + (viewResolution) / zoomFactor) {
                 changeTileResolution(zoomLevel, p);
@@ -538,21 +534,22 @@ public class GraphOfNodes extends JPanel{
     //draws the red and blue circles to draw routes
     private void drawRedAndBlue() {
         Graphics2D graph2d = ballImage.createGraphics();
-        routeFactor = this.routeFactor/2;
+        int routeFactor = this.routeFactor/2;
         graph2d.setColor(Color.RED);
         if (!firstClick) {
             //drawBackground(ballImage);
             graph2d.dispose();
-            this.ballImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
+            this.ballImage = new BufferedImage(ballImage.getWidth(),ballImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
             graph2d = ballImage.createGraphics();
             graph2d.setColor(Color.RED);
             if(redDrawX!=drawX && redDrawY !=drawY){
                 redDrawX = drawX; redDrawY = drawY;
-            Point2D pointToDrawAt = findClosestNodePoint(redDrawX, redDrawY);
-            redDrawAtPointX = (int) pointToDrawAt.getX();
-            redDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-1300*8);
-            //System.out.println("Red: " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
-            drawBlue=false;
+                Point2D pointToDrawAt = findClosestNodePoint(redDrawX, redDrawY);
+                redDrawAtPointX = (int) pointToDrawAt.getX();
+                redDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-ballImage.getHeight());
+                //redDrawAtPointY = (int) pointToDrawAt.getY();
+                System.out.println("Red: " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
+                drawBlue=false;
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
             }
         }
@@ -566,13 +563,14 @@ public class GraphOfNodes extends JPanel{
                 blueDrawX = drawX;
                 blueDrawY = drawY;
             }
-            //System.out.println("Blue: " + scaleValueX(blueDrawX) + "," + scaleValueY(blueDrawY));
+            System.out.println("Blue: " + scaleValueX(blueDrawX) + "," + scaleValueY(blueDrawY));
             drawBlue = true;
         }
         if(drawBlue) {
             Point2D pointToDrawAt = findClosestNodePoint(blueDrawX, blueDrawY);
             blueDrawAtPointX = (int) pointToDrawAt.getX();
-            blueDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-1300*8);
+            blueDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-ballImage.getHeight());
+            //blueDrawAtPointY = (int) pointToDrawAt.getY();
             Shape blue = new Ellipse2D.Double(blueDrawAtPointX-5, blueDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
             graph2d.fill(blue);
             graph2d.draw(blue);
@@ -692,8 +690,8 @@ public class GraphOfNodes extends JPanel{
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         //this.consideredImage = new BufferedImage(consideredImage.getWidth(),consideredImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
         Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(4));
-        int alpha = 200; // 50% transparent
+        graph2d.setStroke(new BasicStroke(1));
+        int alpha = 255; // 50% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
         for (CustomWay way: ways) {

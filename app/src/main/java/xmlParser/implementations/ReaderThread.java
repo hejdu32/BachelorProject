@@ -50,7 +50,8 @@ class ReaderThread extends Thread {
                         }
                         break;
                     case "info" :
-                        double distance = Double.parseDouble(replyAsArr[1]);
+                        double distance = 99999999;
+                        if(!replyAsArr[1].equals("inf")) distance = Double.parseDouble(replyAsArr[1]);
                         int nodesEvaluated = Integer.parseInt(replyAsArr[2]);
                         if (replyAsArr.length ==4){
                             long chosenLandmark = Long.parseLong(replyAsArr[3]);
