@@ -175,7 +175,7 @@ public class GraphBuilder {
                     }
                 }
                 else if(nodeDegree == 2) {
-                    //Do other stuff
+
                 }
                 else {
 
