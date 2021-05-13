@@ -175,10 +175,19 @@ public class GraphBuilder {
                     }
                 }
                 else if(nodeDegree == 2) {
-
-                }
-                else {
-
+//                    Edge edgeToNextNode1 = adjacencyList.get(id).get(0);
+//                    Long idOfNextNode1 = edgeToNextNode1.getDestinationId();
+//
+//                    if(adjacencyList.get(idOfNextNode1) != null && adjacencyList.get(idOfNextNode1).size() == 2) {
+//                        reduceAdjacencyListOneway2(id, idOfNextNode1, edgeToNextNode1.getDistanceToDestination(), adjacencyList);
+//                    }
+//
+//                    Edge edgeToNextNode2 = adjacencyList.get(id).get(1);
+//                    Long idOfNextNode2 = edgeToNextNode2.getDestinationId();
+//
+//                    if(adjacencyList.get(idOfNextNode1) != null && adjacencyList.get(idOfNextNode1).size() == 2) {
+//                        reduceAdjacencyListOneway2(id, idOfNextNode2, edgeToNextNode2.getDistanceToDestination(), adjacencyList);
+//                    }
                 }
             }
         }
@@ -196,6 +205,31 @@ public class GraphBuilder {
             adjacencyList.put(currentId, Collections.emptyList());
             adjacencyList.put(firstId, Collections.singletonList(new Edge(edgeToNextNode.getDestinationId(), newAccDist)));
         }
+    }
+
+    private void reduceAdjacencyListOneway2(Long firstId, Long currentId, double accDistance, HashMap<Long, List<Edge>> adjacencyList){
+        if(adjacencyList.get(currentId).size() == 1) {
+            Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
+            Long idOfNextNode = edgeToNextNode.getDestinationId();
+            double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
+            if(adjacencyList.get(idOfNextNode)!= null && adjacencyList.get(idOfNextNode).size() == 1) {
+                adjacencyList.put(currentId, Collections.emptyList());
+                reduceAdjacencyListOneway2(firstId, idOfNextNode, newAccDist, adjacencyList);
+            }
+            else {
+                adjacencyList.put(currentId, Collections.emptyList());
+                adjacencyList.put(firstId, Collections.singletonList(new Edge(edgeToNextNode.getDestinationId(), newAccDist)));
+            }
+        }
+        else if(adjacencyList.get(currentId).size() == 2) {
+
+
+        }
+
+        else {
+
+        }
+
     }
 }
 
