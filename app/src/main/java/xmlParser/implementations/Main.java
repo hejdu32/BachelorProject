@@ -28,6 +28,7 @@ public class Main implements PropertyChangeListener {
     private static BufferedWriter writer;
     //COUNTRY TO BE PARSED
     private static final String country = "malta";
+    private static String algoOnClick = "runAstar";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
 
@@ -116,24 +117,45 @@ public class Main implements PropertyChangeListener {
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
-                case "testd":
-                    System.out.println("test started rundijkstra");
-                    from = graphOfNodes.getFrom();
-                    System.out.println("From: " + from);
-                    to = graphOfNodes.getTo();
-                    System.out.println("To: " + to);
-                    lineToSend = "runDijkstra"+" " + from + " "+  to + "\n";
+                case "algo":
+                    System.out.println("type algo (runDijkstra, runAstar, runALT): ");
+                    String inputAlgo = inputReader.readLine().toLowerCase();
+                    String inputAlgoLower = inputAlgo.toLowerCase();
+                    switch (inputAlgoLower) {
+                        case "rundijkstra":
+                            algoOnClick = "runDijkstra";
+                            System.out.println("Algorithm on click is now: " + "runDijkstra");
+                            break;
+                        case "runastar":
+                            algoOnClick = "runAstar";
+                            System.out.println("Algorithm on click is now: " + "runAstar");
+                            break;
+                        case "runalt":
+                            algoOnClick = "runALT";
+                            System.out.println("Algorithm on click is now: " + "runALT");
+                            break;
+                        default:
+                            System.out.println("Has to be either runDijksta, runAstar, runALT. Got: " + inputAlgo);
+                            break;
+                    }
+                    break;
+                case "run":
+                    System.out.println("type algo (runDijksta, runAstar, runALT): ");
+                    String algo = inputReader.readLine();
+                    System.out.println("From node: ");
+                    String from = inputReader.readLine();
+                    System.out.println("To node: ");
+                    String to = inputReader.readLine();
+                    lineToSend = algo+" " + from + " "+  to + "\n";
                     writer.write(lineToSend);
                     writer.flush();
-                    //graphOfNodes.setRouteToDraw(result, Color.red); //also draws route
+                    //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
-                case "testa":
-                    System.out.println("test started runAstar");
-                    from = graphOfNodes.getFrom();
-                    System.out.println("From: " + from);
-                    to = graphOfNodes.getTo();
-                    System.out.println("To: " + to);
-                    lineToSend = "runAstar"+" " + from + " "+  to + "\n";
+                case "r":
+                    System.out.println("type algo (runDijksta, runAstar, runALT) From node: To node: ");
+                    String all = inputReader.readLine();
+                    String[] splitInput = all.split("\\s+");
+                    lineToSend = splitInput[0]+" " + splitInput[1] + " "+  splitInput[2] + "\n";
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
@@ -161,13 +183,13 @@ public class Main implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("SecoundClick")) {
-            System.out.println("test started runAstar");
+            System.out.println("Running with " + algoOnClick);
             from = graphOfNodes.getFrom();
             System.out.println("From: " + from);
             to = graphOfNodes.getTo();
             System.out.println("To: " + to);
             try {
-                String lineToSend = "runAstar"+" " + from + " "+  to + "\n";
+                String lineToSend = algoOnClick+" " + from + " "+  to + "\n";
                 writer.write(lineToSend);
                 writer.flush();
                 //result = reader.readLine();
