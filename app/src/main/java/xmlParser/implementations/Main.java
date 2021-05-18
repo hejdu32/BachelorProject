@@ -27,33 +27,43 @@ public class Main implements PropertyChangeListener {
     private static BufferedReader reader;
     private static BufferedWriter writer;
     //COUNTRY TO BE PARSED
-    private static final String country = "malta";
+    private static String country = "malta";
     private static String algoOnClick = "runAstar";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
-
+        country = args[0];
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
         pb = new ProcessBuilder();
-        pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
+        pb.command("C:/Users/a/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
         parser.parse("app/src/resources/"+country+"-latest.osm.pbf");
-        parser.filterFerryWays();
 
+        parser.filterFerryWays();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
+
+        HashMap<Long, List<Edge>> reducedAdjlist = null;
+        try {
+            reducedAdjlist = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+        } catch (TransformException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("adjList size: " + reducedAdjlist.keySet().size());
+        //graphOfNodes.setAdjacencyList(adjList);
+
 
         File possibleCountryFile = new File(country);
         String pathToCppFile;
         if (!possibleCountryFile.exists()){
-            graphBuilder.writeWAdjList(country,parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-            pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
-        } else {
-            pathToCppFile = possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
+            //graphBuilder.writeAllWays(country,parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+            graphBuilder.writeReducedList(country,parser.getNodes(),reducedAdjlist);
         }
+        pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
         JFrame frame = new JFrame();
 
@@ -88,9 +98,9 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "rundijkstra":
                     //System.out.println("Input from nodeId");
-                    from = "3593516725";//reader1.readLine();
+                    from = "2461634106";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "5037683804";//reader1.readLine();
+                    to = "2400200478";//reader1.readLine();
                     lineToSend = "runDijkstra"+" " + from + " "+  to +  "\n";
                     //System.out.println(lineToSend);
                     writer.write(lineToSend);
@@ -99,9 +109,9 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "runastar":
                     //System.out.println("Input from nodeId");
-                    from = "3593516725";//reader1.readLine();
+                    from = "2461634106";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "5037683804";//reader1.readLine();
+                    to = "2400200478";//reader1.readLine();
                     lineToSend = "runAstar"+" " + from + " "+  to +  "\n";
                     writer.write(lineToSend);
                     writer.flush();
@@ -109,9 +119,9 @@ public class Main implements PropertyChangeListener {
                     break;
                 case "runalt":
                     //System.out.println("Input from nodeId");
-                    from = "1818942364";//reader1.readLine();
+                    from = "2461634106";//reader1.readLine();
                     //System.out.println("Input to nodeId");
-                    to = "5543870050";//reader1.readLine();
+                    to = "2400200478";//reader1.readLine();
                     lineToSend = "runALT"+" " + from + " "+  to + "\n";
                     writer.write(lineToSend);
                     writer.flush();
@@ -164,10 +174,10 @@ public class Main implements PropertyChangeListener {
                     graphOfNodes.setImageX(0);
                     graphOfNodes.setImageY(0);
                     try {
-                        HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+                        HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
                         //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
                         System.out.println("adjList size: " + adjList.keySet().size());
-                        graphOfNodes.setAdjacencyList(graphBuilder.reduceAdjacencyList(adjList));
+                        graphOfNodes.setAdjacencyList(adjList);
                     } catch (TransformException e) {
                         e.printStackTrace();
                     }

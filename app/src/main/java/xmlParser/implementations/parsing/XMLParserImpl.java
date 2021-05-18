@@ -107,7 +107,56 @@ public class XMLParserImpl implements XMLParser {
                         nodes.remove(id);
                     }
             }
+            nodesToSearchFor.remove(id);
         }
+
+        //remove me please
+        //nodes = new HashMap<>();
+        //ways = new HashMap<>();
+        //nodes.put(1L,new CustomNode(1L,-1,1));
+        //nodes.put(2L,new CustomNode(2L,1,1));
+        //nodes.put(3L,new CustomNode(3L,1,-1));
+        //nodes.put(4L,new CustomNode(4L,-1,-1));
+        //nodes.put(5L,new CustomNode(5L,2,3));
+        //nodes.put(6L,new CustomNode(6L,3,6));
+        //nodes.put(7L,new CustomNode(7L,4,8));
+        //nodes.put(8L,new CustomNode(8L,6,8));
+        //nodes.put(9L,new CustomNode(9L,2,7));
+        //nodes.put(10L,new CustomNode(10L,3,8));
+        //nodes.put(11L,new CustomNode(11L,2,9));
+        //nodes.put(12L,new CustomNode(12L,1,6));
+        //nodes.put(13L,new CustomNode(13L,3,-2));
+        //nodes.put(14L,new CustomNode(14L,3,0));
+        //nodes.put(15L,new CustomNode(15L,5,0));
+        //nodes.put(16L,new CustomNode(16L,6,2));
+        //nodes.put(17L,new CustomNode(17L,8,8));
+        //nodes.put(18L,new CustomNode(18L,0,2));
+        //nodes.put(19L,new CustomNode(19L,-2,0));
+        //nodes.put(20L,new CustomNode(20L,0,-2));
+        //nodes.put(21L,new CustomNode(21L,2,0));
+        //nodes.put(22L,new CustomNode(22L,3,1));
+        //nodes.put(23L,new CustomNode(23L,-2,-2));
+        //nodes.put(24L,new CustomNode(24L,-2,2));
+        //CustomWay w1 = new CustomWay(31L,new ArrayList<Long>(Arrays.asList(1L,18L,2L,21L,3L,20L,4L,19L)),"xd","1","0");
+        //CustomWay w2 = new CustomWay(32L,new ArrayList<Long>(Arrays.asList(3L,13L,14L,15L)),"xd","1","0");
+        //CustomWay w3 = new CustomWay(33L,new ArrayList<Long>(Arrays.asList(15L,16L,8L)),"xd","1","0");
+        //CustomWay w4 = new CustomWay(34L,new ArrayList<Long>(Arrays.asList(2L,22L,5L)),"xd","1","0");
+        //CustomWay w5 = new CustomWay(35L,new ArrayList<Long>(Arrays.asList(2L,5L,6L,7L,8L,17L)),"xd","1","0");
+        //CustomWay w6 = new CustomWay(36L,new ArrayList<Long>(Arrays.asList(6L,9L,10L,11L)),"xd","1","0");
+        //CustomWay w7 = new CustomWay(37L,new ArrayList<Long>(Arrays.asList(9L,12L)),"xd","1","0");
+        //CustomWay w8 = new CustomWay(38L,new ArrayList<Long>(Arrays.asList(1L,24L)),"xd","1","0");
+        //CustomWay w9 = new CustomWay(39L,new ArrayList<Long>(Arrays.asList(4L,23L)),"xd","1","0");
+        //CustomWay w10 = new CustomWay(31L,new ArrayList<Long>(Arrays.asList(19L,1L)),"xd","1","0");
+        //ways.put(31L,w1);
+        //ways.put(32L,w2);
+        //ways.put(33L,w3);
+        //ways.put(34L,w4);
+        //ways.put(35L,w5);
+        //ways.put(36L,w6);
+        //ways.put(37L,w7);
+        //ways.put(38L,w8);
+        //ways.put(39L,w9);
+        //ways.put(40L,w10);
     }
 
 }

@@ -1,6 +1,7 @@
 package xmlParser.implementations.parsing;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonToken;
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -95,38 +96,7 @@ public class GraphBuilder {
         }
     }
 
-    //%mængde af noder ?mængde af veje
-    //*1 ^4.21 ,3.21
-    //*2 ^1.23 ,8.12
-    //...
-    //#1 ;2 ;3 ;4
-    //.....
-    //!
-    public void writeToFile(String s, List<CustomWay> ways, Map<Long, CustomNode> nodes, HashMap<Long, List<Edge>> adjLst) throws IOException {
-        int amountOfNodes = nodes.size();
-        int amountOfWays = ways.size();
-        StringBuilder line = new StringBuilder("%" + amountOfNodes + " ?" + amountOfWays + "\n");
-        FileWriter writer = new FileWriter(s);
-        writer.write(line.toString());
-        //choords
-        for (long node:nodes.keySet()) {
-            line = new StringBuilder("#" + node + " " + nodes.get(node).getLatitudeAsXCoord() + " " + nodes.get(node).getLongtitudeAsYCoord() + "\n");
-            writer.write(line.toString());
-        }
-
-        for (CustomWay w:ways){
-            line = new StringBuilder(";" + w.getMaxSpeed());
-            for (Long nodeid:w.getNodeIdList()){
-                line.append(" ").append(nodeid);
-            }
-            line.append("\n");
-            writer.write(line.toString());
-        }
-        writer.write("!");
-        writer.close();
-    }
-
-    public void writeWAdjList(String name, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
+    public void writeAllWays(String name, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
         int amountOfNodes = nodes.size();
         int amountOfWays = ways.size();
         StringBuilder line = new StringBuilder(amountOfNodes + "\n" + amountOfWays + "\n");
@@ -151,6 +121,31 @@ public class GraphBuilder {
         writer.close();
 
     }
+
+    public void writeReducedList(String name, Map<Long, CustomNode> nodes, HashMap<Long, List<Edge>> reducedAdjlist)throws IOException{
+        int amountOfNodes = nodes.size();
+        int amountOfWays = reducedAdjlist.keySet().size();
+        StringBuilder line = new StringBuilder(amountOfNodes + "\n" + amountOfWays + "\n");
+        FileWriter writer = new FileWriter(name);
+        writer.write(line.toString());
+        //choords
+        for (long node:nodes.keySet()) {
+            line = new StringBuilder(node + "\n" + nodes.get(node).getLatitudeAsXCoord() + "\n" + nodes.get(node).getLongtitudeAsYCoord() + "\n");
+            writer.write(line.toString());
+        }
+
+        for (Long src :reducedAdjlist.keySet()) {
+            line = new StringBuilder(src.toString()+ " " + reducedAdjlist.get(src).size());
+
+            for (Edge e:reducedAdjlist.get(src)) {
+                line.append(" "+e.getDestinationId()+ " "+e.getDistanceToDestination());
+            }
+            line.append("\n");
+            writer.write(line.toString());
+        }
+
+
+    }
     public void writeToFileAsJson(String filePath) throws IOException {
         Gson gson = new Gson();
         NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays(), xmlParser.getNodes());
@@ -160,6 +155,142 @@ public class GraphBuilder {
         writer.close();
 
     }
+    public double distBetween2Nodes(Map<Long, CustomNode> nodes, Long startNode, Long endNode,int maxSpeed)throws TransformException{
+        double startX = nodes.get(startNode).getLatitudeAsXCoord();
+        double startY = nodes.get(startNode).getLongtitudeAsYCoord();
+
+        double endX = nodes.get(endNode).getLatitudeAsXCoord();
+        double endY = nodes.get(endNode).getLongtitudeAsYCoord();
+
+        Coordinate startCrd = new Coordinate(startX, startY);
+        Coordinate endCrd = new Coordinate(endX, endY);
+
+        return distanceCalculator.calculateDistanceWithSpeed(startCrd, endCrd, maxSpeed);
+    }
+
+    public HashMap<Long, List<Edge>> simpleReduceAdjacencyList(Map<Long, CustomNode> nodes, List<CustomWay> ways)throws TransformException{
+
+        HashMap<Long, List<Edge>> reducedList = new HashMap<>();
+        HashMap<Long,Integer> degreeMap = new HashMap<>();
+        for (CustomWay way:ways) {
+            for (Long nodeId :way.getNodeIdList()) {
+                boolean isFirstElem = way.getNodeIdList().get(0).equals(nodeId);
+                int lastidx = way.getNodeIdList().size() - 1;
+                boolean isLastElem = way.getNodeIdList().get(lastidx).equals(nodeId);
+                boolean isOneWay = way.isOneWay().equals("1");
+
+                if (degreeMap.containsKey(nodeId)){
+                    int oldVal = degreeMap.get(nodeId);
+
+                    if (isFirstElem){
+                        degreeMap.put(nodeId,oldVal+1);
+                        continue;
+                    }
+                    if (isLastElem && !isOneWay){
+                        degreeMap.put(nodeId,oldVal+1);
+                        continue;
+                    }
+
+                    if (isOneWay){
+                        degreeMap.put(nodeId,oldVal+1);
+                    }else{
+                        degreeMap.put(nodeId,oldVal+2);
+                    }
+                }else{
+                    if (isFirstElem){
+                        degreeMap.put(nodeId,1);
+                        continue;
+                    }
+                    if (isLastElem && !isOneWay){
+                        degreeMap.put(nodeId,1);
+                        continue;
+                    }
+                    if (isOneWay){
+                        degreeMap.put(nodeId,1);
+                    }else{
+                        degreeMap.put(nodeId,2);
+                    }
+
+                }
+            }
+        }
+        //System.out.println(degreeMap.size());
+        //degreeMap.entrySet().forEach(entry -> {System.out.println(entry.getKey() + " " + entry.getValue());});
+
+        for (CustomWay way:ways) {
+            boolean isOneWay = way.isOneWay().equals("1");
+            int speed = Integer.parseInt(way.getMaxSpeed());
+            List<Long> wayNodes = way.getNodeIdList();
+
+            int lastSeenIndexToSave = 0;
+            double distance = 0;
+
+            if (isOneWay){
+                for (int i = 1; i < wayNodes.size(); i++) {
+                    int lastidx = way.getNodeIdList().size() - 1;
+                    boolean isLastElem = way.getNodeIdList().get(lastidx).equals(wayNodes.get(i));
+
+                    if (!(degreeMap.get(wayNodes.get(i)) ==1) || isLastElem) {
+                        long start = wayNodes.get(lastSeenIndexToSave);
+                        long end = wayNodes.get(i);
+                        if (i-1==lastSeenIndexToSave){
+                            long firstID = wayNodes.get(lastSeenIndexToSave);
+                            long secondId = wayNodes.get(i);
+                            distance += distBetween2Nodes(nodes, firstID, secondId, speed);
+                        }else{
+                            for (int j = lastSeenIndexToSave; j < i; j++) {
+                                long firstID = wayNodes.get(lastSeenIndexToSave);
+                                long secondId = wayNodes.get(j);
+
+                                distance += distBetween2Nodes(nodes, firstID, secondId, speed);
+                                lastSeenIndexToSave = j;
+                            }
+                        }
+                        if (start != end) {
+                            addEdgeToList(reducedList, start, end, distance);
+                            lastSeenIndexToSave = i;
+                        }
+
+                    }
+
+                }
+            }else{
+            for (int i = 1; i < wayNodes.size(); i++) {
+                int lastidx = way.getNodeIdList().size() - 1;
+                boolean isLastElem = way.getNodeIdList().get(lastidx).equals(wayNodes.get(i));
+
+                if (!(degreeMap.get(wayNodes.get(i)) ==2) || isLastElem) {
+                    long start = wayNodes.get(lastSeenIndexToSave);
+                    long end = wayNodes.get(i);
+                    if (i-1==lastSeenIndexToSave){
+                        long firstID = wayNodes.get(lastSeenIndexToSave);
+                        long secondId = wayNodes.get(i);
+                        distance += distBetween2Nodes(nodes, firstID, secondId, speed);
+                    }else{
+                        for (int j = lastSeenIndexToSave; j < i; j++) {
+                        long firstID = wayNodes.get(lastSeenIndexToSave);
+                        long secondId = wayNodes.get(j);
+
+                        distance += distBetween2Nodes(nodes, firstID, secondId, speed);
+                        lastSeenIndexToSave = j;
+                        }
+                    }
+                    if (start != end) {
+                        addEdgeToList(reducedList, start, end, distance);
+                        addEdgeToList(reducedList, end, start, distance);
+
+                        lastSeenIndexToSave = i;
+                    }
+
+                }
+
+            }
+            }
+        }
+
+        return reducedList;
+    }
+
 
     public HashMap<Long, List<Edge>> reduceAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
         Map<Long, List<Long>> nodesToSearhFor = xmlParser.getNodesToSearchFor();

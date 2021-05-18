@@ -741,8 +741,8 @@ public class GraphOfNodes extends JPanel{
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
 
-        graph2d.setStroke(new BasicStroke(1));
-        int alpha = 140; // 50% transparent
+        graph2d.setStroke(new BasicStroke(2));
+        int alpha = 255; // 50% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
 
@@ -807,7 +807,7 @@ public class GraphOfNodes extends JPanel{
     private void drawGraph(List<CustomWay> ways, BufferedImage bufferedImage) {
         Graphics2D graph2d = bufferedImage.createGraphics();
         int fullResolutionFactor = this.fullResolutionFactor*8;
-        graph2d.setStroke(new BasicStroke(1));
+        graph2d.setStroke(new BasicStroke(2));
         graph2d.setColor(Color.BLACK);
         for (CustomWay way: ways) {
             long previousId = 0L;
