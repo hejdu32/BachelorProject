@@ -144,7 +144,7 @@ public class XMLParserImplTest {
         try {
             long startTime = System.currentTimeMillis();
             //graphBuilder.writeToFile("denmark", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
-            graphBuilder.writeWAdjList("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            graphBuilder.writeAllWays("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long endTime = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
         } catch (IOException e) {
@@ -157,7 +157,7 @@ public class XMLParserImplTest {
         try {
             long startTime = System.currentTimeMillis();
             //graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
-            graphBuilder.writeWAdjList("malta", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            graphBuilder.writeAllWays("malta", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long endTime = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
         } catch (IOException e) {

@@ -442,7 +442,6 @@ public class GraphOfNodes extends JPanel{
         drawTile(p);
     }
 
-
     private Map<Point, BufferedImage> flipTiles(Map<Point, BufferedImage> tiles) {
         for (Point p :  tilePoints) {
             BufferedImage tile = tiles.get(p);
@@ -706,7 +705,7 @@ public class GraphOfNodes extends JPanel{
             do {
                 long currId = (long) iterator.next();
                 //if(adjacencyList != null && nodes.contains(currId) &&  adjacencyList.get(currId) != null && adjacencyList.get(currId).size()!=0) {
-                    if (previousId == 0L ) {
+                    if (previousId == 0L) {
                         previousId = currId;
                     } else {
                         if (nodes.contains(currId) && nodes.contains(previousId)) {
