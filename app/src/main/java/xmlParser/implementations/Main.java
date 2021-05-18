@@ -32,7 +32,7 @@ public class Main implements PropertyChangeListener {
     private static String algoOnClick = "runALT";
 
     //COUNTRY TO BE PARSED
-    private static final String country = "malta";
+    private static String country = "malta";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
         country = args[0];
@@ -209,6 +209,7 @@ public class Main implements PropertyChangeListener {
                 GraphBuilder graphBuilder = null;
                 graphBuilder = new GraphBuilder(parser);
                 HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+                graphOfNodes.setReducedAdjList(adjList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -228,7 +229,7 @@ public class Main implements PropertyChangeListener {
             }
             System.out.println(to);
             try {
-                String lineToSend = algoOnClick+" " + fromSize + " " + from + " " + toSize + " " +  to + "\n";
+                String lineToSend = algoOnClick+" " + fromSize + from + " " + toSize +  to + "\n";
                 System.out.println(lineToSend);
                 writer.write(lineToSend);
                 writer.flush();

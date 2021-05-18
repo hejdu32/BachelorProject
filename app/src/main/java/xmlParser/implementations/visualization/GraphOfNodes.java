@@ -77,8 +77,8 @@ public class GraphOfNodes extends JPanel{
     private int blueDrawAtPointY;
     private long chosenLandmark = -1;
     private HashMap<Long, List<Edge>> reducedAdjList = null;
-    private HashMap<Long, List<Long>> from = null;
-    private HashMap<Long, List<Long>> to = null;
+    private HashMap<Long, List<Long>> from = new HashMap<>();
+    private HashMap<Long, List<Long>> to = new HashMap<>();
 
     public HashMap<Long, List<Edge>> getAdjacencyList() {
         return adjacencyList;

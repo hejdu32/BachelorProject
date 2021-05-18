@@ -57,29 +57,43 @@ public class NodeFinderImpl implements NodeFinder {
         if(currWay==null) System.out.println("currWay is null");
 
         if(currWay.isOneWay() != null && currWay.isOneWay().equals("1")){ //if oneway move back through list of node in way
-            for (int i = currWay.getNodeIdList().size(); i > 0; i--) {
-                findAndAddNode(reducedList, result, currWay, i);
+            for (int i = currWay.getNodeIdList().indexOf(node); i > 0; i--) {
+                Long elem = currWay.getNodeIdList().get(i);
+                boolean existsInReducedList = false;
+                if(reducedList != null && elem != null)
+                    existsInReducedList = reducedList.keySet().contains(elem);
+                if (existsInReducedList) {
+                    result.add(elem);
+                    break;
+                }
             }
         }
         else { //two-way, find two closest nodes
             //find first
             for (int i = currWay.getNodeIdList().indexOf(node); i >= 0; i--) {
-                findAndAddNode(reducedList, result, currWay, i);
+                Long elem = currWay.getNodeIdList().get(i);
+                boolean existsInReducedList = false;
+                if(reducedList != null && elem != null)
+                    existsInReducedList = reducedList.keySet().contains(elem);
+                if (existsInReducedList) {
+                    result.add(elem);
+                    break;
+                }
             }
             //find second
             for (int i = currWay.getNodeIdList().indexOf(node); i < currWay.getNodeIdList().size(); i++) {
-                findAndAddNode(reducedList, result, currWay, i);
+                Long elem = currWay.getNodeIdList().get(i);
+                boolean existsInReducedList = false;
+                if(reducedList != null && elem != null)
+                    existsInReducedList = reducedList.keySet().contains(elem);
+                if (existsInReducedList) {
+                    result.add(elem);
+                    break;
+                }
             }
         }
-
+        if(result.size()==0) System.out.println("I AM A USELESS FUCKING METHOD THAT DOES NOTHING");
         return result;
     }
 
-    private void findAndAddNode(HashMap<Long, List<Edge>> reducedList, List<Long> result, CustomWay currWay, int i) {
-        Long elem = currWay.getNodeIdList().get(i);
-        boolean existsInReducedList = reducedList.keySet().contains(elem);
-        if (existsInReducedList) {
-            result.add(elem);
-        }
-    }
 }
