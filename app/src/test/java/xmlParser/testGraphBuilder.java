@@ -14,6 +14,7 @@ import xmlParser.implementations.testImplementation.XMLParserStump;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -110,6 +111,8 @@ public class testGraphBuilder {
                 adjCounter++;
             }
         }
+
+        assertNotEquals(Collections.emptyList(), adjacencyList.get(327320738L));
         HashMap<Long, List<Edge>> reducedAdjacencyList = newGraphBuilder.reduceAdjacencyList(adjacencyList);
         for(Long id: reducedAdjacencyList.keySet()){
             if(reducedAdjacencyList.get(id).size() == 0) {
@@ -118,6 +121,11 @@ public class testGraphBuilder {
         }
         System.out.println("Nodes with no edges should be 0 and is: " + adjCounter);
         System.out.println("Nodes with no edges is: " + reducedAdjCounter);
+
+        //327320738 should be reduced
+        assertEquals(Collections.emptyList(), reducedAdjacencyList.get(327320738L));
+        assertEquals(adjCounter, 0);
+        assertSame(reducedAdjacencyList, adjacencyList);
 
     }
 }

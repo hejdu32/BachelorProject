@@ -2,6 +2,7 @@ package xmlParser.implementations;
 
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import xmlParser.framework.XMLParser;
 import xmlParser.implementations.parsing.*;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
@@ -21,14 +22,17 @@ public class Main implements PropertyChangeListener {
     private static String result;
     private static String from;
     private static String to;
+    private static List<Long> fromList = new ArrayList<>();
+    private static List<Long> toList = new ArrayList<>();
     private static GraphOfNodes graphOfNodes;
     private static ProcessBuilder pb;
     private static Process process;
     private static BufferedReader reader;
     private static BufferedWriter writer;
+    private static String algoOnClick = "runALT";
+
     //COUNTRY TO BE PARSED
     private static final String country = "malta";
-    private static String algoOnClick = "runAstar";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
 
@@ -92,7 +96,7 @@ public class Main implements PropertyChangeListener {
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
                     lineToSend = "runDijkstra"+" " + from + " "+  to +  "\n";
-                    //System.out.println(lineToSend);
+                    System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
@@ -103,6 +107,7 @@ public class Main implements PropertyChangeListener {
                     //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
                     lineToSend = "runAstar"+" " + from + " "+  to +  "\n";
+                    System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
@@ -113,6 +118,7 @@ public class Main implements PropertyChangeListener {
                     //System.out.println("Input to nodeId");
                     to = "5543870050";//reader1.readLine();
                     lineToSend = "runALT"+" " + from + " "+  to + "\n";
+                    System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
@@ -139,25 +145,31 @@ public class Main implements PropertyChangeListener {
                             break;
                     }
                     break;
-                case "run":
-                    System.out.println("type algo (runDijksta, runAstar, runALT): ");
-                    String algo = inputReader.readLine();
-                    System.out.println("From node: ");
-                    String from = inputReader.readLine();
-                    System.out.println("To node: ");
-                    String to = inputReader.readLine();
-                    lineToSend = algo+" " + from + " "+  to + "\n";
+                case "reverse":
+                    System.out.println("Reversing " + algoOnClick + " " + to + " "+  from);
+                    String from = Main.from;
+                    String to = Main.to;
+                    lineToSend = algoOnClick+" " + to + " "+  from + "\n";
+                    Main.from = to;
+                    Main.to = from;
+                    System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
                     //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
-                case "r":
-                    System.out.println("type algo (runDijksta, runAstar, runALT) From node: To node: ");
+                case "run":
+                    System.out.println("type algo (runDijkstra, runAstar, runALT) From node: To node: ");
                     String all = inputReader.readLine();
                     String[] splitInput = all.split("\\s+");
-                    lineToSend = splitInput[0]+" " + splitInput[1] + " "+  splitInput[2] + "\n";
-                    writer.write(lineToSend);
-                    writer.flush();
+                    String algo = splitInput[0].toLowerCase();
+                    boolean correctSize = splitInput.length==3;
+                    boolean correctAlgo = algo.equals("rundijkstra") || algo.equals("runastar") || algo.equals("runalt");
+                    if(correctSize && correctAlgo) {
+                        lineToSend = splitInput[0] + " " + splitInput[1] + " " + splitInput[2] + "\n";
+                        System.out.println(lineToSend);
+                        writer.write(lineToSend);
+                        writer.flush();
+                    } else System.out.println("Did not understand input: " + all);
                     //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
                 case "reset":
@@ -183,13 +195,33 @@ public class Main implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("SecoundClick")) {
-            System.out.println("Running with " + algoOnClick);
-            from = graphOfNodes.getFrom();
-            System.out.println("From: " + from);
-            to = graphOfNodes.getTo();
-            System.out.println("To: " + to);
+            XMLParser parser = new XMLParserImpl();
             try {
-                String lineToSend = algoOnClick+" " + from + " "+  to + "\n";
+                parser.parse("app/src/resources/malta-latest.osm.pbf");
+                GraphBuilder graphBuilder = null;
+                graphBuilder = new GraphBuilder(parser);
+                HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Running with " + algoOnClick);
+            fromList = graphOfNodes.getFromNodes();
+            int fromSize = fromList.size();
+            toList = graphOfNodes.getToNodes();
+            int toSize = toList.size();
+            from = "";
+            for (Long id :  fromList){
+                from = from + " " + id;
+            }
+            System.out.println(from);
+            to = "";
+            for (Long id :  toList){
+                to = to + " " + id;
+            }
+            System.out.println(to);
+            try {
+                String lineToSend = algoOnClick+" " + fromSize + " " + from + " " + toSize + " " +  to + "\n";
+                System.out.println(lineToSend);
                 writer.write(lineToSend);
                 writer.flush();
                 //result = reader.readLine();

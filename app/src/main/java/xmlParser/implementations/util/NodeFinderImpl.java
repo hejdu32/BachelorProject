@@ -1,11 +1,18 @@
 package xmlParser.implementations.util;
 
 import xmlParser.framework.NodeFinder;
+import xmlParser.framework.XMLParser;
 import xmlParser.implementations.parsing.CustomNode;
+import xmlParser.implementations.parsing.CustomWay;
+import xmlParser.implementations.parsing.Edge;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NodeFinderImpl implements NodeFinder {
     @Override
@@ -37,5 +44,42 @@ public class NodeFinderImpl implements NodeFinder {
         imageX = ((x-xOffset)/scaleFactor);
         imageY = ((y-yOffset)/scaleFactor);
         return new Point2D.Double(imageX,imageY);
+    }
+
+
+    public java.util.List<Long> findClosestReducedNodes(long node, XMLParser parser, HashMap<Long, List<Edge>> reducedList) {
+        List<Long> result = new ArrayList<>();
+        CustomWay currWay = null;
+
+        for (CustomWay way : parser.getWays().values()) {
+            if(way.getNodeIdList().contains(node)) currWay = way;
+        }
+        if(currWay==null) System.out.println("currWay is null");
+
+        if(currWay.isOneWay() != null && currWay.isOneWay().equals("1")){ //if oneway move back through list of node in way
+            for (int i = currWay.getNodeIdList().size(); i > 0; i--) {
+                findAndAddNode(reducedList, result, currWay, i);
+            }
+        }
+        else { //two-way, find two closest nodes
+            //find first
+            for (int i = currWay.getNodeIdList().indexOf(node); i >= 0; i--) {
+                findAndAddNode(reducedList, result, currWay, i);
+            }
+            //find second
+            for (int i = currWay.getNodeIdList().indexOf(node); i < currWay.getNodeIdList().size(); i++) {
+                findAndAddNode(reducedList, result, currWay, i);
+            }
+        }
+
+        return result;
+    }
+
+    private void findAndAddNode(HashMap<Long, List<Edge>> reducedList, List<Long> result, CustomWay currWay, int i) {
+        Long elem = currWay.getNodeIdList().get(i);
+        boolean existsInReducedList = reducedList.keySet().contains(elem);
+        if (existsInReducedList) {
+            result.add(elem);
+        }
     }
 }

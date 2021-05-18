@@ -185,7 +185,7 @@ public class GraphBuilder {
                     Edge edgeToNextNode2 = adjacencyList.get(id).get(1);
                     Long idOfNextNode2 = edgeToNextNode2.getDestinationId();
 
-                    if(adjacencyList.get(idOfNextNode1) != null && adjacencyList.get(idOfNextNode1).size() == 2) {
+                    if(adjacencyList.get(idOfNextNode2) != null && adjacencyList.get(idOfNextNode2).size() == 2) {
                         reduceAdjacencyListOneway2(id, 1, idOfNextNode2, id, edgeToNextNode2.getDistanceToDestination(), adjacencyList);
                     }
                 }

@@ -25,7 +25,9 @@ class ReaderThread extends Thread {
             while (true){
                 reply = reader.readLine();
                 //System.out.println("rply: " +reply);
-                String[] replyAsArr = reply.split(" ");
+                String[] replyAsArr = {"No reply"};
+                if(reply!=null) {replyAsArr = reply.split(" ");}
+                else System.out.println("Got reply: " + reply);
                 //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
                     case "Finished":
@@ -39,7 +41,7 @@ class ReaderThread extends Thread {
                                 .collect(Collectors.toList());
                         switch (replyAsArr[1]){
                             case "dijkstra":
-                                graph.setRouteToDraw(nodeIdLongs, Color.red);
+                                graph.setRouteToDraw(nodeIdLongs, Color.cyan);
                                 break;
                             case "astar":
                                 graph.setRouteToDraw(nodeIdLongs, Color.green);
@@ -56,13 +58,14 @@ class ReaderThread extends Thread {
                         if (replyAsArr.length ==4){
                             long chosenLandmark = Long.parseLong(replyAsArr[3]);
                             System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated + " landmark "+ chosenLandmark);
+                            graph.setLandmark(chosenLandmark);
                         }else{
                         System.out.println("distance: " + distance+ " nodes evaluated: " + nodesEvaluated);
                         }
                         break;
                     case "nodesConsidered" :
                         if(replyAsArr[1].equals("end")){
-                            graph.setWaysToDraw(nodesConsidered, Color.cyan);
+                            graph.setWaysToDraw(nodesConsidered, Color.red);
                             graph.repaint();
                             nodesConsidered = new ArrayList<>();
                             System.out.println("got full response");
@@ -76,6 +79,7 @@ class ReaderThread extends Thread {
                         break;
                     default:
                         System.out.println("Malformed input from cpp: " + reply);
+                        System.out.println("replyAsArr: " + replyAsArr);
                 }
 
             }
