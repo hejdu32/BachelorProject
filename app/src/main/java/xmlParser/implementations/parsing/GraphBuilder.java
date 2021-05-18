@@ -133,7 +133,6 @@ public class GraphBuilder {
             line = new StringBuilder(node + "\n" + nodes.get(node).getLatitudeAsXCoord() + "\n" + nodes.get(node).getLongtitudeAsYCoord() + "\n");
             writer.write(line.toString());
         }
-
         for (Long src :reducedAdjlist.keySet()) {
             line = new StringBuilder(src.toString()+ " " + reducedAdjlist.get(src).size());
 
@@ -143,6 +142,8 @@ public class GraphBuilder {
             line.append("\n");
             writer.write(line.toString());
         }
+        writer.write("!");
+        writer.close();
 
 
     }
@@ -169,7 +170,6 @@ public class GraphBuilder {
     }
 
     public HashMap<Long, List<Edge>> simpleReduceAdjacencyList(Map<Long, CustomNode> nodes, List<CustomWay> ways)throws TransformException{
-
         HashMap<Long, List<Edge>> reducedList = new HashMap<>();
         HashMap<Long,Integer> degreeMap = new HashMap<>();
         for (CustomWay way:ways) {
@@ -287,8 +287,27 @@ public class GraphBuilder {
             }
             }
         }
+        // cleanuplist
+        HashMap<Long, List<Edge>> reducedListNoRedundantEdges = new HashMap<>();
 
-        return reducedList;
+        for (Long node :reducedList.keySet()) {
+            Map <Long, Edge> seenNodes = new HashMap<>();
+
+            for (Edge e :reducedList.get(node)) {
+                long destID = e.getDestinationId();
+                double distToDest = e.getDistanceToDestination();
+                if (seenNodes.containsKey(destID)){
+                    if (distToDest < seenNodes.get(destID).getDistanceToDestination()){
+                        seenNodes.put(destID,e);
+                    }
+                }else{
+                    seenNodes.put(e.getDestinationId(),e);
+                }
+            }
+            ArrayList<Edge> listOfEdges= new ArrayList<>(seenNodes.values());
+            reducedListNoRedundantEdges.put(node,listOfEdges);
+        }
+        return reducedListNoRedundantEdges;
     }
 
 
