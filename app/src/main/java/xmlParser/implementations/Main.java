@@ -50,22 +50,22 @@ public class Main implements PropertyChangeListener {
         parser.filterFerryWays();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
-        HashMap<Long, List<Edge>> reducedAdjlist = null;
-        try {
-            reducedAdjlist = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("adjList size: " + reducedAdjlist.keySet().size());
+        //HashMap<Long, List<Edge>> reducedAdjlist = null;
+        //try {
+        //    reducedAdjlist = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+        //} catch (TransformException e) {
+        //    e.printStackTrace();
+        //}
+//
+        //System.out.println("adjList size: " + reducedAdjlist.keySet().size());
         //graphOfNodes.setAdjacencyList(adjList);
 
 
         File possibleCountryFile = new File(country);
         String pathToCppFile;
         if (!possibleCountryFile.exists()){
-            //graphBuilder.writeAllWays(country,parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-            graphBuilder.writeReducedList(country,parser.getNodes(),reducedAdjlist);
+            graphBuilder.writeAllWays(country,parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+            //graphBuilder.writeReducedList(country,parser.getNodes(),reducedAdjlist);
         }
         pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
@@ -183,14 +183,14 @@ public class Main implements PropertyChangeListener {
                 case "reset":
                     graphOfNodes.setImageX(0);
                     graphOfNodes.setImageY(0);
-                    try {
-                        HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+                    //try {
+                        //HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
                         //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
-                        System.out.println("adjList size: " + adjList.keySet().size());
-                        graphOfNodes.setAdjacencyList(adjList);
-                    } catch (TransformException e) {
-                        e.printStackTrace();
-                    }
+                        //System.out.println("adjList size: " + adjList.keySet().size());
+                        //graphOfNodes.setAdjacencyList(adjList);
+                    //} catch (TransformException e) {
+                    //    e.printStackTrace();
+                    //}
                     graphOfNodes.repaint();
                     break;
                 default:

@@ -19,11 +19,12 @@ class ReaderThread extends Thread {
     }
     public void run() {
         try {
-            String reply;
+            String reply;// = "ERROR";
             System.out.println("Reader thread ready");
             List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
+                //if(reply.equals("null")) continue;
                 //System.out.println("rply: " +reply);
                 String[] replyAsArr = {"No reply"};
                 if(reply!=null) {replyAsArr = reply.split(" ");}
@@ -79,7 +80,7 @@ class ReaderThread extends Thread {
                         break;
                     default:
                         System.out.println("Malformed input from cpp: " + reply);
-                        System.out.println("replyAsArr: " + replyAsArr);
+                        //System.out.println("replyAsArr: " + replyAsArr);
                 }
 
             }
