@@ -555,6 +555,7 @@ public class GraphOfNodes extends JPanel{
                 //redDrawAtPointY = (int) pointToDrawAt.getY();
                 System.out.println("Red: " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
                 drawBlue=false;
+                firePropertyChange("red", false, true);
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
             }
         }
@@ -579,10 +580,11 @@ public class GraphOfNodes extends JPanel{
             Shape blue = new Ellipse2D.Double(blueDrawAtPointX-5, blueDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
             graph2d.fill(blue);
             graph2d.draw(blue);
+            firePropertyChange("blue", false, true);
 
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
 
-            firePropertyChange("SecoundClick", false, true);
+            //firePropertyChange("SecoundClick", false, true);
         }
 
         graph2d.dispose();

@@ -8,6 +8,8 @@ import xmlParser.implementations.visualization.GraphOfNodes;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -30,9 +32,12 @@ public class Main implements PropertyChangeListener {
     private static BufferedReader reader;
     private static BufferedWriter writer;
     private static String algoOnClick = "runALT";
+    private static JTextField txtFrom;
+    private static JTextField txtTo;
+
 
     //COUNTRY TO BE PARSED
-    private static String country = "malta";
+    private static String country = "denmark";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
         country = args[0];
@@ -69,10 +74,48 @@ public class Main implements PropertyChangeListener {
         }
         pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
+
+        writer.write("makeAdjacencyList " + pathToCppFile + "\n");
+        writer.flush();
+
         JFrame frame = new JFrame();
 
         graphOfNodes = new GraphOfNodes((parser));
         graphOfNodes.addPropertyChangeListener(listener);
+
+
+        txtFrom = new JTextField();
+        txtTo = new JTextField();
+        txtFrom.setPreferredSize(new Dimension(300, 30));
+        txtTo.setPreferredSize(new Dimension(300, 30));
+        graphOfNodes.add(txtFrom);
+        graphOfNodes.add(txtTo);
+
+        JButton buttonDijkstra = new JButton("Dijkstra");
+        JButton buttonAStar = new JButton("A*");
+        JButton buttonALT = new JButton("ALT");
+        graphOfNodes.add(buttonDijkstra);
+        graphOfNodes.add(buttonAStar);
+        graphOfNodes.add(buttonALT);
+        buttonDijkstra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runAlgo(txtFrom, txtTo, "runDijkstra");
+            }
+        });
+        buttonAStar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runAlgo(txtFrom, txtTo, "runAstar");
+            }
+        });
+        buttonALT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runAlgo(txtFrom, txtTo, "runALT");
+            }
+        });
+
         frame.getContentPane().add(graphOfNodes);
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -200,12 +243,31 @@ public class Main implements PropertyChangeListener {
         }
     }
 
+    private static void runAlgo(JTextField txtFrom, JTextField txtTo, String runAstar) {
+        from = txtFrom.getText();
+        to = txtTo.getText();
+        String lineToSend = runAstar + " " + from + " " + to + "\n";
+        try {
+            writer.write(lineToSend);
+            writer.flush();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getPropertyName().equals("red")){
+            txtFrom.setText(graphOfNodes.getFrom());
+        }
+        if(evt.getPropertyName().equals("blue")){
+            txtTo.setText(graphOfNodes.getTo());
+        }
+
         if(evt.getPropertyName().equals("SecoundClick")) {
             XMLParser parser = new XMLParserImpl();
             try {
-                parser.parse("app/src/resources/malta-latest.osm.pbf");
+                parser.parse("app/src/resources/denmark-latest.osm.pbf");
                 GraphBuilder graphBuilder = null;
                 graphBuilder = new GraphBuilder(parser);
                 HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
@@ -229,7 +291,7 @@ public class Main implements PropertyChangeListener {
             }
             System.out.println(to);
             try {
-                String lineToSend = algoOnClick+" " + fromSize + from + " " + toSize +  to + "\n";
+                String lineToSend = algoOnClick+" "  + fromList.get(0) + " "  +  toList.get(0) + "\n";
                 System.out.println(lineToSend);
                 writer.write(lineToSend);
                 writer.flush();
