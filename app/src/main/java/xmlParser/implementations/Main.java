@@ -100,19 +100,28 @@ public class Main implements PropertyChangeListener {
         buttonDijkstra.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                runAlgo(txtFrom, txtTo, "runDijkstra");
+                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                if (onlyNumbers) {
+                    runAlgo(txtFrom, txtTo, "runDijkstra");
+                }
             }
         });
         buttonAStar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                if (onlyNumbers) {
                 runAlgo(txtFrom, txtTo, "runAstar");
+                }
             }
         });
         buttonALT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                    boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                    if (onlyNumbers) {
                 runAlgo(txtFrom, txtTo, "runALT");
+                    }
             }
         });
 
