@@ -38,6 +38,7 @@ class ReaderThread extends Thread {
                     case "resInFile":
                         parseResultFile("result");
                         break;
+                    //DEPRECATED
                     case "path":
                         //the magical remove the first 3 the elements and cast the array to longs then to the wrapper Long and finally put it into an arrayList
                         List<Long> nodeIdLongs = Arrays.stream(Arrays.copyOfRange(replyAsArr, 3, replyAsArr.length))
@@ -84,7 +85,6 @@ class ReaderThread extends Thread {
                         break;
                     default:
                         System.out.println("Malformed input from cpp: " + reply);
-                        //System.out.println("replyAsArr: " + replyAsArr);
                 }
 
             }
@@ -119,11 +119,11 @@ class ReaderThread extends Thread {
                     if (method.equals("landmarks")){
                         landmarkChosen = Long.parseLong(resAsArr[4]);
                         resString += " landmark "+ landmarkChosen;
+                        graph.setLandmark(landmarkChosen);
                     }
                     System.out.println(resString);
                     break;
                 case "path":
-                    System.out.println("doing path stuff");
                     List<Long> nodeIdLongs = Arrays.stream(Arrays.copyOfRange(resAsArr, 1, resAsArr.length))
                             .mapToLong(Long::parseLong)
                             .boxed()
@@ -142,17 +142,14 @@ class ReaderThread extends Thread {
                             System.out.println("Didnt understand the method used "+method + " amount of nodes " + nodeIdLongs.size());
                             break;
                     }
-                    System.out.println("done with path");
                     break;
                 case "nodesConsid":
-                    System.out.println("handeling nodes considered");
                     List<Long> temporaryList = Arrays.stream(Arrays.copyOfRange(resAsArr, 1, resAsArr.length))
                             .mapToLong(Long::parseLong)
                             .boxed()
                             .collect(Collectors.toList());
                     graph.setWaysToDraw(temporaryList, Color.red);
                     graph.repaint();
-                    System.out.println("Nodes considered done");
                     break;
             }
 

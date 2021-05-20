@@ -36,7 +36,7 @@ public class Main implements PropertyChangeListener {
     private static JTextField txtTo;
 
 
-    //COUNTRY TO BE PARSED
+    //DEFAULT COUNTRY TO BE PARSED
     private static String country = "denmark";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
@@ -48,9 +48,9 @@ public class Main implements PropertyChangeListener {
         pb.command(pathToExe);  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
+
         parser.parse("app/src/resources/"+country+"-latest.osm.pbf");
 
         parser.filterFerryWays();
