@@ -3,8 +3,7 @@ package xmlParser.implementations;
 import xmlParser.implementations.visualization.GraphOfNodes;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +12,11 @@ import java.util.stream.Collectors;
 class ReaderThread extends Thread {
     BufferedReader reader;
     GraphOfNodes graph;
+
     public ReaderThread(BufferedReader reader,GraphOfNodes graph){
         this.reader = reader;
         this.graph = graph;
+
     }
     public void run() {
         try {
@@ -33,6 +34,9 @@ class ReaderThread extends Thread {
                 switch (replyAsArr[0]){
                     case "Finished":
                         System.out.println("adjacency list loaded into c++ beep boop");
+                        break;
+                    case "resInFile":
+                        parseResultFile("result");
                         break;
                     case "path":
                         //the magical remove the first 3 the elements and cast the array to longs then to the wrapper Long and finally put it into an arrayList
@@ -88,4 +92,73 @@ class ReaderThread extends Thread {
             e.printStackTrace();
         }
     }
+
+    private void parseResultFile(String fileName) throws IOException {
+        File resultFile = new File(fileName);
+        if (resultFile.exists()){
+            System.out.println("result found");
+        }
+        BufferedReader reader = new BufferedReader(new FileReader(resultFile));
+        String line;
+        String method = "";
+        while ((line = reader.readLine()) != null){
+            String[] resAsArr;
+            resAsArr = line.split(" ");
+            switch (resAsArr[0]){
+                case "info":
+                    method = resAsArr[1];
+                    double distance = 999999999;
+                    int nodesConsidered =0;
+                    long landmarkChosen = -1;
+                    if (!resAsArr[2].equals("inf")){
+                        distance= Double.parseDouble(resAsArr[2]);
+                    }
+                    nodesConsidered = Integer.parseInt(resAsArr[3]);
+
+                    String resString ="distance: " + distance+ " nodes evaluated: " + nodesConsidered;
+                    if (method.equals("landmarks")){
+                        landmarkChosen = Long.parseLong(resAsArr[4]);
+                        resString += " landmark "+ landmarkChosen;
+                    }
+                    System.out.println(resString);
+                    break;
+                case "path":
+                    System.out.println("doing path stuff");
+                    List<Long> nodeIdLongs = Arrays.stream(Arrays.copyOfRange(resAsArr, 1, resAsArr.length))
+                            .mapToLong(Long::parseLong)
+                            .boxed()
+                            .collect(Collectors.toList());
+                    switch (method){
+                        case "dijkstra":
+                            graph.setRouteToDraw(nodeIdLongs, Color.cyan);
+                            break;
+                        case "astar":
+                            graph.setRouteToDraw(nodeIdLongs, Color.green);
+                            break;
+                        case "landmarks":
+                            graph.setRouteToDraw(nodeIdLongs, Color.blue);
+                            break;
+                        default:
+                            System.out.println("Didnt understand the method used "+method + " amount of nodes " + nodeIdLongs.size());
+                            break;
+                    }
+                    System.out.println("done with path");
+                    break;
+                case "nodesConsid":
+                    System.out.println("handeling nodes considered");
+                    List<Long> temporaryList = Arrays.stream(Arrays.copyOfRange(resAsArr, 1, resAsArr.length))
+                            .mapToLong(Long::parseLong)
+                            .boxed()
+                            .collect(Collectors.toList());
+                    graph.setWaysToDraw(temporaryList, Color.red);
+                    graph.repaint();
+                    System.out.println("Nodes considered done");
+                    break;
+            }
+
+        }
+        reader.close();
+    }
+
+
 }

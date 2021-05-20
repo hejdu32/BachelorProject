@@ -41,10 +41,11 @@ public class Main implements PropertyChangeListener {
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
         country = args[0];
+        String pathToExe = args[1];
         Main listener = new Main();
         XMLParserImpl parser = new XMLParserImpl();
         pb = new ProcessBuilder();
-        pb.command("C:/Users/svend/CLionProjects/BachelorCppRestructured/cmake-build-release/src/BachelorCppCmake.exe");  // C++ executable
+        pb.command(pathToExe);  // C++ executable
         process = pb.start();
         reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
@@ -74,7 +75,7 @@ public class Main implements PropertyChangeListener {
         }
         pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
-
+        //6System.out.println("makeAdjacencyList " + pathToCppFile + "\n");
         writer.write("makeAdjacencyList " + pathToCppFile + "\n");
         writer.flush();
 

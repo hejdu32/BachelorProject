@@ -229,7 +229,7 @@ public class GraphOfNodes extends JPanel{
 
         seenWaysToDraw = new HashSet<Long>(nodes);
         seenColor = color;
-        //System.out.println("size of nodes" +nodes.size());
+        System.out.println("size of nodes" +nodes.size());
         //HashSet<Long> seenSet = new HashSet<Long>(nodes);
         //drawSeenWays(seenSet, color);
         isGraphDrawn = false;
@@ -669,6 +669,7 @@ public class GraphOfNodes extends JPanel{
                     previousId = currId;
                 }
                 else {
+                    System.out.println("prevID= "+ previousId+ " currid " +currId);
                     CustomNode previousNode = parser.getNodes().get(previousId);
                     double prevX = previousNode.getLatitudeAsXCoord();
                     double prevY = previousNode.getLongtitudeAsYCoord();
