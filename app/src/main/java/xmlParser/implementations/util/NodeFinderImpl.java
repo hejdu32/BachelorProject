@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class NodeFinderImpl implements NodeFinder {
     @Override
-    public long findClosestNodeToPoint(double x, double y, Map<Long, CustomNode> nodes, int xOffset, int yOffset, double scaleFactor) {
+    public long findClosestNodeToPoint(double x, double y, Map<Long, CustomNode> nodes, int xOffset, int yOffset, double scaleFactor, double routeFactor) {
         long resultNode = 0;
         double actualX = 0;
         double actualY = 0;
@@ -27,7 +27,7 @@ public class NodeFinderImpl implements NodeFinder {
             actualY = node.getLongtitudeAsYCoord();
 
             double diffX = Math.abs(x-((actualX-xOffset)/scaleFactor));
-            double diffY = Math.abs(Math.abs(y-1300*8)-((actualY-yOffset)/scaleFactor));
+            double diffY = Math.abs(Math.abs(y-1300*routeFactor)-((actualY-yOffset)/scaleFactor));
             if( diffX + diffY <= bestSoFar) {
                 bestSoFar = diffX+diffY;
 

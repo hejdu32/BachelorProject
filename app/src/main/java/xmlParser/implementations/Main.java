@@ -84,47 +84,8 @@ public class Main implements PropertyChangeListener {
         graphOfNodes = new GraphOfNodes((parser));
         graphOfNodes.addPropertyChangeListener(listener);
 
-
-        txtFrom = new JTextField();
-        txtTo = new JTextField();
-        txtFrom.setPreferredSize(new Dimension(300, 30));
-        txtTo.setPreferredSize(new Dimension(300, 30));
-        graphOfNodes.add(txtFrom);
-        graphOfNodes.add(txtTo);
-
-        JButton buttonDijkstra = new JButton("Dijkstra");
-        JButton buttonAStar = new JButton("A*");
-        JButton buttonALT = new JButton("ALT");
-        graphOfNodes.add(buttonDijkstra);
-        graphOfNodes.add(buttonAStar);
-        graphOfNodes.add(buttonALT);
-        buttonDijkstra.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
-                if (onlyNumbers) {
-                    runAlgo(txtFrom, txtTo, "runDijkstra");
-                }
-            }
-        });
-        buttonAStar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
-                if (onlyNumbers) {
-                runAlgo(txtFrom, txtTo, "runAstar");
-                }
-            }
-        });
-        buttonALT.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                    boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
-                    if (onlyNumbers) {
-                runAlgo(txtFrom, txtTo, "runALT");
-                    }
-            }
-        });
+        System.out.println("Making ");
+        addUIComponents();
 
         frame.getContentPane().add(graphOfNodes);
         frame.getContentPane().setBackground(Color.WHITE);
@@ -237,10 +198,10 @@ public class Main implements PropertyChangeListener {
                     graphOfNodes.setImageX(0);
                     graphOfNodes.setImageY(0);
                     //try {
-                        //HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-                        //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
-                        //System.out.println("adjList size: " + adjList.keySet().size());
-                        //graphOfNodes.setAdjacencyList(adjList);
+                    //HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+                    //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
+                    //System.out.println("adjList size: " + adjList.keySet().size());
+                    //graphOfNodes.setAdjacencyList(adjList);
                     //} catch (TransformException e) {
                     //    e.printStackTrace();
                     //}
@@ -253,6 +214,49 @@ public class Main implements PropertyChangeListener {
         }
     }
 
+    private static void addUIComponents() {
+        txtFrom = new JTextField();
+        txtTo = new JTextField();
+        txtFrom.setPreferredSize(new Dimension(300, 30));
+        txtTo.setPreferredSize(new Dimension(300, 30));
+        graphOfNodes.add(txtFrom);
+        graphOfNodes.add(txtTo);
+
+        JButton buttonDijkstra = new JButton("Dijkstra");
+        JButton buttonAStar = new JButton("A*");
+        JButton buttonALT = new JButton("ALT");
+        graphOfNodes.add(buttonDijkstra);
+        graphOfNodes.add(buttonAStar);
+        graphOfNodes.add(buttonALT);
+        buttonDijkstra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                if (onlyNumbers) {
+                    runAlgo(txtFrom, txtTo, "runDijkstra");
+                } else System.out.println("Did not understand nodes");
+            }
+        });
+        buttonAStar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                if (onlyNumbers) {
+                    runAlgo(txtFrom, txtTo, "runAstar");
+                } else System.out.println("Did not understand nodes");
+            }
+        });
+        buttonALT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
+                if (onlyNumbers) {
+                    runAlgo(txtFrom, txtTo, "runALT");
+                } else System.out.println("Did not understand nodes");
+            }
+        });
+    }
+
     private static void runAlgo(JTextField txtFrom, JTextField txtTo, String runAstar) {
         from = txtFrom.getText();
         to = txtTo.getText();
@@ -260,6 +264,7 @@ public class Main implements PropertyChangeListener {
         try {
             writer.write(lineToSend);
             writer.flush();
+            System.out.println(lineToSend);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

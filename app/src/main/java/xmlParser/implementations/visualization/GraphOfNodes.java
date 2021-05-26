@@ -79,6 +79,7 @@ public class GraphOfNodes extends JPanel{
     private HashMap<Long, List<Edge>> reducedAdjList = null;
     private HashMap<Long, List<Long>> from = new HashMap<>();
     private HashMap<Long, List<Long>> to = new HashMap<>();
+    private final int roadWidth = 1;
 
     public HashMap<Long, List<Edge>> getAdjacencyList() {
         return adjacencyList;
@@ -98,7 +99,7 @@ public class GraphOfNodes extends JPanel{
         this.bufferedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         this.ballImage = new BufferedImage(fullResolutionX*(routeFactor),fullResolutionY*(routeFactor),BufferedImage.TYPE_INT_ARGB);
         //this.consideredImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
-        this.prerenderedImage = new BufferedImage(fullResolutionX*8,fullResolutionY*8,BufferedImage.TYPE_INT_ARGB);
+        this.prerenderedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
         nodeFinder = new NodeFinderImpl();
         setBackground(Color.WHITE);
@@ -246,7 +247,7 @@ public class GraphOfNodes extends JPanel{
     }
 
     private double scaleValueXNoZoom(double x){
-        return (((x)*fullResolutionFactor));
+        return (((x)*fullResolutionFactor*routeFactor));
     }
 
     private double scaleValueYNoZoom(double y){
@@ -285,22 +286,22 @@ public class GraphOfNodes extends JPanel{
             this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
             if(zoomFactor<=1) {
-                System.out.println("Changed: 100");
+                //System.out.println("Changed: 100");
                 //changeTilesResolution( 1);
-                isGraphDrawn = true;
+                //isGraphDrawn = true;
             }
             else if(zoomFactor>=1.5 & zoomFactor <= 2.5) {
-                System.out.println("Changed: 250");
+                //System.out.println("Changed: 250");
                 //changeTilesResolution( 2);
-                isGraphDrawn = true;
+                //isGraphDrawn = true;
             }
             else if(zoomFactor>=4 & zoomFactor <=6) {
-                System.out.println("Changed: 500");
+                //System.out.println("Changed: 500");
                 //changeTilesResolution( 3);
-                isGraphDrawn = true;
+                //isGraphDrawn = true;
             }
             else if(zoomFactor>=8 & zoomFactor <=14) {
-                System.out.println("Changed: 1000");
+                //System.out.println("Changed: 1000");
                 //changeTilesResolution( 4);
                 isGraphDrawn = true;
             }
@@ -361,46 +362,6 @@ public class GraphOfNodes extends JPanel{
         //}
         int tilesDrawn = 0;
 
-        //if(zoomLevel == 1 || zoomLevel == 2 || zoomLevel == 3|| zoomLevel == 4) {
-            g.drawImage(prerenderedImage,
-                    0,
-                    0,
-                    1300,
-                    1300,
-                    (int) ((imageX * fullResolutionFactor*8)),
-                    (int) ((imageY * fullResolutionFactor*8)),
-                    (int) (((imageX * fullResolutionFactor*8 + viewResolution * fullResolutionFactor*8 / (zoomFactor)))),
-                    (int) (((imageY * fullResolutionFactor*8 + viewResolution * fullResolutionFactor*8 / (zoomFactor)))),
-                    this);
-        //} else {
-        //    for (Point p : drawTiles.keySet()) {
-        //        if(drawTiles.get(p)){
-        //            tilesDrawn++;
-        //            BufferedImage tile = tiles.get(p);
-        //            g.drawImage(tile,
-        //                    (int)((p.x-imageX*fullResolutionFactor)*zoomFactor),
-        //                    (int)((p.y-imageY*fullResolutionFactor)*zoomFactor),
-        //                    (int)((p.x+tileRes-imageX*fullResolutionFactor)*zoomFactor),
-        //                    (int)((p.y+tileRes-imageY*fullResolutionFactor)*zoomFactor),
-        //                    0,
-        //                    0,
-        //                    tile.getWidth(),
-        //                    tile.getHeight(),
-        //                    this);
-        //        }
-        //    }
-        //}
-        //System.out.println("Tiles drawn= " + tilesDrawn);
-        //g.drawImage(consideredImage,
-        //        0,
-        //        0,
-        //        1300,
-        //        1300,
-        //        (int) ((imageX * fullResolutionFactor   *routeFactor)),
-        //        (int) ((imageY * fullResolutionFactor   *routeFactor)),
-        //        (int) (((imageX * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
-        //        (int) (((imageY * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
-        //        this);
 
         g.drawImage(bufferedImage,
                 0,
@@ -412,6 +373,48 @@ public class GraphOfNodes extends JPanel{
                 (int) (((imageX * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
                 (int) (((imageY * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
                 this);
+
+        if(zoomLevel == 1 || zoomLevel == 2 || zoomLevel == 3|| zoomLevel == 4) {
+            g.drawImage(prerenderedImage,
+                    0,
+                    0,
+                    1300,
+                    1300,
+                    (int) ((imageX * fullResolutionFactor*routeFactor)),
+                    (int) ((imageY * fullResolutionFactor*routeFactor)),
+                    (int) (((imageX * fullResolutionFactor*routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+                    (int) (((imageY * fullResolutionFactor*routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+                    this);
+        } else {
+            for (Point p : drawTiles.keySet()) {
+                if(drawTiles.get(p)){
+                    tilesDrawn++;
+                    BufferedImage tile = tiles.get(p);
+                    g.drawImage(tile,
+                            (int)((p.x-imageX*fullResolutionFactor)*zoomFactor),
+                            (int)((p.y-imageY*fullResolutionFactor)*zoomFactor),
+                            (int)((p.x+tileRes-imageX*fullResolutionFactor)*zoomFactor),
+                            (int)((p.y+tileRes-imageY*fullResolutionFactor)*zoomFactor),
+                            0,
+                            0,
+                            tile.getWidth(),
+                            tile.getHeight(),
+                            this);
+                }
+            }
+        }
+        System.out.println("Tiles drawn= " + tilesDrawn);
+        //g.drawImage(consideredImage,
+        //        0,
+        //        0,
+        //        1300,
+        //        1300,
+        //        (int) ((imageX * fullResolutionFactor   *routeFactor)),
+        //        (int) ((imageY * fullResolutionFactor   *routeFactor)),
+        //        (int) (((imageX * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+        //        (int) (((imageY * fullResolutionFactor  *routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
+        //        this);
+
 
         g.drawImage(ballImage,
                 0,
@@ -591,7 +594,7 @@ public class GraphOfNodes extends JPanel{
     }
 
     private Point2D findClosestNodePoint(int drawX, int drawY) {
-        long node = nodeFinder.findClosestNodeToPoint(scaleValueX(drawX), scaleValueY(drawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor));
+        long node = nodeFinder.findClosestNodeToPoint(scaleValueX(drawX), scaleValueY(drawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor);
         return nodeFinder.convertCoordsXYToImageXY(
                 parser.getNodes().get(node).getLatitudeAsXCoord(),
                 parser.getNodes().get(node).getLongtitudeAsYCoord(),
@@ -656,7 +659,7 @@ public class GraphOfNodes extends JPanel{
     private void drawRoute(List<Long> route, Color color) {
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(1*routeFactor));
+        graph2d.setStroke(new BasicStroke(roadWidth*4*routeFactor));
         int alpha = 255; // 50% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
@@ -697,7 +700,7 @@ public class GraphOfNodes extends JPanel{
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         //this.consideredImage = new BufferedImage(consideredImage.getWidth(),consideredImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
         Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(2));
+        graph2d.setStroke(new BasicStroke(roadWidth*2));
         int alpha = 255; // 0% transparent
         Color myColour = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graph2d.setColor(myColour);
@@ -813,8 +816,8 @@ public class GraphOfNodes extends JPanel{
 
     private void drawGraph(List<CustomWay> ways, BufferedImage bufferedImage) {
         Graphics2D graph2d = bufferedImage.createGraphics();
-        int fullResolutionFactor = this.fullResolutionFactor*8;
-        graph2d.setStroke(new BasicStroke(1));
+        int fullResolutionFactor = this.routeFactor;
+        graph2d.setStroke(new BasicStroke(roadWidth));
         graph2d.setColor(Color.BLACK);
         for (CustomWay way: ways) {
             long previousId = 0L;
@@ -883,7 +886,7 @@ public class GraphOfNodes extends JPanel{
                 parser.getNodes(),
                 xOffset,
                 yOffset,
-                windowScale / (fullResolutionFactor * routeFactor));
+                windowScale / (fullResolutionFactor * routeFactor), routeFactor);
         List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeFrom, parser, reducedAdjList);
         from.put(nodeFrom, closestNodes);
         return closestNodes;
@@ -894,17 +897,17 @@ public class GraphOfNodes extends JPanel{
                 parser.getNodes(),
                 xOffset,
                 yOffset,
-                windowScale /(fullResolutionFactor*routeFactor));
+                windowScale /(fullResolutionFactor*routeFactor), routeFactor);
         List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeTo, parser, reducedAdjList);
         to.put(nodeTo, closestNodes);
         return closestNodes;
     }
 
     public String getFrom() {
-        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor)));
+        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor));
     }
     public String getTo() {
-        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor)));
+        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor), routeFactor));
     }
 
     public void setAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
