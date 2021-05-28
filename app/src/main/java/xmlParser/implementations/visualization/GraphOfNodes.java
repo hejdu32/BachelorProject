@@ -403,7 +403,7 @@ public class GraphOfNodes extends JPanel{
                 }
             }
         }
-        System.out.println("Tiles drawn= " + tilesDrawn);
+        //System.out.println("Tiles drawn= " + tilesDrawn);
         //g.drawImage(consideredImage,
         //        0,
         //        0,
@@ -542,7 +542,6 @@ public class GraphOfNodes extends JPanel{
     //draws the red and blue circles to draw routes
     private void drawRedAndBlue() {
         Graphics2D graph2d = ballImage.createGraphics();
-        int routeFactor = this.routeFactor/2;
         graph2d.setColor(Color.RED);
         if (!firstClick) {
             //drawBackground(ballImage);
@@ -566,7 +565,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.fill(red);
         graph2d.draw(red);
 
-        graph2d.setColor(Color.BLUE);
+        graph2d.setColor(Color.GREEN);
         if (firstClick) {
             if(blueDrawX!=drawX && blueDrawY !=drawY) {
                 blueDrawX = drawX;
@@ -906,9 +905,39 @@ public class GraphOfNodes extends JPanel{
     public String getFrom() {
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor));
     }
+
+    public void drawRed(Point2D pointToDrawAt) {
+        Graphics2D graph2d = ballImage.createGraphics();
+        graph2d.dispose();
+        this.ballImage = new BufferedImage(ballImage.getWidth(),ballImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        graph2d = ballImage.createGraphics();
+        graph2d.setColor(Color.RED);
+        Point2D.Double redPoint = nodeFinder.convertCoordsXYToImageXY(pointToDrawAt.getX(), pointToDrawAt.getY(), xOffset, yOffset, windowScale / (fullResolutionFactor * (routeFactor)));
+        redDrawAtPointX = (int) redPoint.x;
+        redDrawAtPointY = (int) Math.abs(redPoint.y-1300*routeFactor);
+        System.out.println("Drawing red at " + redDrawAtPointX + ", "+ redDrawAtPointY);
+        Shape red = new Ellipse2D.Double(redDrawAtPointX-5, redDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+        graph2d.fill(red);
+        graph2d.draw(red);
+        graph2d.dispose();
+    }
+    public void drawGreen(Point2D pointToDrawAt) {
+        Graphics2D graph2d = ballImage.createGraphics();
+        graph2d.setColor(Color.GREEN);
+        Point2D.Double bluePoint = nodeFinder.convertCoordsXYToImageXY(pointToDrawAt.getX(), pointToDrawAt.getY(), xOffset, yOffset, windowScale / (fullResolutionFactor * (routeFactor)));
+        blueDrawAtPointX = (int) bluePoint.x;
+        blueDrawAtPointY = (int) Math.abs(bluePoint.y-1300*routeFactor);
+        System.out.println("Drawing green at " + blueDrawAtPointX + ", "+ blueDrawAtPointY);
+        Shape blue = new Ellipse2D.Double(blueDrawAtPointX-5, blueDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+        graph2d.fill(blue);
+        graph2d.draw(blue);
+        graph2d.dispose();
+    }
+
     public String getTo() {
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor), routeFactor));
     }
+
 
     public void setAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
         System.out.println("AdjList set!");

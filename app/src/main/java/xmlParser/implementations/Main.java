@@ -10,12 +10,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Main implements PropertyChangeListener {
@@ -34,6 +36,7 @@ public class Main implements PropertyChangeListener {
     private static String algoOnClick = "runALT";
     private static JTextField txtFrom;
     private static JTextField txtTo;
+    private static XMLParserImpl parser = new XMLParserImpl();
 
 
     //DEFAULT COUNTRY TO BE PARSED
@@ -43,7 +46,7 @@ public class Main implements PropertyChangeListener {
         country = args[0];
         String pathToExe = args[1];
         Main listener = new Main();
-        XMLParserImpl parser = new XMLParserImpl();
+        parser = new XMLParserImpl();
         pb = new ProcessBuilder();
         pb.command(pathToExe);  // C++ executable
         process = pb.start();
@@ -233,6 +236,7 @@ public class Main implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
                 if (onlyNumbers) {
+                    DrawBalls();
                     runAlgo(txtFrom, txtTo, "runDijkstra");
                 } else System.out.println("Did not understand nodes");
             }
@@ -242,6 +246,7 @@ public class Main implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
                 if (onlyNumbers) {
+                    DrawBalls();
                     runAlgo(txtFrom, txtTo, "runAstar");
                 } else System.out.println("Did not understand nodes");
             }
@@ -251,16 +256,22 @@ public class Main implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 boolean onlyNumbers = !txtFrom.getText().matches("[a-zA-Z_]+") && !txtTo.getText().matches("[a-zA-Z_]+");
                 if (onlyNumbers) {
+                    DrawBalls();
                     runAlgo(txtFrom, txtTo, "runALT");
                 } else System.out.println("Did not understand nodes");
             }
         });
     }
 
-    private static void runAlgo(JTextField txtFrom, JTextField txtTo, String runAstar) {
+    private static void DrawBalls() {
+        graphOfNodes.drawRed(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLongtitudeAsYCoord()));
+        graphOfNodes.drawGreen(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtTo.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtTo.getText())).getLongtitudeAsYCoord()));
+    }
+
+    private static void runAlgo(JTextField txtFrom, JTextField txtTo, String runAlgo) {
         from = txtFrom.getText();
         to = txtTo.getText();
-        String lineToSend = runAstar + " " + from + " " + to + "\n";
+        String lineToSend = runAlgo + " " + from + " " + to + "\n";
         try {
             writer.write(lineToSend);
             writer.flush();
