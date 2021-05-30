@@ -78,8 +78,8 @@ public class Main implements PropertyChangeListener {
         }
         pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
-        //6System.out.println("makeAdjacencyList " + pathToCppFile + "\n");
-        writer.write("makeAdjacencyList " + pathToCppFile + "\n");
+        //System.out.println("makeAdjacencyList " + pathToCppFile + "\n");
+        writer.write("makeAdjacencyList " + pathToCppFile + " dijkstraDistance" + "\n");
         writer.flush();
 
         JFrame frame = new JFrame();
@@ -98,7 +98,6 @@ public class Main implements PropertyChangeListener {
 
         ReaderThread rd = new ReaderThread(reader,graphOfNodes);
         rd.start();
-        //rd.run(reader,graphOfNodes);
 
         boolean reading = true;
         System.out.println("###########################################################################");
