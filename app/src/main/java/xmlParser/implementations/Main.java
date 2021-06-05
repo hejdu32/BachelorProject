@@ -1,7 +1,6 @@
 package xmlParser.implementations;
 
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import xmlParser.framework.XMLParser;
 import xmlParser.implementations.parsing.*;
 import xmlParser.implementations.visualization.GraphOfNodes;
@@ -17,7 +16,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class Main implements PropertyChangeListener {
@@ -268,8 +266,8 @@ public class Main implements PropertyChangeListener {
     }
 
     public static void DrawBalls() {
-        graphOfNodes.drawRed(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLongtitudeAsYCoord()));
-        graphOfNodes.drawGreen(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtTo.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtTo.getText())).getLongtitudeAsYCoord()));
+        graphOfNodes.drawStart(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLongtitudeAsYCoord()));
+        graphOfNodes.drawTarget(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtTo.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtTo.getText())).getLongtitudeAsYCoord()));
     }
 
     private static void runAlgo(JTextField txtFrom, JTextField txtTo, String runAlgo) {

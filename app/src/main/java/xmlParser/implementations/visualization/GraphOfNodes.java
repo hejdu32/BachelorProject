@@ -133,7 +133,7 @@ public class GraphOfNodes extends JPanel{
                     System.out.println("################testing viewLimiter################");
                     System.out.println("Before: " + ways.size());
                     viewLimiter.setMargin(0,0);
-                    ways = viewLimiter.limitToRelevantWays(scaleValueXNoZoom(redDrawX), scaleValueYNoZoom(redDrawY), scaleValueXNoZoom(blueDrawX), scaleValueYNoZoom(blueDrawY), xOffset, yOffset, windowScale / fullResolutionFactor);
+                    ways = viewLimiter.limitToRelevantWays(scaleValueX(redDrawX), scaleValueY(redDrawY), scaleValueX(blueDrawX), scaleValueY(blueDrawY), xOffset, yOffset, windowScale / fullResolutionFactor);
                     System.out.println("After: " + ways.size());
                     isGraphDrawn = false;
                     clicked = true;
@@ -251,7 +251,7 @@ public class GraphOfNodes extends JPanel{
     }
 
     private double scaleValueYNoZoom(double y){
-        return (((y )*fullResolutionFactor));
+        return (((y )*fullResolutionFactor*routeFactor));
     }
 
     @Override            //#############################################################################################################
@@ -330,7 +330,7 @@ public class GraphOfNodes extends JPanel{
             //consideredImage = DrawingUtil.flipYCoordinate(consideredImage);
         }
         if( clicked) {
-            drawRedAndBlue();
+            drawStartAndTarget();
             //ballImage = DrawingUtil.flipYCoordinate(ballImage);
             clicked = false;
         }
@@ -467,7 +467,13 @@ public class GraphOfNodes extends JPanel{
         //System.out.println("Before: " + ways.size());
         viewLimiter.setMargin(0,0);
         if(!this.tileWays.containsKey(p)) {
-            List<CustomWay> limitedWays = viewLimiter.limitToRelevantWays(scaleValueXNoZoom(p.x), scaleValueYNoZoom(p.y), scaleValueXNoZoom(p.x + tileRes), scaleValueYNoZoom(p.y + tileRes), xOffset, yOffset, windowScale / fullResolutionFactor);
+            List<CustomWay> limitedWays = viewLimiter.limitToRelevantWays(scaleValueXNoZoom(p.x),
+                    scaleValueYNoZoom(p.y),
+                    scaleValueXNoZoom(p.x + tileRes),
+                    scaleValueYNoZoom(p.y + tileRes),
+                    xOffset,
+                    yOffset,
+                    windowScale / (fullResolutionFactor*routeFactor));
             System.out.println("Point: " + p + " ways: " + limitedWays.size());
             tileWays.put(p,limitedWays);
         }
@@ -540,7 +546,7 @@ public class GraphOfNodes extends JPanel{
     }
 
     //draws the red and blue circles to draw routes
-    private void drawRedAndBlue() {
+    private void drawStartAndTarget() {
         Graphics2D graph2d = ballImage.createGraphics();
         graph2d.setColor(Color.GREEN);
         if (!firstClick) {
@@ -906,7 +912,7 @@ public class GraphOfNodes extends JPanel{
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor));
     }
 
-    public void drawRed(Point2D pointToDrawAt) {
+    public void drawStart(Point2D pointToDrawAt) {
         Graphics2D graph2d = ballImage.createGraphics();
         graph2d.dispose();
         this.ballImage = new BufferedImage(ballImage.getWidth(),ballImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
@@ -921,7 +927,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.draw(red);
         graph2d.dispose();
     }
-    public void drawGreen(Point2D pointToDrawAt) {
+    public void drawTarget(Point2D pointToDrawAt) {
         Graphics2D graph2d = ballImage.createGraphics();
         graph2d.setColor(Color.RED);
         Point2D.Double bluePoint = nodeFinder.convertCoordsXYToImageXY(pointToDrawAt.getX(), pointToDrawAt.getY(), xOffset, yOffset, windowScale / (fullResolutionFactor * (routeFactor)));
