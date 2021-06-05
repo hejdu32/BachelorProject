@@ -176,6 +176,9 @@ public class Main implements PropertyChangeListener {
                     lineToSend = algoOnClick+" " + to + " "+  from + "\n";
                     Main.from = to;
                     Main.to = from;
+                    txtFrom.setText(Main.from);
+                    txtTo.setText(Main.to);
+                    Main.DrawBalls();
                     System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
@@ -189,7 +192,9 @@ public class Main implements PropertyChangeListener {
                     boolean correctSize = splitInput.length==3;
                     boolean correctAlgo = algo.equals("rundijkstra") || algo.equals("runastar") || algo.equals("runalt");
                     if(correctSize && correctAlgo) {
-                        lineToSend = splitInput[0] + " " + splitInput[1] + " " + splitInput[2] + "\n";
+                        Main.from = splitInput[1];
+                        Main.to = splitInput[2];
+                        lineToSend = splitInput[0] + " " + Main.from + " " + Main.to + "\n";
                         System.out.println(lineToSend);
                         writer.write(lineToSend);
                         writer.flush();
@@ -262,7 +267,7 @@ public class Main implements PropertyChangeListener {
         });
     }
 
-    private static void DrawBalls() {
+    public static void DrawBalls() {
         graphOfNodes.drawRed(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtFrom.getText())).getLongtitudeAsYCoord()));
         graphOfNodes.drawGreen(new Point2D.Double(parser.getNodes().get(Long.parseLong(txtTo.getText())).getLatitudeAsXCoord(),parser.getNodes().get(Long.parseLong(txtTo.getText())).getLongtitudeAsYCoord()));
     }
