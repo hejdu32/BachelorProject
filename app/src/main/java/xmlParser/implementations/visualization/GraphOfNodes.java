@@ -15,6 +15,7 @@ import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.Instant;
@@ -567,9 +568,12 @@ public class GraphOfNodes extends JPanel{
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
             }
         }
-        Shape red = new Ellipse2D.Double(redDrawAtPointX-5, redDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+        Shape red = new Ellipse2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor, 10*routeFactor);
+        Shape redSquare = new Rectangle2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
         graph2d.fill(red);
         graph2d.draw(red);
+        graph2d.fill(redSquare);
+        graph2d.draw(redSquare);
 
         graph2d.setColor(Color.RED);
         if (firstClick) {
@@ -585,9 +589,12 @@ public class GraphOfNodes extends JPanel{
             blueDrawAtPointX = (int) pointToDrawAt.getX();
             blueDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-ballImage.getHeight());
             //blueDrawAtPointY = (int) pointToDrawAt.getY();
-            Shape blue = new Ellipse2D.Double(blueDrawAtPointX-5, blueDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+            Shape blue = new Ellipse2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor, 10*routeFactor);
+            Shape blueSquare = new Rectangle2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
             graph2d.fill(blue);
             graph2d.draw(blue);
+            graph2d.fill(blueSquare);
+            graph2d.draw(blueSquare);
             firePropertyChange("blue", false, true);
 
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
@@ -922,9 +929,12 @@ public class GraphOfNodes extends JPanel{
         redDrawAtPointX = (int) redPoint.x;
         redDrawAtPointY = (int) Math.abs(redPoint.y-1300*routeFactor);
         System.out.println("Drawing red at " + redDrawAtPointX + ", "+ redDrawAtPointY);
-        Shape red = new Ellipse2D.Double(redDrawAtPointX-5, redDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+        Shape red = new Ellipse2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor, 10*routeFactor);
+        Shape redSquare = new Rectangle2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
         graph2d.fill(red);
         graph2d.draw(red);
+        graph2d.fill(redSquare);
+        graph2d.draw(redSquare);
         graph2d.dispose();
     }
     public void drawTarget(Point2D pointToDrawAt) {
@@ -934,9 +944,12 @@ public class GraphOfNodes extends JPanel{
         blueDrawAtPointX = (int) bluePoint.x;
         blueDrawAtPointY = (int) Math.abs(bluePoint.y-1300*routeFactor);
         System.out.println("Drawing green at " + blueDrawAtPointX + ", "+ blueDrawAtPointY);
-        Shape blue = new Ellipse2D.Double(blueDrawAtPointX-5, blueDrawAtPointY-5, 10*routeFactor, 10*routeFactor);
+        Shape blue = new Ellipse2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor, 10*routeFactor);
+        Shape blueSquare = new Rectangle2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
         graph2d.fill(blue);
         graph2d.draw(blue);
+        graph2d.fill(blueSquare);
+        graph2d.draw(blueSquare);
         graph2d.dispose();
     }
 
