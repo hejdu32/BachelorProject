@@ -18,12 +18,9 @@ public class FileWriter {
             parser.filterFerryWays();
             System.out.println("Creating AdjacencyList");
             long startTime = System.currentTimeMillis();
-            //HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
-            //HashMap<Long, List<Edge>> reducedAdjList = graphBuilder.reduceAdjacencyList(adjList);
             long endTime = System.currentTimeMillis();
             System.out.println("Time for adjlist creation: "+ (endTime- startTime)/1000 + "sec");
             long fileStart = System.currentTimeMillis();
-            //graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
             graphBuilder.writeAllWays(country, parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long fileEnd = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (fileEnd- fileStart)/1000 + "sec");

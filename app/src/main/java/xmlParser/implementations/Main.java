@@ -56,7 +56,6 @@ public class Main implements PropertyChangeListener {
         String pathToCppFile;
         pathToCppFile = possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
-        //System.out.println("makeAdjacencyList " + pathToCppFile + "\n");
         writer.write("makeAdjacencyList " + pathToCppFile + " dijkstraDistance" + "\n");
         writer.flush();
 

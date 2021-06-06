@@ -31,18 +31,6 @@ public class XMLParserImplTest {
         }
     }
 
-    //private static HashMap<Long, List<Edge>> adjList;
-    //{
-    //    try {
-    //        System.out.println("Starting adjlistmaking");
-    //        long startTime = System.currentTimeMillis();
-    //        adjList = graphBuilder.createAdjencencyList();
-    //        long endTime = System.currentTimeMillis();
-    //        System.out.println("time for ajdlist creation: "+ (endTime- startTime)/1000 + "sec");
-    //    } catch (TransformException e) {
-    //        e.printStackTrace();
-    //    }
-    //}
 
 
     @Before
@@ -143,7 +131,6 @@ public class XMLParserImplTest {
     public void makeDenmarkInFile(){
         try {
             long startTime = System.currentTimeMillis();
-            //graphBuilder.writeToFile("denmark", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
             graphBuilder.writeAllWays("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long endTime = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
@@ -156,7 +143,6 @@ public class XMLParserImplTest {
     public void makeMaltaInFile(){
         try {
             long startTime = System.currentTimeMillis();
-            //graphBuilder.writeToFile("malta", new ArrayList<>(parser.getWays().values()), parser.getNodes(), adjList);
             graphBuilder.writeAllWays("malta", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
             long endTime = System.currentTimeMillis();
             System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
@@ -166,16 +152,4 @@ public class XMLParserImplTest {
 
     }
 
-    @Test
-    public void randomTest(){
-        String xd = "030";
-        int val = Integer.parseInt(xd);
-        System.out.println(val);
-        try {
-            val = Integer.parseInt("0a");
-        }catch (NumberFormatException ex)
-        {
-            System.out.println("cannot convert " +"0a" + " into string");
-        }
-    }
 }

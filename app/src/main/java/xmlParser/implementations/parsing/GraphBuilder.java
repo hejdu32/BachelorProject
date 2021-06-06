@@ -77,25 +77,6 @@ public class GraphBuilder {
     }
 
 
-    //file convention is: #nodeid ;destid ,distance
-    // a long relation would be #nodeid ;destid ,distance ;destid ,distance ;destid ,distance ;destid ,distance
-    public void writeToFileOLD(String s, HashMap<Long, List<Edge>> adjLst){
-        try {
-            FileWriter writer = new FileWriter(s);
-            for (Long key:adjLst.keySet()) {
-                String line = "#"+key;
-                for (Edge e:adjLst.get(key)) {
-                    line = line+" ;"+e.getDestinationId()+" ,"+e.getDistanceToDestination();
-                }
-                writer.write(line+"\n");
-            }
-            writer.write("!");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void writeAllWays(String name, Map<Long, CustomNode> nodes, List<CustomWay> ways) throws IOException {
         int amountOfNodes = nodes.size();
         int amountOfWays = ways.size();
@@ -145,15 +126,6 @@ public class GraphBuilder {
         writer.write("!");
         writer.close();
 
-
-    }
-    public void writeToFileAsJson(String filePath) throws IOException {
-        Gson gson = new Gson();
-        NodesAndWaysWrapper wrapper = new NodesAndWaysWrapper(14, xmlParser.getWays(), xmlParser.getNodes());
-        String json = gson.toJson(wrapper);
-        FileWriter writer = new FileWriter(filePath);
-        writer.write(json);
-        writer.close();
 
     }
     public double distBetween2Nodes(Map<Long, CustomNode> nodes, Long startNode, Long endNode,int maxSpeed)throws TransformException{
@@ -214,8 +186,6 @@ public class GraphBuilder {
                 }
             }
         }
-        //System.out.println(degreeMap.size());
-        //degreeMap.entrySet().forEach(entry -> {System.out.println(entry.getKey() + " " + entry.getValue());});
 
         for (CustomWay way:ways) {
             boolean isOneWay = way.isOneWay().equals("1");
