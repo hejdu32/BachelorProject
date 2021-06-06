@@ -19,9 +19,6 @@ import java.util.List;
 
 
 public class Main implements PropertyChangeListener {
-    private static String fromNode;
-    private static String toNode;
-    private static String result;
     private static String from;
     private static String to;
     private static List<Long> fromList = new ArrayList<>();
@@ -38,10 +35,10 @@ public class Main implements PropertyChangeListener {
 
 
     //DEFAULT COUNTRY TO BE PARSED
-    private static String country = "denmark";
+    private static String countryPath = "";
 
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
-        country = args[0];
+        countryPath = args[0];
         String pathToExe = args[1];
         Main listener = new Main();
         parser = new XMLParserImpl();
@@ -52,29 +49,16 @@ public class Main implements PropertyChangeListener {
         writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
 
-        parser.parse("app/src/resources/"+country+"-latest.osm.pbf");
+        parser.parse(countryPath);
 
         parser.filterFerryWays();
         GraphBuilder graphBuilder = new GraphBuilder(parser);
 
-        //HashMap<Long, List<Edge>> reducedAdjlist = null;
-        //try {
-        //    reducedAdjlist = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-        //} catch (TransformException e) {
-        //    e.printStackTrace();
-        //}
-//
-        //System.out.println("adjList size: " + reducedAdjlist.keySet().size());
-        //graphOfNodes.setAdjacencyList(adjList);
 
-
-        File possibleCountryFile = new File(country);
+        graphBuilder.writeAllWays("parsedGraph",parser.getNodes(),new ArrayList<>(parser.getWays().values()));
+        File possibleCountryFile = new File("parsedGraph");
         String pathToCppFile;
-        if (!possibleCountryFile.exists()){
-            graphBuilder.writeAllWays(country,parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-            //graphBuilder.writeReducedList(country,parser.getNodes(),reducedAdjlist);
-        }
-        pathToCppFile= possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
+        pathToCppFile = possibleCountryFile.getAbsolutePath().replaceAll("\\\\","/");
 
         //System.out.println("makeAdjacencyList " + pathToCppFile + "\n");
         writer.write("makeAdjacencyList " + pathToCppFile + " dijkstraDistance" + "\n");
@@ -103,6 +87,7 @@ public class Main implements PropertyChangeListener {
             String input = inputReader.readLine();
             String lineToSend;
             switch(input.toLowerCase()){
+                //terminal input methods, these were used for debugging a development
                 case "exit":
                     process.destroy();
                     reading = false;
@@ -126,9 +111,7 @@ public class Main implements PropertyChangeListener {
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
                     break;
                 case "runastar":
-                    //System.out.println("Input from nodeId");
                     from = "3593516725";//reader1.readLine();
-                    //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
                     lineToSend = "runAstar"+" " + from + " "+  to +  "\n";
                     writer.write(lineToSend);
@@ -136,9 +119,7 @@ public class Main implements PropertyChangeListener {
                     //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "runalt":
-                    //System.out.println("Input from nodeId");
                     from = "1818942364";//reader1.readLine();
-                    //System.out.println("Input to nodeId");
                     to = "5543870050";//reader1.readLine();
                     lineToSend = "runALT"+" " + from + " "+  to + "\n";
                     writer.write(lineToSend);
@@ -202,14 +183,6 @@ public class Main implements PropertyChangeListener {
                 case "reset":
                     graphOfNodes.setImageX(0);
                     graphOfNodes.setImageY(0);
-                    //try {
-                    //HashMap<Long, List<Edge>> adjList = graphBuilder.simpleReduceAdjacencyList(parser.getNodes(),new ArrayList<>(parser.getWays().values()));
-                    //System.out.println("nodesToSearch size: " + parser.getNodesToSearchFor().keySet().size());
-                    //System.out.println("adjList size: " + adjList.keySet().size());
-                    //graphOfNodes.setAdjacencyList(adjList);
-                    //} catch (TransformException e) {
-                    //    e.printStackTrace();
-                    //}
                     graphOfNodes.repaint();
                     break;
                 default:
@@ -330,13 +303,6 @@ public class Main implements PropertyChangeListener {
             //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
         }
     }
-//       JFrame frame = new JFrame();
-//       GraphOfNodes graphOfNodes = new GraphOfNodes((parser));
-//       frame.getContentPane().add(graphOfNodes);
-//
-//       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//       frame.setSize(1300,1300);
-//       frame.setVisible(true);
 
 }
 
