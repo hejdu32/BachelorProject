@@ -91,7 +91,6 @@ public class NodeFinderImpl implements NodeFinder {
                 }
             }
         }
-        if(result.size()==0) System.out.println("I AM A USELESS FUCKING METHOD THAT DOES NOTHING");
         return result;
     }
 
