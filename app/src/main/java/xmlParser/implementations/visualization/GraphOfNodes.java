@@ -94,7 +94,7 @@ public class GraphOfNodes extends JPanel{
         this.ballImage = new BufferedImage(fullResolutionX*(routeFactor),fullResolutionY*(routeFactor),BufferedImage.TYPE_INT_ARGB);
         //this.consideredImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
         this.prerenderedImage = new BufferedImage(fullResolutionX*routeFactor,fullResolutionY*routeFactor,BufferedImage.TYPE_INT_ARGB);
-        viewLimiter = new ViewLimiterImpl(ways, parser.getNodes());
+        viewLimiter = new ViewLimiterImpl(ways, parser.getNodes(), routeFactor);
         nodeFinder = new NodeFinderImpl();
         setBackground(Color.WHITE);
         for (int i = 0; i<viewResolution; i=i+100){
@@ -410,10 +410,10 @@ public class GraphOfNodes extends JPanel{
                     xOffset,
                     yOffset,
                     windowScale / (fullResolutionFactor*routeFactor));
-            System.out.println("Point: " + p + " ways: " + limitedWays.size());
+            //System.out.println("Point: " + p + " ways: " + limitedWays.size());
             tileWays.put(p,limitedWays);
         }
-        System.out.println("After: " + tileWays.get(p).size());
+        //System.out.println("After: " + tileWays.get(p).size());
         BufferedImage tile = tiles.get(p);
         Graphics2D graph2d = tile.createGraphics();
         if(tileWays.size()!=0) drawTiles.put(p, true);
@@ -485,7 +485,7 @@ public class GraphOfNodes extends JPanel{
                 redDrawAtPointX = (int) pointToDrawAt.getX();
                 redDrawAtPointY = (int) Math.abs(pointToDrawAt.getY()-ballImage.getHeight());
                 //redDrawAtPointY = (int) pointToDrawAt.getY();
-                System.out.println("Red: " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
+                //System.out.println("Start at : " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
                 drawBlue=false;
                 firePropertyChange("red", false, true);
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
@@ -504,7 +504,7 @@ public class GraphOfNodes extends JPanel{
                 blueDrawX = drawX;
                 blueDrawY = drawY;
             }
-            System.out.println("Blue: " + scaleValueX(blueDrawX) + "," + scaleValueY(blueDrawY));
+            //System.out.println("Target at: " + scaleValueX(blueDrawX) + "," + scaleValueY(blueDrawY));
             drawBlue = true;
         }
         if(drawBlue) {
@@ -815,7 +815,7 @@ public class GraphOfNodes extends JPanel{
         Point2D.Double redPoint = nodeFinder.convertCoordsXYToImageXY(pointToDrawAt.getX(), pointToDrawAt.getY(), xOffset, yOffset, windowScale / (fullResolutionFactor * (routeFactor)));
         redDrawAtPointX = (int) redPoint.x;
         redDrawAtPointY = (int) Math.abs(redPoint.y-1300*routeFactor);
-        System.out.println("Drawing red at " + redDrawAtPointX + ", "+ redDrawAtPointY);
+        System.out.println("Drawing Start at " + redDrawAtPointX + ", "+ redDrawAtPointY);
         Shape red = new Ellipse2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor, 10*routeFactor);
         Shape redSquare = new Rectangle2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
         graph2d.fill(red);
@@ -830,7 +830,7 @@ public class GraphOfNodes extends JPanel{
         Point2D.Double bluePoint = nodeFinder.convertCoordsXYToImageXY(pointToDrawAt.getX(), pointToDrawAt.getY(), xOffset, yOffset, windowScale / (fullResolutionFactor * (routeFactor)));
         blueDrawAtPointX = (int) bluePoint.x;
         blueDrawAtPointY = (int) Math.abs(bluePoint.y-1300*routeFactor);
-        System.out.println("Drawing green at " + blueDrawAtPointX + ", "+ blueDrawAtPointY);
+        System.out.println("Drawing Target at " + blueDrawAtPointX + ", "+ blueDrawAtPointY);
         Shape blue = new Ellipse2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor, 10*routeFactor);
         Shape blueSquare = new Rectangle2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
         graph2d.fill(blue);

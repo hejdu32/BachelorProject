@@ -14,10 +14,12 @@ import java.util.Map;
 public class ViewLimiterImpl implements ViewLimiter {
     private List<CustomWay> ways;
     private Map<Long, CustomNode> nodes;
+    private int routeFactor;
 
-    public ViewLimiterImpl(List<CustomWay> ways, Map<Long, CustomNode> nodes) {
+    public ViewLimiterImpl(List<CustomWay> ways, Map<Long, CustomNode> nodes, int routeFactor) {
         this.ways = ways;
         this.nodes = nodes;
+        this.routeFactor = routeFactor;
     }
 
     private double lowestX = Integer.MAX_VALUE, lowestY = Integer.MAX_VALUE, highestX = Integer.MIN_VALUE, highestY = Integer.MIN_VALUE;
@@ -67,7 +69,7 @@ public class ViewLimiterImpl implements ViewLimiter {
         //getting x and y
         double wayX = wayPoint.x;
         double wayY = wayPoint.y; //1300 -> 0,  650 -> 650,  0 -> 1300
-        double flippedY = Math.abs(wayY - 1300*8); //magic constant for now
+        double flippedY = Math.abs(wayY - 1300*routeFactor); //magic constant for now
 
         boolean insideX = wayX - marginX <= Math.max(sourceX, destX) & wayX + marginX >= Math.min(sourceX, destX);
         //                            49 <= enten 50 eller 0        eller           49 >= enten 50 eller 0
