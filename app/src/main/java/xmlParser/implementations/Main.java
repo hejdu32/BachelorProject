@@ -33,12 +33,8 @@ public class Main implements PropertyChangeListener {
     private static JTextField txtTo;
     private static XMLParserImpl parser = new XMLParserImpl();
 
-
-    //DEFAULT COUNTRY TO BE PARSED
-    private static String countryPath = "";
-
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
-        countryPath = args[0];
+        String countryPath = args[0];
         String pathToExe = args[1];
         Main listener = new Main();
         parser = new XMLParserImpl();
@@ -263,44 +259,6 @@ public class Main implements PropertyChangeListener {
         }
         if(evt.getPropertyName().equals("blue")){
             txtTo.setText(graphOfNodes.getTo());
-        }
-
-        if(evt.getPropertyName().equals("SecoundClick")) {
-            XMLParser parser = new XMLParserImpl();
-            try {
-                parser.parse("app/src/resources/denmark-latest.osm.pbf");
-                GraphBuilder graphBuilder = null;
-                graphBuilder = new GraphBuilder(parser);
-                HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
-                graphOfNodes.setReducedAdjList(adjList);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("Running with " + algoOnClick);
-            fromList = graphOfNodes.getFromNodes();
-            int fromSize = fromList.size();
-            toList = graphOfNodes.getToNodes();
-            int toSize = toList.size();
-            from = "";
-            for (Long id :  fromList){
-                from = from + " " + id;
-            }
-            System.out.println(from);
-            to = "";
-            for (Long id :  toList){
-                to = to + " " + id;
-            }
-            System.out.println(to);
-            try {
-                String lineToSend = algoOnClick+" "  + fromList.get(0) + " "  +  toList.get(0) + "\n";
-                System.out.println(lineToSend);
-                writer.write(lineToSend);
-                writer.flush();
-                //result = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
         }
     }
 
