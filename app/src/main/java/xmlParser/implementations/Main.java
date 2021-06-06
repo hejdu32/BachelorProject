@@ -34,11 +34,8 @@ public class Main implements PropertyChangeListener {
     private static XMLParserImpl parser = new XMLParserImpl();
 
 
-    //DEFAULT COUNTRY TO BE PARSED
-    private static String countryPath = "";
-
     public static void main(String[] args) throws IOException, FactoryException {//TransformException
-        countryPath = args[0];
+        String countryPath = args[0];
         String pathToExe = args[1];
         Main listener = new Main();
         parser = new XMLParserImpl();

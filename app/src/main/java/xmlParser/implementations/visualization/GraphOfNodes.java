@@ -24,8 +24,6 @@ import java.util.List;
 
 
 public class GraphOfNodes extends JPanel{
-
-
     private final XMLParserImpl parser;
     private final ViewLimiterImpl viewLimiter;
     private final NodeFinderImpl nodeFinder;

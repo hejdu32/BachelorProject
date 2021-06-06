@@ -24,13 +24,9 @@ public class DistanceCalculatorImpl implements xmlParser.framework.DistanceCalcu
     }
 
     public double calculateDistance(Coordinate coord1, Coordinate coord2) throws TransformException {
-        /*JTS.transform(coord1, coord1, this.mathTransform);
-        JTS.transform(coord2, coord2, this.mathTransform);*/
         return Math.sqrt(Math.pow(coord1.x - coord2.x, 2) + Math.pow(coord1.y - coord2.y, 2));
     }
     public double calculateDistanceWithSpeed(Coordinate coord1, Coordinate coord2, int maxSpeed) throws TransformException {
-        /*JTS.transform(coord1, coord1, this.mathTransform);
-        JTS.transform(coord2, coord2, this.mathTransform);*/
         return (Math.sqrt(Math.pow(coord1.x - coord2.x, 2) + Math.pow(coord1.y - coord2.y, 2)))/maxSpeed;
     }
 

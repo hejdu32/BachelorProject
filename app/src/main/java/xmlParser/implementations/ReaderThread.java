@@ -25,20 +25,18 @@ class ReaderThread extends Thread {
             List<Long> nodesConsidered = new ArrayList<>();
             while (true){
                 reply = reader.readLine();
-                //if(reply.equals("null")) continue;
-                //System.out.println("rply: " +reply);
                 String[] replyAsArr = {"No reply"};
                 if(reply!=null) {replyAsArr = reply.split(" ");}
                 else System.out.println("Got reply: " + reply);
-                //System.out.println("got response: "+ reply);
                 switch (replyAsArr[0]){
                     case "Finished":
-                        System.out.println("adjacency list loaded into c++ beep boop");
+                        System.out.println("adjacency list loaded into c++");
                         break;
+                        //the method in use to accept the result from cpp in file
                     case "resInFile":
                         parseResultFile("result");
                         break;
-                    //DEPRECATED
+                    //The method was used when results of SSP problems was passed through the terminal
                     case "path":
                         //the magical remove the first 3 the elements and cast the array to longs then to the wrapper Long and finally put it into an arrayList
                         List<Long> nodeIdLongs = Arrays.stream(Arrays.copyOfRange(replyAsArr, 3, replyAsArr.length))
