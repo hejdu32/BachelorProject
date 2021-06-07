@@ -824,7 +824,6 @@ public class GraphOfNodes extends JPanel{
     }
 
     public void drawLandmark(long chosenLandmark) {
-        System.out.println("Drawing landmark: " + chosenLandmark);
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
         graph2d.setStroke(new BasicStroke(10));

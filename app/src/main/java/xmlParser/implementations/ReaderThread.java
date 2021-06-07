@@ -82,7 +82,7 @@ class ReaderThread extends Thread {
                         }
                         break;
                     default:
-                        System.out.println("Malformed input from cpp: " + reply);
+                        System.out.println("C++: " + reply);
                 }
 
             }
