@@ -81,7 +81,6 @@ public class GraphOfNodes extends JPanel{
 
     /*
      * Contructor
-     *
      * */
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
@@ -179,7 +178,6 @@ public class GraphOfNodes extends JPanel{
     }
 
     public void setWaysToDraw(List<Long> nodes, Color color) {
-
         seenWaysToDraw = new HashSet<Long>(nodes);
         seenColor = color;
         isGraphDrawn = false;
@@ -187,28 +185,31 @@ public class GraphOfNodes extends JPanel{
         repaint();
     }
 
+    //scale function for drawing on bufferedImages
     private double scaleValueX(double x){
         return (((x*fullResolutionFactor*routeFactor)/zoomFactor+imageX*fullResolutionFactor*routeFactor));
     }
-
+    //scale function for drawing on bufferedImages
     private double scaleValueY(double y){
         return (((y*fullResolutionFactor*routeFactor)/zoomFactor+imageY*fullResolutionFactor*routeFactor));
     }
 
+    //scale function for viewLimiter used for tiles
     private double scaleValueXNoZoom(double x){
         return (((x)*fullResolutionFactor*routeFactor));
     }
-
+    //scale function for viewLimiter used for tiles
     private double scaleValueYNoZoom(double y){
         return (((y )*fullResolutionFactor*routeFactor));
     }
 
+    //Main painting method
     @Override            //#############################################################################################################
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         zoomFactor = Math.round(zoomFactor*1000.0)/1000.0;
-        if(zoomFactor <=1 & zoomLevel!=1){
+        if(zoomFactor <=1 & zoomLevel!=1){ //changes zoomLevel
             //isGraphDrawn=false;
             zoomLevel = 1;
         }else if(zoomFactor>=1.5 & zoomFactor <= 2.5 & zoomLevel!=2){
@@ -225,13 +226,13 @@ public class GraphOfNodes extends JPanel{
             zoomLevel = 6;
         }
 
-        if(!inited) {
+        if(!inited) { //drawing initial image. Only once
             drawGraph(ways, prerenderedImage);
             prerenderedImage = DrawingUtil.flipYCoordinate(prerenderedImage);
             inited = true;
         }
 
-        if(!isGraphDrawn) {
+        if(!isGraphDrawn) { //redraw when needed. Draws everything not prerendered
             this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
             if(zoomFactor>=8 & zoomFactor <=14) {
@@ -294,7 +295,7 @@ public class GraphOfNodes extends JPanel{
                     (int) (((imageY * fullResolutionFactor*routeFactor + viewResolution * fullResolutionFactor*routeFactor / (zoomFactor)))),
                     this);
         } else {
-            for (Point p : drawTiles.keySet()) {
+            for (Point p : drawTiles.keySet()) { //tiles
                 if(drawTiles.get(p)){
                     tilesDrawn++;
                     BufferedImage tile = tiles.get(p);
@@ -327,6 +328,7 @@ public class GraphOfNodes extends JPanel{
 
     }
 
+    //Changes the resolution of all tiles.
     private void changeTilesResolution(double zoomLevel) {
         for (Point p : tilePoints) {
             if (p.x >= imageX - tileRes & p.y >= imageY - tileRes && p.x <= imageX + (viewResolution) / zoomFactor & p.y <= imageY + (viewResolution) / zoomFactor) {
@@ -336,6 +338,7 @@ public class GraphOfNodes extends JPanel{
         }
     }
 
+    //Changes resolution of one tile at point p
     private void changeTileResolution(double zoomLevel, Point p) {
         int res = (int) (Math.pow(2, zoomLevel - 1) * tileRes);
         BufferedImage biggerImage = new BufferedImage(res, res, BufferedImage.TYPE_INT_ARGB);
@@ -343,15 +346,7 @@ public class GraphOfNodes extends JPanel{
         drawTile(p);
     }
 
-    private Map<Point, BufferedImage> flipTiles(Map<Point, BufferedImage> tiles) {
-        for (Point p :  tilePoints) {
-            BufferedImage tile = tiles.get(p);
-            BufferedImage flippedTile = DrawingUtil.flipYCoordinate(tile);
-            tiles.put(p,flippedTile);
-        }
-        return tiles;
-    }
-
+    //Draw all tiles
     private void drawTiles(List<CustomWay> ways) {
         for (Point p :  tilePoints) {
             drawTile(p);
@@ -361,6 +356,7 @@ public class GraphOfNodes extends JPanel{
         isGraphDrawn = true;
     }
 
+    //Draws one tile at point p
     private void drawTile(Point p) {
         //System.out.println("Before: " + ways.size());
         viewLimiter.setMargin(0,0);
@@ -431,7 +427,7 @@ public class GraphOfNodes extends JPanel{
 
     }
 
-    //draws the start and target circles to draw routes
+    //Draws the start and target circles to draw routes
     private void drawStartAndTarget() {
         Graphics2D graph2d = ballImage.createGraphics();
         graph2d.setColor(Color.GREEN);
@@ -490,6 +486,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //Finds the node ID closest to a point on bufferedImage
     private Point2D findClosestNodePoint(int drawX, int drawY) {
         long node = nodeFinder.findClosestNodeToPoint(scaleValueX(drawX), scaleValueY(drawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor);
         return nodeFinder.convertCoordsXYToImageXY(
@@ -498,6 +495,7 @@ public class GraphOfNodes extends JPanel{
                 xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor));
     }
 
+    //draws white background on image
     private void drawBackground(BufferedImage image) {
         Graphics2D graph2d = image.createGraphics();
         graph2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -507,6 +505,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //draws white background on all tiles
     private void drawTilesBackgrounds() {
         for (Point p :  tilePoints) {
             drawTileBackground(p);
@@ -515,6 +514,7 @@ public class GraphOfNodes extends JPanel{
         //drawCirclesInTiles();
     }
 
+    //draws white background on a tile
     private void drawTileBackground(Point p) {
         BufferedImage bufferedImage = tiles.get(p);
         Graphics2D graph2d = bufferedImage.createGraphics();
@@ -525,6 +525,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //draws a route. Will draw the shortest path calculated in c++
     private void drawRoute(List<Long> route, Color color) {
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
@@ -565,6 +566,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //draws a set of nodes at ways. Will draw nodes considered from c++
     private void drawSeenWays(HashSet<Long> nodes, Color color) {
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         //this.consideredImage = new BufferedImage(consideredImage.getWidth(),consideredImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
@@ -614,6 +616,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //draws an adjacencyList
     public void drawAdjList(HashMap<Long, List<Edge>> adjacencyList, Color color) {
         System.out.println("Drawing adjList");
         //this.bufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -657,6 +660,7 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    //draws a list of nodes at points on map
     private void drawSeenNodes(List<Long> nodes, Color color) {
         int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
         Graphics2D graph2d = bufferedImage.createGraphics();
@@ -683,6 +687,7 @@ public class GraphOfNodes extends JPanel{
         repaint();
     }
 
+    //draws all ways on a bufferedImage
     private void drawGraph(List<CustomWay> ways, BufferedImage bufferedImage) {
         Graphics2D graph2d = bufferedImage.createGraphics();
         int fullResolutionFactor = this.routeFactor;
@@ -726,49 +731,27 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
-    public void setImageX(int imageX) {
-        this.imageX = imageX;
+    //draws a circle around the landmark that was last used.
+    public void drawLandmark(long chosenLandmark) {
+        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
+        Graphics2D graph2d = bufferedImage.createGraphics();
+        graph2d.setStroke(new BasicStroke(10));
+        Color myColour = new Color(255, 0, 0, 255);
+        graph2d.setColor(myColour);
+        CustomNode node = parser.getNodes().get(chosenLandmark);
+        double nodeX = node.getLatitudeAsXCoord();
+        double nodeY = node.getLongtitudeAsYCoord();
+        double scaleFactor =  (windowScale / fullResolutionFactor);
+        int yOffset = (int) viewLimiter.getLowestY();
+        int xOffset = (int) viewLimiter.getLowestX();
+        Point2D.Double nodePoint = nodeFinder.convertCoordsXYToImageXY(nodeX, nodeY, xOffset, yOffset, scaleFactor);
+        Shape mark = new Ellipse2D.Double(nodePoint.x-50, nodePoint.y-50, 100, 100);
+        graph2d.draw(mark);
+        Shape mark2 = new Ellipse2D.Double(nodePoint.x, nodePoint.y, 1, 1);
+        graph2d.draw(mark2);
+        graph2d.dispose();
     }
 
-    public void setImageY(int imageY) {
-        this.imageY = imageY;
-    }
-
-    public void drawReducedGraph() {
-        //drawSeenWays(new ArrayList<>(adjencencyList.keySet()), Color.red);
-        repaint();
-    }
-
-    public List<Long> getFromNodes() {
-        long nodeFrom = nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX),
-                scaleValueY(redDrawY),
-                parser.getNodes(),
-                xOffset,
-                yOffset,
-                windowScale / (fullResolutionFactor * routeFactor), routeFactor);
-        List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeFrom, parser, reducedAdjList);
-        from.put(nodeFrom, closestNodes);
-        return closestNodes;
-    }
-    public List<Long> getToNodes() {
-        long nodeTo = nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX),
-                scaleValueY(blueDrawY),
-                parser.getNodes(),
-                xOffset,
-                yOffset,
-                windowScale /(fullResolutionFactor*routeFactor), routeFactor);
-        List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeTo, parser, reducedAdjList);
-        to.put(nodeTo, closestNodes);
-        return closestNodes;
-    }
-
-    public HashMap<Long, List<Edge>> getAdjacencyList() {
-        return adjacencyList;
-    }
-
-    public String getFrom() {
-        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor));
-    }
 
     public void drawStart(Point2D pointToDrawAt) {
         Graphics2D graph2d = ballImage.createGraphics();
@@ -804,6 +787,46 @@ public class GraphOfNodes extends JPanel{
         graph2d.dispose();
     }
 
+    public void setImageX(int imageX) {
+        this.imageX = imageX;
+    }
+
+    public void setImageY(int imageY) {
+        this.imageY = imageY;
+    }
+
+    public List<Long> getFromNodes() {
+        long nodeFrom = nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX),
+                scaleValueY(redDrawY),
+                parser.getNodes(),
+                xOffset,
+                yOffset,
+                windowScale / (fullResolutionFactor * routeFactor), routeFactor);
+        List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeFrom, parser, reducedAdjList);
+        from.put(nodeFrom, closestNodes);
+        return closestNodes;
+    }
+    public List<Long> getToNodes() {
+        long nodeTo = nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX),
+                scaleValueY(blueDrawY),
+                parser.getNodes(),
+                xOffset,
+                yOffset,
+                windowScale /(fullResolutionFactor*routeFactor), routeFactor);
+        List<Long> closestNodes = nodeFinder.findClosestReducedNodes(nodeTo, parser, reducedAdjList);
+        to.put(nodeTo, closestNodes);
+        return closestNodes;
+    }
+
+    public HashMap<Long, List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public String getFrom() {
+        return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(redDrawX), scaleValueY(redDrawY), parser.getNodes(), xOffset, yOffset, windowScale / (fullResolutionFactor * routeFactor), routeFactor));
+    }
+
+
     public String getTo() {
         return String.valueOf(nodeFinder.findClosestNodeToPoint(scaleValueX(blueDrawX), scaleValueY(blueDrawY), parser.getNodes(), xOffset, yOffset, windowScale /(fullResolutionFactor*routeFactor), routeFactor));
     }
@@ -823,25 +846,7 @@ public class GraphOfNodes extends JPanel{
         this.reducedAdjList = reducedAdjList;
     }
 
-    public void drawLandmark(long chosenLandmark) {
-        int fullResolutionFactor = this.fullResolutionFactor*routeFactor;
-        Graphics2D graph2d = bufferedImage.createGraphics();
-        graph2d.setStroke(new BasicStroke(10));
-        Color myColour = new Color(255, 0, 0, 255);
-        graph2d.setColor(myColour);
-        CustomNode node = parser.getNodes().get(chosenLandmark);
-        double nodeX = node.getLatitudeAsXCoord();
-        double nodeY = node.getLongtitudeAsYCoord();
-        double scaleFactor =  (windowScale / fullResolutionFactor);
-        int yOffset = (int) viewLimiter.getLowestY();
-        int xOffset = (int) viewLimiter.getLowestX();
-        Point2D.Double nodePoint = nodeFinder.convertCoordsXYToImageXY(nodeX, nodeY, xOffset, yOffset, scaleFactor);
-        Shape mark = new Ellipse2D.Double(nodePoint.x-50, nodePoint.y-50, 100, 100);
-        graph2d.draw(mark);
-        Shape mark2 = new Ellipse2D.Double(nodePoint.x, nodePoint.y, 1, 1);
-        graph2d.draw(mark2);
-        graph2d.dispose();
-    }
+
 
     public void setLandmark(long chosenLandmark) {
         this.chosenLandmark = chosenLandmark;
