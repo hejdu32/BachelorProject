@@ -34,7 +34,6 @@ public class GraphOfNodes extends JPanel{
     private int pressedX;
     private int pressedY;
     private double zoomFactor = 1.0;
-    private boolean zoomable = true;
     private int fullResolutionFactor = 1;//cant be change for some reason
     private int viewResolution = 1300; //cant be change for some reason
     private int fullResolutionX = viewResolution * fullResolutionFactor;
@@ -60,7 +59,6 @@ public class GraphOfNodes extends JPanel{
     private Map<Point, BufferedImage> tiles = new HashMap<>();
     private Map<Point, Double> tileZoom = new HashMap<>();
     private int zoomLevel = 1;
-    private boolean mouseReleased = false;
     private int tileRes = 100;
     private boolean inited = false;
     private Map<Point, Boolean> drawTiles = new HashMap<>();
@@ -82,9 +80,9 @@ public class GraphOfNodes extends JPanel{
 
 
     /*
-    * Contructor
-    *
-    * */
+     * Contructor
+     *
+     * */
     public GraphOfNodes(XMLParserImpl parser) {
         this.parser = parser;
         ways = new ArrayList<>(parser.getWays().values());
@@ -111,7 +109,6 @@ public class GraphOfNodes extends JPanel{
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                zoomable = false;
                 pressedX = e.getX();
                 pressedY = e.getY();
                 if(e.getButton() == java.awt.event.MouseEvent.BUTTON3){
@@ -136,23 +133,21 @@ public class GraphOfNodes extends JPanel{
             }
             @Override
             public void mouseReleased(MouseEvent e){
-                zoomable = true;
-                mouseReleased = true;
                 repaint();
             }
         });
         addMouseMotionListener(new MouseAdapter() {
 
-                                   @Override
-                                   public void mouseDragged(MouseEvent e) {
-                                            imageX += (pressedX - e.getX())/zoomFactor;
-                                            imageY += (pressedY - e.getY())/zoomFactor;
-                                       //}
-                                       pressedX = e.getX();
-                                       pressedY = e.getY();
-                                       repaint();
-                                   }
-                                });
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                imageX += (pressedX - e.getX())/zoomFactor;
+                imageY += (pressedY - e.getY())/zoomFactor;
+                //}
+                pressedX = e.getX();
+                pressedY = e.getY();
+                repaint();
+            }
+        });
         addMouseWheelListener(new MouseAdapter() {
             //Broken zoom stuff
             @Override
@@ -173,19 +168,6 @@ public class GraphOfNodes extends JPanel{
     }
 
     public void setRouteToDraw(List<Long> path, Color color) {
-        //System.out.println("Received List: "+ redPart);
-        //List<String> nodeIds = Arrays.asList(redPart.split("\\s+"));
-        //List<String> nodeIdsNOSPACE = nodeIds.subList(1, nodeIds.size()); //remove head of list as it is an identifier
-
-        //Collections.addAll(path,nodeIdLongs);
-
-        //for(String id : nodeIdsNOSPACE) {
-        //    nodeIdLongs.add(Long.parseLong(id));
-        //}
-
-        //for (CustomNode node :                parser.getNodes().values()) {
-        //    nodeIdLongs.add(node.getId());
-        //}
 
         this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
@@ -200,9 +182,6 @@ public class GraphOfNodes extends JPanel{
 
         seenWaysToDraw = new HashSet<Long>(nodes);
         seenColor = color;
-        //System.out.println("size of nodes" +nodes.size());
-        //HashSet<Long> seenSet = new HashSet<Long>(nodes);
-        //drawSeenWays(seenSet, color);
         isGraphDrawn = false;
 
         repaint();
@@ -255,22 +234,7 @@ public class GraphOfNodes extends JPanel{
         if(!isGraphDrawn) {
             this.bufferedImage = new BufferedImage(bufferedImage.getWidth(),bufferedImage.getHeight(),BufferedImage.TYPE_INT_ARGB);
 
-            if(zoomFactor<=1) {
-                //System.out.println("Changed: 100");
-                //changeTilesResolution( 1);
-                //isGraphDrawn = true;
-            }
-            else if(zoomFactor>=1.5 & zoomFactor <= 2.5) {
-                //System.out.println("Changed: 250");
-                //changeTilesResolution( 2);
-                //isGraphDrawn = true;
-            }
-            else if(zoomFactor>=4 & zoomFactor <=6) {
-                //System.out.println("Changed: 500");
-                //changeTilesResolution( 3);
-                //isGraphDrawn = true;
-            }
-            else if(zoomFactor>=8 & zoomFactor <=14) {
+            if(zoomFactor>=8 & zoomFactor <=14) {
                 //System.out.println("Changed: 1000");
                 //changeTilesResolution( 4);
                 isGraphDrawn = true;
@@ -467,7 +431,7 @@ public class GraphOfNodes extends JPanel{
 
     }
 
-    //draws the red and blue circles to draw routes
+    //draws the start and target circles to draw routes
     private void drawStartAndTarget() {
         Graphics2D graph2d = ballImage.createGraphics();
         graph2d.setColor(Color.GREEN);
@@ -486,7 +450,7 @@ public class GraphOfNodes extends JPanel{
                 //System.out.println("Start at : " + scaleValueX(redDrawX) + "," + scaleValueY(redDrawY));
                 drawBlue=false;
                 firePropertyChange("red", false, true);
-            //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
+                //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
             }
         }
         Shape red = new Ellipse2D.Double(redDrawAtPointX, redDrawAtPointY, 10*routeFactor, 10*routeFactor);
@@ -514,6 +478,8 @@ public class GraphOfNodes extends JPanel{
             Shape blueSquare = new Rectangle2D.Double(blueDrawAtPointX, blueDrawAtPointY, 10*routeFactor/2, 10*routeFactor/2);
             graph2d.fill(blue);
             graph2d.draw(blue);
+            graph2d.fill(blueSquare);
+            graph2d.draw(blueSquare);
             firePropertyChange("blue", false, true);
 
             //System.out.println("NodeFound: " + String.valueOf(nodeFinder.findClosestNodeToPoint(pointToDrawAt.getX(), pointToDrawAt.getY(), parser.getNodes(), xOffset, yOffset, windowScale /routeFactor)));
@@ -613,33 +579,33 @@ public class GraphOfNodes extends JPanel{
             do {
                 long currId = (long) iterator.next();
                 //if(adjacencyList != null && nodes.contains(currId) &&  adjacencyList.get(currId) != null && adjacencyList.get(currId).size()!=0) {
-                    if (previousId == 0L) {
+                if (previousId == 0L) {
+                    previousId = currId;
+                } else {
+                    if (nodes.contains(currId) && nodes.contains(previousId)) {
+                        CustomNode previousNode = parser.getNodes().get(previousId);
+                        double prevX = previousNode.getLatitudeAsXCoord();
+                        double prevY = previousNode.getLongtitudeAsYCoord();
+
+                        CustomNode currNode = parser.getNodes().get(currId);
+                        double currX = currNode.getLatitudeAsXCoord();
+                        double currY = currNode.getLongtitudeAsYCoord();
+
+                        double scaleFactor = (windowScale / fullResolutionFactor);
+
+                        int yOffset = (int) viewLimiter.getLowestY();
+                        int xOffset = (int) viewLimiter.getLowestX();
+
+                        Point2D.Double prevPoint = nodeFinder.convertCoordsXYToImageXY(prevX, prevY, xOffset, yOffset, scaleFactor);
+                        Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
+
+                        Shape l = new Line2D.Double(prevPoint.x,
+                                prevPoint.y,
+                                currPoint.x,
+                                currPoint.y);
+                        graph2d.draw(l);
                         previousId = currId;
-                    } else {
-                        if (nodes.contains(currId) && nodes.contains(previousId)) {
-                            CustomNode previousNode = parser.getNodes().get(previousId);
-                            double prevX = previousNode.getLatitudeAsXCoord();
-                            double prevY = previousNode.getLongtitudeAsYCoord();
-
-                            CustomNode currNode = parser.getNodes().get(currId);
-                            double currX = currNode.getLatitudeAsXCoord();
-                            double currY = currNode.getLongtitudeAsYCoord();
-
-                            double scaleFactor = (windowScale / fullResolutionFactor);
-
-                            int yOffset = (int) viewLimiter.getLowestY();
-                            int xOffset = (int) viewLimiter.getLowestX();
-
-                            Point2D.Double prevPoint = nodeFinder.convertCoordsXYToImageXY(prevX, prevY, xOffset, yOffset, scaleFactor);
-                            Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
-
-                            Shape l = new Line2D.Double(prevPoint.x,
-                                    prevPoint.y,
-                                    currPoint.x,
-                                    currPoint.y);
-                            graph2d.draw(l);
-                            previousId = currId;
-                        }
+                    }
                     //}
                 }
             } while(iterator.hasNext()); }
@@ -748,9 +714,9 @@ public class GraphOfNodes extends JPanel{
                     Point2D.Double currPoint = nodeFinder.convertCoordsXYToImageXY(currX, currY, xOffset, yOffset, scaleFactor);
 
                     Shape l = new Line2D.Double(prevPoint.x,
-                                                prevPoint.y,
-                                                currPoint.x,
-                                                currPoint.y);
+                            prevPoint.y,
+                            currPoint.x,
+                            currPoint.y);
                     graph2d.draw(l);
                     previousId = currId;
                 }
