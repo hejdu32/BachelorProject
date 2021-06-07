@@ -57,25 +57,25 @@ public class testGraphBuilder {
         assertEquals(3, adjList.get(2L).size());
     }
 
-    @Test
-    public void checkStumpFileCorrectFormat(){
-        try {
-            HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
-            graphBuilder.writeToFileOLD("adjlist", adjList);
-
-            String fileData = readFile("adjlist");
-            String expectedOut = "#1 ;2 ,1.0" +
-                    "#2 ;1 ,1.0 ;3 ,1.0 ;4 ,1.0" +
-                    "#3 ;2 ,1.0" +
-                    "#4 ;2 ,1.0 ;5 ,10.0" +
-                    "#5 ;4 ,10.0" +
-                    "!";
-            assertEquals(expectedOut,fileData);
-        } catch (TransformException e) {
-            e.printStackTrace();
-        }
-
-    }
+    //@Test
+    //public void checkStumpFileCorrectFormat(){
+    //    try {
+    //        HashMap<Long, List<Edge>> adjList = graphBuilder.createAdjacencyList();
+    //        graphBuilder.writeToFileOLD("adjlist", adjList);
+//
+    //        String fileData = readFile("adjlist");
+    //        String expectedOut = "#1 ;2 ,1.0" +
+    //                "#2 ;1 ,1.0 ;3 ,1.0 ;4 ,1.0" +
+    //                "#3 ;2 ,1.0" +
+    //                "#4 ;2 ,1.0 ;5 ,10.0" +
+    //                "#5 ;4 ,10.0" +
+    //                "!";
+    //        assertEquals(expectedOut,fileData);
+    //    } catch (TransformException e) {
+    //        e.printStackTrace();
+    //    }
+//
+    //}
 
 
     private String readFile(String fileToRead){
@@ -93,11 +93,11 @@ public class testGraphBuilder {
         }
         return data.toString();
     }
-    @Test
-    public void testWriteToFileAsJson() throws IOException {
-        String filePath = "";
-        graphBuilder.writeToFileAsJson(filePath);
-    }
+    //@Test
+    //public void testWriteToFileAsJson() throws IOException {
+    //    String filePath = "";
+    //    graphBuilder.writeToFileAsJson(filePath);
+    //}
 
     @Test
     public void testReductionOfAdjacencyListReducedNumberOfEdges() throws TransformException, FileNotFoundException, FactoryException {

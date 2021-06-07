@@ -64,7 +64,7 @@ public class GraphOfNodes extends JPanel{
     private Map<Point, Boolean> drawTiles = new HashMap<>();
     private Map<Point, List<CustomWay>> tileWays = new HashMap<>();
     private Map<Point, List<Shape>> tileShapes = new HashMap<>();
-    private int routeFactor = 8;
+    private int routeFactor = 6;
     private boolean drawBlue = false;
     private int redDrawAtPointX;
     private int redDrawAtPointY;
