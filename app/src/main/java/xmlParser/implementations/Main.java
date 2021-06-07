@@ -33,7 +33,7 @@ public class Main implements PropertyChangeListener {
     private static JTextField txtTo;
     private static XMLParserImpl parser = new XMLParserImpl();
 
-    public static void main(String[] args) throws IOException, FactoryException {//TransformException
+    public static void main(String[] args) throws IOException, FactoryException {
         String countryPath = args[0];
         String pathToExe = args[1];
         Main listener = new Main();
@@ -95,15 +95,11 @@ public class Main implements PropertyChangeListener {
                     writer.flush();
                     break;
                 case "rundijkstra":
-                    //System.out.println("Input from nodeId");
                     from = "3593516725";//reader1.readLine();
-                    //System.out.println("Input to nodeId");
                     to = "5037683804";//reader1.readLine();
                     lineToSend = "runDijkstra"+" " + from + " "+  to +  "\n";
-                    //System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
-                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.red); //also draws route
                     break;
                 case "runastar":
                     from = "3593516725";//reader1.readLine();
@@ -111,7 +107,6 @@ public class Main implements PropertyChangeListener {
                     lineToSend = "runAstar"+" " + from + " "+  to +  "\n";
                     writer.write(lineToSend);
                     writer.flush();
-                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "runalt":
                     from = "1818942364";//reader1.readLine();
@@ -119,7 +114,6 @@ public class Main implements PropertyChangeListener {
                     lineToSend = "runALT"+" " + from + " "+  to + "\n";
                     writer.write(lineToSend);
                     writer.flush();
-                    //graphOfNodes.setRouteToDraw(reader.readLine(), Color.green); //also draws route
                     break;
                 case "algo":
                     System.out.println("type algo (runDijkstra, runAstar, runALT): ");
@@ -156,7 +150,6 @@ public class Main implements PropertyChangeListener {
                     System.out.println(lineToSend);
                     writer.write(lineToSend);
                     writer.flush();
-                    //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
                 case "run":
                     System.out.println("type algo (runDijkstra, runAstar, runALT) From node: To node: ");
@@ -173,7 +166,6 @@ public class Main implements PropertyChangeListener {
                         writer.write(lineToSend);
                         writer.flush();
                     } else System.out.println("Did not understand input: " + all);
-                    //graphOfNodes.setRouteToDraw(result, Color.green); //also draws route
                     break;
                 case "reset":
                     graphOfNodes.setImageX(0);

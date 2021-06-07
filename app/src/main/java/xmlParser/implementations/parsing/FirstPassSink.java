@@ -65,9 +65,6 @@ public class FirstPassSink implements Sink{
                     }
                 }
 
-                //if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
-                //    System.out.println("way: "+way.getId()+" tag: "+tag.getKey()+" val: "+tag.getValue());
-                //}
                 if (tag.getKey().equals("route") && tag.getValue().equals("ferry")){
                     CustomWay customWay = new CustomWay(way.getId(),
                             way.getWayNodes().stream().mapToLong(WayNode::getNodeId).boxed().collect(Collectors.toList()),
@@ -84,13 +81,9 @@ public class FirstPassSink implements Sink{
                 }
                 if (tag.getKey().equals("maxspeed")){
                     boolean tagIsIntVal = isInValue(tag.getValue());
-                    //if (!tagIsIntVal) {
-                    //    System.out.println("Way: " + way.getId() + " maxspeed: " + tag.getValue());
-                    //}
+
                     boolean isfirstCharInCustomMaxSpeedNotZero = !(tag.getValue().charAt(0) == '0');
-                    //if (!isfirstCharInCustomMaxSpeedNotZero){
-                    //    System.out.println("user:Way: "+way.getId()+" maxspeed: "+tag.getValue());
-                    //}
+
                     if (parser.getWays().containsKey(way.getId())&& tagIsIntVal && isfirstCharInCustomMaxSpeedNotZero){
                         //Integer.parseInt(tag.getValue())
                         parser.getWays().get(way.getId()).setMaxSpeed(tag.getValue());}

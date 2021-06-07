@@ -17,8 +17,8 @@ import java.util.*;
 
 public class GraphBuilder {
 
-    private XMLParser xmlParser;
-    private DistanceCalculator distanceCalculator;
+    private final XMLParser xmlParser;
+    private final DistanceCalculator distanceCalculator;
 
     public GraphBuilder(XMLParser xmlParser) throws FactoryException {
         this.xmlParser = xmlParser;
@@ -281,99 +281,6 @@ public class GraphBuilder {
     }
 
 
-    public HashMap<Long, List<Edge>> reduceAdjacencyList(HashMap<Long, List<Edge>> adjacencyList) {
-        Map<Long, List<Long>> nodesToSearhFor = xmlParser.getNodesToSearchFor();
-        Set<Long> allNodes = adjacencyList.keySet();
-        for(Long id: allNodes){
-            int nodeDegree = adjacencyList.get(id).size();
-            if(nodeDegree < 3){
-                if(nodeDegree == 1) { //Do this recursively please and thank you
-                    Edge edgeToNextNode = adjacencyList.get(id).get(0);
-                    Long idOfNextNode = edgeToNextNode.getDestinationId();
-                    if(adjacencyList.get(idOfNextNode)!=null && adjacencyList.get(idOfNextNode).size() == 1) {
-                        reduceAdjacencyListOneway2(id, 0, idOfNextNode, id, edgeToNextNode.getDistanceToDestination(), adjacencyList);
-                    }
-                }
-                else if(nodeDegree == 2) {
-                    Edge edgeToNextNode1 = adjacencyList.get(id).get(0);
-                    Long idOfNextNode1 = edgeToNextNode1.getDestinationId();
-
-                    if(adjacencyList.get(idOfNextNode1) != null && adjacencyList.get(idOfNextNode1).size() == 2) {
-                        reduceAdjacencyListOneway2(id, 0, idOfNextNode1, id, edgeToNextNode1.getDistanceToDestination(), adjacencyList);
-                    }
-
-                    Edge edgeToNextNode2 = adjacencyList.get(id).get(1);
-                    Long idOfNextNode2 = edgeToNextNode2.getDestinationId();
-
-                    if(adjacencyList.get(idOfNextNode2) != null && adjacencyList.get(idOfNextNode2).size() == 2) {
-                        reduceAdjacencyListOneway2(id, 1, idOfNextNode2, id, edgeToNextNode2.getDistanceToDestination(), adjacencyList);
-                    }
-                }
-            }
-        }
-        return adjacencyList;
-    }
-    private void reduceAdjacencyListOneway(Long firstId, Long currentId, double accDistance, HashMap<Long, List<Edge>> adjacencyList){
-        Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
-        Long idOfNextNode = edgeToNextNode.getDestinationId();
-        double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
-        if(adjacencyList.get(idOfNextNode)!= null && adjacencyList.get(idOfNextNode).size() == 1) {
-            adjacencyList.put(currentId, Collections.emptyList());
-            reduceAdjacencyListOneway(firstId, idOfNextNode, newAccDist, adjacencyList);
-        }
-        else {
-            adjacencyList.put(currentId, Collections.emptyList());
-            adjacencyList.put(firstId, Collections.singletonList(new Edge(edgeToNextNode.getDestinationId(), newAccDist)));
-        }
-    }
-
-    private void reduceAdjacencyListOneway2(Long firstId, int firstIdIndex, Long currentId, Long previousId, double accDistance, HashMap<Long, List<Edge>> adjacencyList){
-        if(adjacencyList.get(currentId).size() == 1) {
-            Edge edgeToNextNode = adjacencyList.get(currentId).get(0);
-            Long idOfNextNode = edgeToNextNode.getDestinationId();
-            double newAccDist = accDistance + edgeToNextNode.getDistanceToDestination();
-            if(adjacencyList.get(idOfNextNode)!= null && adjacencyList.get(idOfNextNode).size() == 1) {
-                adjacencyList.put(currentId, Collections.emptyList());
-                reduceAdjacencyListOneway2(firstId, firstIdIndex, idOfNextNode, 0L, newAccDist, adjacencyList);
-            }
-            else {
-                adjacencyList.put(currentId, Collections.emptyList());
-                adjacencyList.put(firstId, Collections.singletonList(new Edge(idOfNextNode, newAccDist)));
-            }
-        }
-        else if(adjacencyList.get(currentId).size() == 2) { //TODO HANDLE NODE WITH TWO OUTGOING EDGES
-            //Node degree 2
-            Edge edgeToNextNode1 = adjacencyList.get(currentId).get(0);
-            Long idOfNextNode1 = edgeToNextNode1.getDestinationId();
-            double newAccDist1 = accDistance + edgeToNextNode1.getDistanceToDestination();
-            if(adjacencyList.get(idOfNextNode1)!= null && !previousId.equals(idOfNextNode1) && adjacencyList.get(idOfNextNode1).size() == 2) {
-                adjacencyList.put(currentId, Collections.emptyList());
-                reduceAdjacencyListOneway2(firstId, firstIdIndex, idOfNextNode1, currentId, newAccDist1, adjacencyList);
-            }
-            else if(previousId.equals(idOfNextNode1)){
-                //Do nothing
-            }
-            else {
-                //Ending recursive call. Inserting reduced edges
-                adjacencyList.put(currentId, Collections.emptyList());
-                adjacencyList.get(firstId).set(firstIdIndex, new Edge(idOfNextNode1, newAccDist1));
-                Edge tempEdge = null;
-                for(Edge edge: adjacencyList.get(idOfNextNode1)){
-                    if(edge.getDestinationId() == currentId){
-                        tempEdge = edge;
-                    }
-                }
-                int indexOfEdge = adjacencyList.get(idOfNextNode1).indexOf(tempEdge);
-                adjacencyList.get(idOfNextNode1).set(indexOfEdge, new Edge(firstId, newAccDist1));
-            }
-
-        }
-
-        else {
-            //Do nothing
-        }
-
-    }
 }
 
 

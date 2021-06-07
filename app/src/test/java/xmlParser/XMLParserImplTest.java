@@ -127,17 +127,7 @@ public class XMLParserImplTest {
         kindofWays.forEach((key, value) -> System.out.println(key + ":" + value));
     }
 
-    @Test
-    public void makeDenmarkInFile(){
-        try {
-            long startTime = System.currentTimeMillis();
-            graphBuilder.writeAllWays("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
-            long endTime = System.currentTimeMillis();
-            System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Test
     public void makeMaltaInFile(){
@@ -150,6 +140,17 @@ public class XMLParserImplTest {
             e.printStackTrace();
         }
 
+    }
+    @Test
+    public void makeDenmarkInFile(){
+        try {
+            long startTime = System.currentTimeMillis();
+            graphBuilder.writeAllWays("denmark", parser.getNodes(), new ArrayList<>(parser.getWays().values()));
+            long endTime = System.currentTimeMillis();
+            System.out.println("Time for writing to file: "+ (endTime- startTime)/1000 + "sec");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

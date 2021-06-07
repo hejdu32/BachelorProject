@@ -49,5 +49,5 @@ test {
 
 application {
     // Define the main class for the application.
-    mainClass = 'XMLParser.App'
+    mainClass = 'XMLParser.App' //as Property<String>
 }
